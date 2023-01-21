@@ -7,11 +7,13 @@ Date: 19. Januar 2023
 
 """
 
-#necessary libraries for Apache Cassandra
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 
-
+def database_request():
+    """ Dummy method for testing.
+    """
+    return "database_response"
 
 def establish_connection():
     """

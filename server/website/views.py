@@ -1,20 +1,15 @@
 from flask import Blueprint
-
 import website.models as db
-
 
 """ These can be split when they either get too big or we want to make 
     it easier to work in separate files"""
 
-landing_page = Blueprint('landing_page', __name__)
-database_test = Blueprint('database_test', __name__)
+views_blueprint = Blueprint('views_blueprint', __name__)
 
-
-@landing_page.route('/')
-def blueprint():
+@views_blueprint.route('/')
+def landing_page():
     return "landing_page"
 
-
-@database_test.route('/database_test')
-def blueprint():
+@views_blueprint.route('/database_test')
+def database_test():
     return db.database_request()
