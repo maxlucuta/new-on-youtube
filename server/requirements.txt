@@ -137,4 +137,5 @@ websocket-client==1.4.2
 Werkzeug==2.2.2
 yarg==0.1.9
 yarl==1.8.2
+youtube-transcript-api==0.5.0
 zipp==3.11.0
