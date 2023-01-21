@@ -7,12 +7,10 @@ Key Facts:
     - The maximum request is 4000 tokens. 
 
 """
-
-#necessary library 
 import openai
 
-def summarize_yt_script_with_gpt3(yt_transcript, temperature, max_tokens, 
-                                  top_p, frequency_penalty, presence_penalty):
+def summarize_yt_script_with_gpt3(yt_transcript, temperature=0.7, max_tokens=1000, 
+                                  top_p=1.0, frequency_penalty=0.5, presence_penalty=0.5):
     """
     This function sends a transcript from a YT video to 
     the gpt3 API and returns a summary of the transcript.

@@ -9,6 +9,7 @@ Date: 19. Januar 2023
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 
+
 def database_request():
     """ Dummy method for testing.
     """
