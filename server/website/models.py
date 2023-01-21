@@ -6,7 +6,6 @@ Author: Alexander Arzt (ata122@ic.ac.uk)
 Date: 19. Januar 2023
 
 """
-
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 
@@ -34,7 +33,6 @@ def establish_connection():
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
     session = cluster.connect()
     return session
-
 
 
 def query_yt_videos(keyword, k, session):

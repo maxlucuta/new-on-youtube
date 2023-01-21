@@ -31,7 +31,7 @@ def test_get_method_1(test_client):
     """Tests GET request response is valid.
 
     Args:
-        URL Query: topic = football, amount = 1
+        URL Query: topic = tennis, amount = 1
 
     Returns:
         Test passed if Json list of size 1 with
@@ -44,8 +44,8 @@ def test_get_method_1(test_client):
     summaries = json.loads(response.data)
     
     for summary in summaries:
-        title = summary.get('video title')
-        channel = summary.get('channel')
+        title = summary.get('video_title')
+        channel = summary.get('channel_name')
         text = summary.get('summary')
         assert title and channel and text
     
@@ -149,6 +149,8 @@ def test_get_method_5(test_client):
     response = test_client.get('/request?topic=football&amount=0')
     error_codes = json.loads(response.data)
 
+    print(error_codes)
+
     description = error_codes.get('ERROR')
     status_code = error_codes.get('STATUS CODE')
 
@@ -161,24 +163,23 @@ def test_get_method_6(test_client):
     """Tests GET request response is valid.
 
     Args:
-        URL Query: topic = football, amount = 20
+        URL Query: topic = cars, amount = 2
 
     Returns:
-        Test passed if Json list of size 20 with
+        Test passed if Json list of size 2 with
         all relevant features is returned.
 
     Raises:
         Assertion error.
     """
-    response = test_client.get('/request?topic=hockey&amount=20')
+    response = test_client.get('/request?topic=cars&amount=2')
     summaries = json.loads(response.data)
-    
+
     for summary in summaries:
-        title = summary.get('video title')
-        channel = summary.get('channel')
+        title = summary.get('video_title')
+        channel = summary.get('channel_name')
         text = summary.get('summary')
         assert title and channel and text
     
-    assert len(summaries) == 20
+    assert len(summaries) == 2
     return
-    

@@ -68,9 +68,11 @@ def valid_get_request(topic, amount):
 		True if request is valid.
 		False if request is invalid.
 	"""
-	if not isalpha(topic) or not isdigit(amount): 
+	if not topic or not amount:
 		return False
-	if 0 >= int(amount) > 20: 
+	if not topic.isalpha() or not amount.isdigit(): 
+		return False
+	if 0 >= int(amount) or int(amount) > 20:
 		return False
 	return True
 
@@ -89,7 +91,7 @@ def valid_query_response(topic_summaries, amount):
 		HTTPException 404.	
 	"""
 	for query_response in topic_summaries:
-		if query_response.get("ERROR") or len(response) != 3:
+		if query_response.get("ERROR") or len(query_response) != 3:
 			abort(404)
 
 		video_title = query_response.get('video_title')
@@ -128,17 +130,15 @@ def request_summary():
 
 	if not session:
 		session = establish_connection()
-		if not session: 
-			abort(500)
 
 	if not valid_get_request(topic, amount):
 		abort(400)
+	
+	topic_summaries = query_yt_videos(topic, int(amount), session)
 
-	topic_summaries = query_yt_videos(topic, amount, session)
-
-	if not valid_query_response(topic_summaries, amount):
+	if not valid_query_response(topic_summaries, int(amount)):
 		abort(417)
-
+	
 	return topic_summaries
 
 

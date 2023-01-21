@@ -1,5 +1,3 @@
-
-
 import os
 import openai
 
@@ -18,9 +16,6 @@ def summarize_yt_script_with_gpt3(yt_transcript):
                 )
 
     return response 
-
-
-
 
 
 
