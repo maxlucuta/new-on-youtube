@@ -70,10 +70,13 @@ def valid_get_request(topic, amount):
 	"""
 	if not topic or not amount:
 		return False
+
 	if not topic.isalpha() or not amount.isdigit(): 
 		return False
+
 	if 0 >= int(amount) or int(amount) > 20:
 		return False
+		
 	return True
 
 def valid_query_response(topic_summaries, amount):
