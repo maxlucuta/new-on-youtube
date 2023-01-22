@@ -53,7 +53,7 @@ def summarize_yt_script_with_gpt3(yt_transcript, temperature, max_tokens,
 
     return response['choices'][0]['text'] 
 
-
-yt_transcript = "A neutron star is the collapsed core of a massive supergiant star, which had a total mass of between 10 and 25 solar masses, possibly more if the star was especially metal-rich.[1] Neutron stars are the smallest and densest stellar objects, excluding black holes and hypothetical white holes, quark stars, and strange stars.[2] Neutron stars have a radius on the order of 10 kilometres (6.2 mi) and a mass of about 1.4 solar masses.[3] They result from the supernova explosion of a massive star, combined with gravitational collapse, that compresses the core past white dwarf star density to that of atomic nuclei.\n\nTl;dr"
-summary = summarize_yt_script_with_gpt3(yt_transcript, 0.7, 60, 1.0, 0, 1)
-print(summary)
+if __name__ == "__main__":
+    yt_transcript = "A neutron star is the collapsed core of a massive supergiant star, which had a total mass of between 10 and 25 solar masses, possibly more if the star was especially metal-rich.[1] Neutron stars are the smallest and densest stellar objects, excluding black holes and hypothetical white holes, quark stars, and strange stars.[2] Neutron stars have a radius on the order of 10 kilometres (6.2 mi) and a mass of about 1.4 solar masses.[3] They result from the supernova explosion of a massive star, combined with gravitational collapse, that compresses the core past white dwarf star density to that of atomic nuclei.\n\nTl;dr"
+    summary = summarize_yt_script_with_gpt3(yt_transcript, 0.7, 60, 1.0, 0, 1)
+    print(summary)

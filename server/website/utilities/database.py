@@ -28,7 +28,7 @@ def establish_connection():
         abstraction for the connection to the DB.
 
     """    
-    cloud_config= {'secure_connect_bundle': './website/secure-connect-yapp-db.zip'}
+    cloud_config= {'secure_connect_bundle': '/workspaces/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM', 
                                           '9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_bLyL9oCRlqfZ5bcIR-Bz2mMd3tcA05PXx_TZ_JcoCYZpRyD0SSZsS.Zt02jvzUmLU9F0+iA+6HYd0mY5wd61D8vQv8q+_-eKGU')
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)

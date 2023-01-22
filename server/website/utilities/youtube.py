@@ -1,5 +1,5 @@
 from youtube_transcript_api import YouTubeTranscriptApi
-from gpt_api import summarize_yt_script_with_gpt3
+from gpt3 import summarize_yt_script_with_gpt3
 import googleapiclient.discovery as googleapi
 import requests
 
@@ -40,7 +40,8 @@ def get_most_popular_video_transcripts_by_topic(topic, result_num):
 
         transcript = instruction + generate_transcript(video_id) + "\n\nTl;dr"
         summary = summarize_yt_script_with_gpt3(transcript)
-        formatted_request_response.append({'video_title' : video_title,
+        formatted_request_response.append({'keyword' : topic, 
+                                           'video_title' : video_title,
                                            'channel_name' : channel_name,
                                            'summary' : summary})
 

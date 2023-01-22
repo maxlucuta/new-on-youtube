@@ -1,4 +1,11 @@
-from website.models import database_request
 
-def test_response():
-    assert database_request() == "database_response"
+"""
+This script is for prototyping and testing the entire pipeline
+for DB queries and insertions
+
+Alex
+"""
+
+import test_models
+import test_GPTAPI
+
