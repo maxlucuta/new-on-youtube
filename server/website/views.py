@@ -1,5 +1,5 @@
 from flask import Blueprint
-import website.models as db
+from utilities.database import database_test
 
 """ These can be split when they either get too big or we want to make 
     it easier to work in separate files"""

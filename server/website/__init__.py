@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_cors import CORS, cross_origin
-
 from website.views import views_blueprint
 from website.request_handler import request_blueprint
 
