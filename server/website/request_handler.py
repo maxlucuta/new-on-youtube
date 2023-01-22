@@ -6,7 +6,7 @@ that the URL Query contains both topic=x and amount=y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
-from utilities.database import establish_connection, query_yt_videos
+from .utilities.database import establish_connection, query_yt_videos
 from werkzeug.exceptions import HTTPException
 
 request_blueprint = Blueprint("request_blueprint", __name__)
