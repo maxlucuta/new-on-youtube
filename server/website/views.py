@@ -1,5 +1,5 @@
 from flask import Blueprint
-from utilities.database import database_test
+from .utilities.database import database_request
 
 """ These can be split when they either get too big or we want to make 
     it easier to work in separate files"""
@@ -12,4 +12,4 @@ def landing_page():
 
 @views_blueprint.route('/database_test')
 def database_test():
-    return db.database_request()
+    return database_request()
