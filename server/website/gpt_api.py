@@ -9,7 +9,7 @@ Key Facts:
 """
 import openai
 
-def summarize_yt_script_with_gpt3(yt_transcript, temperature=0.7, max_tokens=1000, 
+def summarize_yt_script_with_gpt3(yt_transcript, temperature=0.7, max_tokens=100, 
                                   top_p=1.0, frequency_penalty=0.5, presence_penalty=0.5):
     """
     This function sends a transcript from a YT video to 

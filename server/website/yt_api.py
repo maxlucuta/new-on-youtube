@@ -1,31 +1,33 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 from gpt_api import summarize_yt_script_with_gpt3
-import googleapiclient.discovery
+import googleapiclient.discovery as googleapi
 import requests
 
 
-
-API_SERVICE = "youtube"
-API_VERSION = "v3"
 API_KEY = "AIzaSyCEYn_Co51eJlG5sCbzVbPQ9HQn-RHxRms"
-
-api_results_per_page = 1
-search_terms = "football"
-
-youtube = googleapiclient.discovery.build(
-    API_SERVICE, API_VERSION, developerKey = API_KEY)
+youtube = googleapi.build("youtube", "v3", developerKey = API_KEY)
 
 
 def get_most_popular_video_transcripts_by_topic(topic, result_num):
+    """ Calls youtube data api to fetch metadata for videos of
+        the specific topic, returning processed data to be 
+        stored in models.py database.
 
+        Args:
+            topic: string -> video topic
+            result_num: int -> number of videos to query
+
+        Returns:
+            transcript: [{dict}] in the format found in models.py
+    """
     global youtube
     formatted_request_response = []
 
-    request = youtube.search().list(part = "snippet", q = search_terms,
-                                    maxResults = api_results_per_page, 
+    request = youtube.search().list(part = "snippet", q = topic,
+                                    maxResults = result_num, 
                                     order = "viewCount", type = "video",
                                     regionCode = "gb", safeSearch = "moderate",
-                                    videoDuration = "medium",
+                                    videoDuration = "short",
                                     videoCaption = "closedCaption")
 
     response = request.execute()
@@ -35,8 +37,7 @@ def get_most_popular_video_transcripts_by_topic(topic, result_num):
         video_id = item['id']['videoId']
         channel_name = item['snippet']['channelTitle']
 
-        transcript = generate_transcript(video_id)
-        print(transcript)
+        transcript = generate_transcript(video_id) + "\n\nTl;dr"
         summary = summarize_yt_script_with_gpt3(transcript)
         formatted_request_response.append({'video_title' : video_title,
                                            'channel_name' : channel_name,
@@ -66,5 +67,4 @@ def generate_transcript(key):
     
     return " ".join(final_transcript)
 
-print(get_most_popular_video_transcripts_by_topic("football", 1))
         
