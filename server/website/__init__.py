@@ -6,6 +6,7 @@ from website.request_handler import request_blueprint
 
 def create_app():
     app = Flask(__name__)
+    app.secret_key = "SECRET KEY"
 
     cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
