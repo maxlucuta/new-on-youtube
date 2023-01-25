@@ -1,8 +1,8 @@
 """Important information:
 
-Implementation routes front-end GET requests to /request,
+Implementation routes front-end POST requests to /request,
 it is the front-end developers responsibility to ensure
-that the URL Query contains both topic=x and amount=y, 
+that the request contains both topic=x and amount=y, 
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
@@ -58,7 +58,7 @@ def server_error(e):
 	return {'ERROR' : 'Database connection failiure.', 'STATUS CODE' : 500 }
 
 def valid_get_request(topic, amount):
-	"""Checks if the GET request params are valid.
+	"""Checks if the POST request params are valid.
 
 	Args:
 		topic: string denoting topic to query.
@@ -80,7 +80,7 @@ def valid_get_request(topic, amount):
 	return True
 
 def valid_query_response(topic_summaries, amount):
-	"""Checks if the GET response satisfies the request.
+	"""Checks if the POST response satisfies the request.
 
 	Args:
 		topic_summaries: [{dict}] containing query response.
@@ -107,17 +107,17 @@ def valid_query_response(topic_summaries, amount):
 	return len(topic_summaries) == amount
 
 
-@request_blueprint.route("/", methods=['GET'])
-@request_blueprint.route("/home", methods=['GET'])
-@request_blueprint.route("/request", methods=['GET'])
+@request_blueprint.route("/", methods=['POST'])
+@request_blueprint.route("/home", methods=['POST'])
+@request_blueprint.route("/request", methods=['POST'])
 def request_summary():
 	""" Retrieves summarised transcripts for a topic.
 
 	Args:
-		topic: GET request -> topic extracted through URL
+		topic: POST request -> topic extracted through POST
 		       query parameters as string.
-		amount: Included in GET URL query parameters, 
-		 	   denotes number of summaries to be retrieved.
+		amount: Included in POST query parameters, denotes 
+			   number of summaries to be retrieved.
 
 	Returns:
 		summary: { video : vid_title, channel : channel_name, summary : s }
@@ -127,8 +127,8 @@ def request_summary():
 	Raises:
 		HTTPException 400 / 404 / 408 / 417 / 500
 	"""
-	topic = request.args.get('topic')
-	amount = request.args.get('amount')
+	topic = request.form.get('topic')
+	amount = request.form.get('amount')
 	global session
 
 	if not session:
