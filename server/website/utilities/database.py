@@ -10,11 +10,6 @@ from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 
 
-def database_request():
-    """ Dummy method for testing.
-    """
-    return "database_response"
-
 def establish_connection():
     """
     This function initializes the connection to the DB using
