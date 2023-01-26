@@ -9,6 +9,7 @@ Date: 19. Januar 2023
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 from flask import abort
+from uuid import UUID
 from .users import User
 
 
@@ -97,14 +98,22 @@ def query_users_db(username=None, user_id=None):
         multiple users in the DB with the same username.
     """   
     if not username and not user_id:
-        abort(500)
+        return None
+
     session = establish_connection()   # Need to update this to first check for global session, same for functions above
+    
     if username:
         query = session.execute(f"select * from summaries.users where username = '{username}'").all()
     else:
+        try:
+            UUID(str(user_id))
+        except ValueError:
+            return None
         query = session.execute(f"select * from summaries.users where id = {user_id} allow filtering").all()
+    
     if len(query) > 1:
         abort(500)
+    
     if query:
         query = query[0]
         categories = [x.strip() for x in query.categories.replace(';',',').split(",")]
@@ -127,7 +136,9 @@ def insert_user_into_db(userobj):
     Returns:
         Boolean
 
-    """   
+    """
+    if not userobj is User or not userobj.username or not userobj.password:
+        return False  
     try:
         session = establish_connection()   # Need to update this to first check for global session, same for functions above
         categories = ','.join(userobj.categories)
