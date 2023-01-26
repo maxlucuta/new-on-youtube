@@ -5,7 +5,7 @@ from website.request_handler import request_blueprint
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='../../client/build')
 
     cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
