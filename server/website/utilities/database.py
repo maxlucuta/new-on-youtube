@@ -8,6 +8,8 @@ Date: 19. Januar 2023
 """
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
+from flask import abort
+from .users import User
 
 
 def establish_connection():
@@ -54,7 +56,6 @@ def query_yt_videos(keyword, k, session):
         return [{"ERROR": "Query failed"}]
 
 
-
 def insert_into_DB(video_dict, session):
     """
     This function performs an insertion into the DB and returns True
@@ -79,3 +80,61 @@ def insert_into_DB(video_dict, session):
         return False
 
 
+def query_users_db(username=None, user_id=None):
+    """
+    This function performs a query on the users DB based on either the username or user_id of a 
+    user and returns a User object if the user is present in the DB. Both username and user_id are
+    possible arguments as both should be unique in the DB.
+
+    Args:
+        username (string): The username of user to the return
+
+    Returns:
+        User object
+
+    Raises:
+        HTTPException 500 if no valid search terms were passed as arguments or there are 
+        multiple users in the DB with the same username.
+    """   
+    if not username and not user_id:
+        abort(500)
+    session = establish_connection()   # Need to update this to first check for global session, same for functions above
+    if username:
+        query = session.execute(f"select * from summaries.users where username = '{username}'").all()
+    else:
+        query = session.execute(f"select * from summaries.users where id = {user_id} allow filtering").all()
+    if len(query) > 1:
+        abort(500)
+    if query:
+        query = query[0]
+        categories = [x.strip() for x in query.categories.replace(';',',').split(",")]
+        channels = [x.strip() for x in query.channels.replace(';',',').split(",")]
+        userobj = User(query.id, query.username, query.password, categories, channels)
+        return userobj
+    else:
+        return None
+
+
+def insert_user_into_db(userobj):
+    """
+    This function performs an insertion into the users DB and returns True
+    if the operation was successful - and false otherwise.   
+
+    Args:
+        userobj (User object): User object with all user information to insert into DB except
+                                for id.
+
+    Returns:
+        Boolean
+
+    """   
+    try:
+        session = establish_connection()   # Need to update this to first check for global session, same for functions above
+        categories = ','.join(userobj.categories)
+        channels = ','.join(userobj.channels)
+        values = f""" VALUES ('{userobj.username}','{categories}','{channels}',UUID(),'{userobj.password}')"""
+        prepend = "INSERT INTO summaries.users (username, categories, channels, id, password)"
+        result = session.execute(prepend+values)
+        return True
+    except:
+        return False

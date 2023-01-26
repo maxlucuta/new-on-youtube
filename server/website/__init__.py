@@ -4,7 +4,8 @@ from flask_login import LoginManager
 from website.views import views_blueprint
 from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
-from website.models import query_db, User
+from website.utilities.database import query_users_db
+from website.utilities.users import User
 
 def create_app():
     app = Flask(__name__)
@@ -16,10 +17,8 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        user = query_db('SELECT * FROM users WHERE id = ?', [int(user_id)], one=True)
-        if not user:
-            return None
-        return User(user['id'], user['username'], user['password'])
+        user = query_users_db(user_id=user_id)
+        return user if user else None
 
     cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
