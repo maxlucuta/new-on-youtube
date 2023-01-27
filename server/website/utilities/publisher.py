@@ -10,7 +10,7 @@ def publisher_connect():
         Publisher: Obj, connection to publisher client
         and an instance of the publisher session.
     """
-    environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./pubsub_privatekey.json"
+    environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./website/utilities/pubsub_privatekey.json"
     publisher = pubsub.PublisherClient()
     return publisher
 

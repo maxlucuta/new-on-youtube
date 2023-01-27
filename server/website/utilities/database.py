@@ -8,7 +8,7 @@ Date: 19. Januar 2023
 """
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
-from publisher import create_task
+from .publisher import create_task
 
 
 def database_request():
@@ -88,7 +88,3 @@ def insert_into_DB(video_dict, session):
     except:
         return False
 
-
-if __name__ == "__main__":
-    session = establish_connection()
-    query_yt_videos("harry potter", 3, session)

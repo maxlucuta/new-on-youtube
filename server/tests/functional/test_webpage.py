@@ -1,5 +1,4 @@
-import pytest
-import json
+import pytest, json, threading
 from website import create_app
 
 @pytest.fixture(scope='module')
@@ -153,8 +152,6 @@ def test_get_method_5(test_client):
     response = test_client.post("/request", data = test_query)
     error_codes = json.loads(response.data)
 
-    print(error_codes)
-
     description = error_codes.get('ERROR')
     status_code = error_codes.get('STATUS CODE')
 
@@ -188,3 +185,5 @@ def test_get_method_6(test_client):
     
     assert len(summaries) == 2
     return
+
+    

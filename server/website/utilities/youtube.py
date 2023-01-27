@@ -1,5 +1,5 @@
 from youtube_transcript_api import YouTubeTranscriptApi
-from gpt3 import summarize_yt_script_with_gpt3
+from .gpt3 import summarize_yt_script_with_gpt3
 import googleapiclient.discovery as googleapi
 import requests, time
 
