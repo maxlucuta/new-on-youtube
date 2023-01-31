@@ -68,3 +68,94 @@ def generate_transcript(key):
         final_transcript.append(word)
     
     return " ".join(final_transcript)
+
+def parse_video_endpoint_response(response):
+    """ Parses the 'items' list in the response returned by the YouTube API 
+    'Videos:list' endpoint, including treating missing values. This is used as 
+    a helper function by multiple functions that call this endpoint. 
+    
+    Args:
+        response: dict -> a dict containing a YouTube video.list API response.
+        
+    Returns:
+        parsed_item_details: [{dict}] -> A list of flattened dicts 
+        containing information for each video item. 
+    """
+    parsed_item_details = []
+    
+    for response_item in response["items"]:
+        video_id = response_item["id"]
+        
+        video_overview = response_item.get("snippet", {})
+        content_details = response_item.get("contentDetails", {})
+        topics = response_item.get("topicDetails", {})
+        statistics = response_item.get("statistics", {})
+        
+        item_details = {'video_id': video_id,
+                        'video_name' : video_overview.get('title'),
+                        'channel_id' : video_overview.get('channelId'),
+                        'channel_name' : video_overview.get('channelTitle'),
+                        'video_description' : video_overview.get('description'),
+                        'video_tags' : video_overview.get('tags', []),
+                        'published_at' : video_overview.get('publishedAt'),
+                        'video_topics' : topics.get('topicCategories', []),
+                        'views' : statistics.get('viewCount'),
+                        'likes' : statistics.get('likeCount'),
+                        'quality' : content_details.get('definition'),
+                        'duration' : content_details.get('duration')
+                        }
+        parsed_item_details.append(item_details)
+        
+    return parsed_item_details
+    
+
+def get_video_information_by_id(video_ids):
+    """ Calls the YouTube API 'Videos:list' endpoint to retreive information 
+    on a specified list of videos, returning the processed information in a 
+    format to be consumed by database.py.
+    
+    Args:
+        video_ids: list -> a list of YouTube video ids (maximum 50).
+        
+    Returns:
+        [{dict}] -> A list of flattened dicts containing information for 
+        each video item in the response.
+    """
+    global youtube
+    
+    information_sections = ["snippet", "contentDetails", "statistics",
+                            "topicDetails"]
+    
+    number_videos = len(video_ids)
+    request = youtube.videos().list(part = ",".join(information_sections), 
+                                    id = ",".join(video_ids), 
+                                    regionCode = "gb",
+                                    maxResults = number_videos)
+    response = request.execute()
+        
+    return parse_video_endpoint_response(response)
+
+
+def get_charting_video_information(result_num):
+    """ Calls the YouTube API video.list endpoint to retreive information on
+    currently charting videos (i.e. those shown on the trending page).
+    Currently accepts a maximum of 50 IDs.
+    
+    Args:
+        result_num: int -> number of videos to return (maximum 50).
+        
+    Returns:
+        [{dict}] -> A list of flattened dicts containing information for 
+        each video item.
+    """
+    global youtube
+    
+    information_sections = ["snippet", "contentDetails", "statistics",
+                            "topicDetails"]
+
+    request = youtube.videos().list(part = ",".join(information_sections),
+                                    chart = "mostPopular", regionCode = "gb",
+                                    maxResults = result_num)
+    response = request.execute()
+    
+    return parse_video_endpoint_response(response)
