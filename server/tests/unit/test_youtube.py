@@ -22,7 +22,7 @@ def test_youtube_api():
 def test_youtube_video_endpoint_by_id():
     
     video_ids = ["DbqPrMTrQHc", "YOts1Crp21A", "BYVZh5kqaFg"]
-    response = get_video_information_by_id(video_ids)
+    response = yt.get_video_information_by_id(video_ids)
 
     for data in response:
         ## Test mandatory response data is not None
@@ -34,7 +34,7 @@ def test_youtube_video_endpoint_by_id():
 def test_youtube_video_endpoint_charts():
     
     count = 3
-    response = get_charting_video_information(count)
+    response = yt.get_charting_video_information(count)
 
     for data in response:
         ## Test mandatory response data is not None
