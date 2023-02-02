@@ -8,7 +8,7 @@ from website.utilities.database import query_users_db
 from website.utilities.users import User
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='../../client/build')
     app.secret_key = "3ce02ed1f5e5d521adaf7ffca7a05703"
 
     login_manager = LoginManager()
