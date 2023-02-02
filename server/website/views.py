@@ -1,7 +1,5 @@
 import os
 from flask import Blueprint, send_from_directory
-from .utilities.database import database_request
-
 
 views_blueprint = Blueprint('views_blueprint', __name__, static_folder='../../client/build')
 
@@ -13,6 +11,3 @@ def landing_page(path):
     else:
         return send_from_directory(views_blueprint.static_folder, 'index.html')
 
-@views_blueprint.route('/database_test')
-def database_test():
-    return database_request()
