@@ -18,14 +18,6 @@ def test_home_page(test_client):
     assert response.status_code == 200
     return
 
-def test_database_test_page(test_client):
-    """ Tests if database page is working.
-    """
-    response = test_client.get('/database_test')
-    assert response.status_code == 200
-    return
-
-
 def test_get_method_1(test_client):
     """Tests POST request response is valid.
 
@@ -186,4 +178,10 @@ def test_get_method_6(test_client):
     assert len(summaries) == 2
     return
 
-    
+def test_login_required_pages_when_logged_out(test_client):
+    """ Tests if pages requiring login are inaccessible when no user is logged in. Expecting
+        a redirect.
+    """
+    response = test_client.get('/welcome')
+    assert response.status_code == 302
+    return
