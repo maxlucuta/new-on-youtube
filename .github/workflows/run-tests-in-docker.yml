@@ -4,6 +4,7 @@ on: [push]
 
 jobs:
   run_all_tests:
+    name: Run all tests
     runs-on: ubuntu-latest
     steps:
       - name: Check out respository code
@@ -14,3 +15,4 @@ jobs:
 
       - name: Run tests inside Docker container
         run: docker run testing_image pytest
+

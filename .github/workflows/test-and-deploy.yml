@@ -1,9 +1,24 @@
-name: Deploy to heroku
-run-name: ${{ github.actor }} deploying to heroku following commit
-on: [push]
+name: Run all tests and deploy to heroku
+run-name: ${{ github.actor }} running all tests and deploying to heroku following commit
+on: [push] # Limit to main only
 
 jobs:
-  build:
+  run_all_tests:
+    name: Run all tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out respository code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t testing_image .
+
+      - name: Run tests inside Docker container
+        run: docker run testing_image pytest
+
+  deploy-to-heroku:
+    needs: run_all_tests
+    name: Deploy to Heroku
     runs-on: ubuntu-latest
     steps:
       - name: Check out respository code
