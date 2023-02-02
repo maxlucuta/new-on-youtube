@@ -1,0 +1,32 @@
+name: Deploy to heroku
+run-name: ${{ github.actor }} deploying to heroku following commit
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out respository code
+        uses: actions/checkout@v3
+        
+      - name: Build, Push and Release a Docker container to Heroku
+        uses: gonuit/heroku-docker-deploy@v1.3.3
+        with:
+          #email: ${{ secrets.HEROKU_EMAIL }}
+          email: jack.pearce22@imperial.ac.uk
+          
+          #heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_api_key: 39821d29-ff7a-474e-8ae3-6ae7c8268c09
+          
+          #heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_app_name: new-on-youtube
+
+          dockerfile_directory: ./
+          dockerfile_name: Dockerfile
+          docker_options: "--no-cache"
+
+          # (Optional, default: "web")
+          # Select the process type for which you want the docker container to be uploaded.
+          # By default, this argument is set to "web".
+          # For more information look at https://devcenter.heroku.com/articles/process-model
+          process_type: web
