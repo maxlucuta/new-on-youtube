@@ -2,9 +2,6 @@ import pytest
 from website.utilities import database as db
 from website.utilities.users import User
 
-def test_will_fail():
-    assert(1 == 2)
-    
 def test_no_user_in_db():
     """Tests db query response for incorrect username.
 

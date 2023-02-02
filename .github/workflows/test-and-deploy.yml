@@ -1,6 +1,9 @@
 name: Run all tests and deploy to heroku
 run-name: ${{ github.actor }} running all tests and deploying to heroku
-on: [push] # Limit to main only
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
   run_all_tests:
