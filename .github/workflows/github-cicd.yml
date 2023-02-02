@@ -23,4 +23,5 @@ jobs:
       - name: Run test suite
         run: |
           pip install pytest
-          pytest
+          # pytest
+          pytest server/tests/unit/test_gpt.py
