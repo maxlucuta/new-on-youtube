@@ -52,12 +52,15 @@ def query_yt_videos(keyword, k, session):
     Returns:
         [dict]
 
-    """   
-    query = session.execute(f"select * from summaries.video_summaries where keyword = '{keyword}' limit {k}").all()
+    """
+    query = session.execute(
+        f"select * from summaries.video_summaries where keyword = '{keyword}' limit {k}").all()
     if query:
-        result = [{'video_title': x.video_title, 'channel_name': x.channel_name, 'summary': x.summary} for x in query]
+        result = [{'video_title': x.video_title,
+                   'channel_name': x.channel_name, 'summary': x.summary} for x in query]
         return result
     else:
+        create_task(keyword, str(k))
         return [{"ERROR": "Query failed"}]
 
 
@@ -75,13 +78,13 @@ def insert_into_DB(video_dict, session):
     Returns:
         Boolean
 
-    """   
-    try: 
+    """
+    try:
         values = f""" VALUES ('{video_dict["keyword"]}', '{video_dict["video_title"]}', '{video_dict["channel_name"]}', '{video_dict["summary"]}')"""
         prepend = "INSERT INTO summaries.video_summaries (keyword, video_title, channel_name, summary)"
         result = session.execute(prepend+values)
         return True
-    except: 
+    except:
         return False
 
 

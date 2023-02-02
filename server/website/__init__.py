@@ -6,9 +6,11 @@ from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
 from website.utilities.database import query_users_db
 from website.utilities.users import User
+from website.utilities.subscriber import process_tasks
+from threading import Thread
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder='../../client/build')
     app.secret_key = "3ce02ed1f5e5d521adaf7ffca7a05703"
 
     login_manager = LoginManager()
@@ -26,5 +28,7 @@ def create_app():
     app.register_blueprint(views_blueprint)
     app.register_blueprint(request_blueprint)
     app.register_blueprint(auth_blueprint)
+
+    Thread(name="background", target=process_tasks, daemon=True).start()
 
     return app

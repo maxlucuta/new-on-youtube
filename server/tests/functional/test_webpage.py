@@ -1,5 +1,4 @@
-import pytest
-import json
+import pytest, json, threading
 from website import create_app
 
 @pytest.fixture(scope='module')
@@ -20,7 +19,7 @@ def test_home_page(test_client):
     return
 
 def test_get_method_1(test_client):
-    """Tests GET request response is valid.
+    """Tests POST request response is valid.
 
     Args:
         URL Query: topic = tennis, amount = 1
@@ -32,7 +31,8 @@ def test_get_method_1(test_client):
     Raises:
         Assertion error.
     """
-    response = test_client.get('/request?topic=tennis&amount=1')
+    test_query = {'topic':'tennis', 'amount':'1'}
+    response = test_client.post("/request", data = test_query)
     summaries = json.loads(response.data)
     
     for summary in summaries:
@@ -45,7 +45,7 @@ def test_get_method_1(test_client):
     return
 
 def test_get_method_2(test_client):
-    """Tests GET request response is correct for
+    """Tests POST request response is correct for
        an invalid request.
 
     Args:
@@ -59,7 +59,8 @@ def test_get_method_2(test_client):
     Raises:
         Assertion error.
     """
-    response = test_client.get('/request?topic=football')
+    test_query = {'topic':'football'}
+    response = test_client.post("/request", data = test_query)
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -72,7 +73,7 @@ def test_get_method_2(test_client):
 
 
 def test_get_method_3(test_client):
-    """Tests GET request response is correct for
+    """Tests POST request response is correct for
        an invalid request.
 
     Args:
@@ -86,7 +87,8 @@ def test_get_method_3(test_client):
     Raises:
         Assertion error.
     """
-    response = test_client.get('/request?amount=1')
+    test_query = {'amount':'1'}
+    response = test_client.post("/request", data = test_query)
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -98,7 +100,7 @@ def test_get_method_3(test_client):
     return
 
 def test_get_method_4(test_client):
-    """Tests GET request response is correct for
+    """Tests POST request response is correct for
        an invalid request.
 
     Args:
@@ -112,7 +114,7 @@ def test_get_method_4(test_client):
     Raises:
         Assertion error.
     """
-    response = test_client.get('/request')
+    response = test_client.post("/request")
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -124,7 +126,7 @@ def test_get_method_4(test_client):
     return 
 
 def test_get_method_5(test_client):
-    """Tests GET request response is correct for
+    """Tests POST request response is correct for
        an invalid request.
 
     Args:
@@ -138,10 +140,9 @@ def test_get_method_5(test_client):
     Raises:
         Assertion error.
     """
-    response = test_client.get('/request?topic=football&amount=0')
+    test_query = {'topic':'football', 'amount':'0'}
+    response = test_client.post("/request", data = test_query)
     error_codes = json.loads(response.data)
-
-    print(error_codes)
 
     description = error_codes.get('ERROR')
     status_code = error_codes.get('STATUS CODE')
@@ -152,7 +153,7 @@ def test_get_method_5(test_client):
     return
     
 def test_get_method_6(test_client):
-    """Tests GET request response is valid.
+    """Tests POST request response is valid.
 
     Args:
         URL Query: topic = cars, amount = 2
@@ -164,7 +165,8 @@ def test_get_method_6(test_client):
     Raises:
         Assertion error.
     """
-    response = test_client.get('/request?topic=cars&amount=2')
+    test_query = {'topic':'cars', 'amount':'2'}
+    response = test_client.post("/request", data = test_query)
     summaries = json.loads(response.data)
 
     for summary in summaries:
