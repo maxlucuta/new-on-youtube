@@ -28,7 +28,7 @@ def establish_connection():
 
     """
     if os.environ.get('IN_DOCKER_CONTAINER', False):
-        cloud_config= {'secure_connect_bundle': '/server/website/utilities/secure-connect-yapp-db.zip'}
+       cloud_config= {'secure_connect_bundle': '/website/utilities/secure-connect-yapp-db.zip'}
     else:    
         cloud_config= {'secure_connect_bundle': '/workspaces/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM', 

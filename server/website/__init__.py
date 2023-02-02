@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_cors import CORS, cross_origin
 from flask_login import LoginManager
@@ -10,7 +11,10 @@ from website.utilities.subscriber import process_tasks
 from threading import Thread
 
 def create_app():
-    app = Flask(__name__, static_folder='../../client/build')
+    if os.environ.get('IN_DOCKER_CONTAINER', False):
+        app = Flask(__name__, static_folder='../static', static_url_path='/')
+    else:
+        app = Flask(__name__, static_folder='../../client/build')
     app.secret_key = "3ce02ed1f5e5d521adaf7ffca7a05703"
 
     login_manager = LoginManager()
