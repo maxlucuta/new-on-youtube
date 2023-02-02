@@ -2,8 +2,6 @@ import os
 from flask import Blueprint, send_from_directory
 from .utilities.database import database_request
 
-""" These can be split when they either get too big or we want to make 
-    it easier to work in separate files"""
 
 views_blueprint = Blueprint('views_blueprint', __name__, static_folder='../../client/build')
 

@@ -1,4 +1,7 @@
 __pycache__/
 
-server/venv
 client/node_modules
+__pycache__
+*.pyc
+**/node_modules
+*.log
