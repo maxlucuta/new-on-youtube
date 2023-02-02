@@ -6,6 +6,7 @@ Author: Alexander Arzt (ata122@ic.ac.uk)
 Date: 19. Januar 2023
 
 """
+import os
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
 from flask import abort
@@ -25,8 +26,11 @@ def establish_connection():
         Return a instance of the Cluster class - which is an 
         abstraction for the connection to the DB.
 
-    """    
-    cloud_config= {'secure_connect_bundle': '/workspaces/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
+    """
+    if os.environ.get('IN_DOCKER_CONTAINER', False):
+        cloud_config= {'secure_connect_bundle': '/server/website/utilities/secure-connect-yapp-db.zip'}
+    else:    
+        cloud_config= {'secure_connect_bundle': '/workspaces/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM', 
                                           '9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_bLyL9oCRlqfZ5bcIR-Bz2mMd3tcA05PXx_TZ_JcoCYZpRyD0SSZsS.Zt02jvzUmLU9F0+iA+6HYd0mY5wd61D8vQv8q+_-eKGU')
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)

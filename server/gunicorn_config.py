@@ -12,5 +12,5 @@ reload = True
 
 # Logging
 loglevel = "debug"
-accesslog = "std_out.log"
-errorlog = "err.log"
+accesslog = "stdout.log"
+errorlog = "stderr.log"
