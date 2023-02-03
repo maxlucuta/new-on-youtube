@@ -22,3 +22,7 @@ def test_gpt_api():
 
     assert len(summary) < len(text)
 
+
+
+
+

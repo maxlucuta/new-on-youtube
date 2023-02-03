@@ -8,7 +8,7 @@ API_KEY = "AIzaSyCEYn_Co51eJlG5sCbzVbPQ9HQn-RHxRms"
 youtube = googleapi.build("youtube", "v3", developerKey = API_KEY)
 
 
-def get_most_popular_video_transcripts_by_topic(topic, result_num):
+def get_most_popular_video_transcripts_by_topic(topic, result_num, fast_summarizer=False):
     """ Calls youtube data api to fetch metadata for videos of
         the specific topic, returning processed data to be 
         stored in models.py database.
@@ -45,7 +45,7 @@ def get_most_popular_video_transcripts_by_topic(topic, result_num):
                                            'channel_name' : channel_name,
                                            'summary' : summary})
         
-        time.sleep(5)
+        if not fast_summarizer: time.sleep(5)
 
     return formatted_request_response
 
