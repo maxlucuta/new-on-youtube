@@ -1,6 +1,5 @@
 import pytest
 from website.utilities import gpt3
-from website.utilities import summarizer as s
 
 INSTRUCTION = "Please summarise this text for me in a few sentences: "
 SUFFIX = "\n\ntl;dr"
