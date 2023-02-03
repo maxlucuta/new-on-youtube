@@ -1,5 +1,6 @@
 import pytest
 from website.utilities import gpt3
+from website.utilities import summarizer as s
 
 INSTRUCTION = "Please summarise this text for me in a few sentences: "
 SUFFIX = "\n\ntl;dr"
@@ -21,4 +22,8 @@ def test_gpt_api():
     summary = gpt3.summarize_yt_script_with_gpt3(to_process)
 
     assert len(summary) < len(text)
+
+
+
+
 
