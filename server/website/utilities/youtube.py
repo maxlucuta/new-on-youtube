@@ -60,16 +60,19 @@ def generate_transcript(key):
         Returns:
             transcript: string -> transcript for the video.
     """
-    raw_transcript = YouTubeTranscriptApi.get_transcript(key)
-    final_transcript = []
-
-    for text in raw_transcript:
-        word = text.get('text')
-        if not word or word == '[Music]':
-            continue
-        final_transcript.append(word)
+    try:
+        raw_transcript = YouTubeTranscriptApi.get_transcript(key, languages=['en', 'en-GB'])
+        final_transcript = []
     
-    return " ".join(final_transcript)
+        for text in raw_transcript:
+            word = text.get('text')
+            if not word or word == '[Music]':
+                continue
+            final_transcript.append(word)
+        return " ".join(final_transcript)
+    
+    except YouTubeTranscriptApi.NoTranscriptFound:
+        return ""
 
 def parse_video_endpoint_response(response):
     """ Parses the 'items' list in the response returned by the YouTube API 
