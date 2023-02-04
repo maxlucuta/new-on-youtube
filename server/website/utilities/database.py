@@ -144,7 +144,7 @@ def insert_user_into_db(userobj):
         Boolean
 
     """
-    if not userobj is User or not userobj.username or not userobj.password:
+    if not type(userobj) is User or not userobj.username or not userobj.password:
         return False  
     try:
         session = establish_connection()   # Need to update this to first check for global session, same for functions above
