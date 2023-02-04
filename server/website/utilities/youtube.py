@@ -141,13 +141,11 @@ def parse_video_endpoint_response(response_item):
                     'video_name' : video_overview.get('title'),
                     'channel_id' : video_overview.get('channelId'),
                     'channel_name' : video_overview.get('channelTitle'),
-                    'video_description' : video_overview.get('description'),
                     'video_tags' : video_overview.get('tags', []), 
                     'published_at' : video_overview.get('publishedAt'),
                     'video_topics' : topics.get('topicCategories', []),
                     'views' : statistics.get('viewCount'),
                     'likes' : statistics.get('likeCount'),
-                    'quality' : content_details.get('definition'),
                     'duration' : content_details.get('duration')
                     }
 
