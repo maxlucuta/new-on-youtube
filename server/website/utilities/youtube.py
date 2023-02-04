@@ -59,6 +59,9 @@ def get_most_popular_video_transcripts_by_topic(topic, videos_requested, fast_su
         i = len(video_ids) - max_requests
         results.extend(get_video_information_by_id(video_ids[i:], fast_summarizer, include_summary, pause_length))
         del video_ids[i:]
+
+    for result in results:
+        result['keyword'] = topic
     
     return results
 
@@ -126,6 +129,7 @@ def parse_video_endpoint_response(response_item):
         parsed_item_details: [{dict}] -> A list of flattened dicts 
         containing information for each video item. 
     """
+
     video_id = response_item["id"]
         
     video_overview = response_item.get("snippet", {})
@@ -206,28 +210,3 @@ def get_video_information_by_id(video_ids, fast_summarizer, include_summary, pau
         full_video_information.append(video_information)
             
     return full_video_information
-
-
-def get_charting_video_information(result_num):
-    """ Calls the YouTube API video.list endpoint to retreive information on
-    currently charting videos (i.e. those shown on the trending page).
-    Currently accepts a maximum of 50 IDs.
-    
-    Args:
-        result_num: int -> number of videos to return (maximum 50).
-        
-    Returns:
-        [{dict}] -> A list of flattened dicts containing information for 
-        each video item.
-    """
-    global youtube
-    
-    information_sections = ["snippet", "contentDetails", "statistics",
-                            "topicDetails"]
-
-    request = youtube.videos().list(part = ",".join(information_sections),
-                                    chart = "mostPopular", regionCode = "gb",
-                                    maxResults = result_num)
-    response = request.execute()
-    
-    return parse_video_endpoint_response(response)
