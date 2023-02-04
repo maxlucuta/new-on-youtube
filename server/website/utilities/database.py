@@ -79,9 +79,10 @@ def insert_into_DB(video_dict, session):
         Boolean
 
     """
+    vid_tags = ','.join(video_dict["video_tags"])
+    values = f""" VALUES ('{video_dict["keyword"]}', '{video_dict["video_name"]}', '{video_dict["channel_name"]}', '{video_dict["summary"]}', '{vid_tags}', {int(video_dict["views"])}, {int(video_dict["likes"])}, '{video_dict["published_at"]}')"""
+    prepend = "INSERT INTO summaries.video_summaries (keyword, video_title, channel_name, summary, video_tags, views, likes, published_at)"
     try:
-        values = f""" VALUES ('{video_dict["keyword"]}', '{video_dict["video_title"]}', '{video_dict["channel_name"]}', '{video_dict["summary"]}')"""
-        prepend = "INSERT INTO summaries.video_summaries (keyword, video_title, channel_name, summary)"
         result = session.execute(prepend+values)
         return True
     except:
