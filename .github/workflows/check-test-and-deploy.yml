@@ -30,7 +30,7 @@ jobs:
         run: docker run testing_image pytest tests/
 
   deploy-to-heroku:
-    needs: run_all_tests
+    needs: [run_linting_check, run_all_tests]
     name: Deploy to Heroku
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
