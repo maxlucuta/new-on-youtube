@@ -10,6 +10,9 @@ jobs:
       - name: Check out respository code
         uses: actions/checkout@v3
 
+      - name: Install flake8
+        run: pip3 install flake8
+
       - name: Run linting checks
         run: python3 -m flake8 server/
 
