@@ -55,8 +55,8 @@ def get_most_popular_video_transcripts_by_topic(
             videos_to_request = remaining_videos
 
         current_request = get_search_endpoint_ids(topic,
-                                                  videos_to_request,
-                                                  next_page)
+                                                videos_to_request,
+                                                next_page)
         video_ids.extend(current_request['video_ids'])
         next_page = current_request.get('next_page')
         remaining_videos -= max_requests
@@ -68,17 +68,17 @@ def get_most_popular_video_transcripts_by_topic(
     while video_ids:
         i = len(video_ids) - max_requests
         results.extend(get_video_information_by_id(video_ids[i:],
-                                                   fast_summarizer,
-                                                   include_summary,
-                                                   pause_length))
+                                                fast_summarizer,
+                                                include_summary,
+                                                pause_length))
         del video_ids[i:]
 
     for result in results:
         result['keyword'] = topic
 
     return results
-
-
+    
+    
 def get_search_endpoint_ids(topic, num_videos, page_token):
     """Gets video IDs for a given topic from the YouTube
     Videos:List API endpoint. Accepts a 'page_token' parameter to
