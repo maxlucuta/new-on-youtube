@@ -4,8 +4,23 @@ on:
   push:
     branches:
       - main
+      - continuous-deployment
 
 jobs:
+  run_linting_check:
+    name: Run linting check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out respository code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t linting_image .
+
+      - name: Run tests inside Docker container
+        run: docker run linting_image flake8 .
+
+
   run_all_tests:
     name: Run all tests
     runs-on: ubuntu-latest
