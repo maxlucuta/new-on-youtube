@@ -1,6 +1,7 @@
 from website.utilities import youtube as yt
 import googleapiclient.errors as googleapi_errors
 
+
 def test_youtube_api():
     """Test YouTube API methods are correctly
        processing requests.
