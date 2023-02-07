@@ -1,10 +1,5 @@
 name: Run all tests and deploy to heroku
-run-name: ${{ github.actor }} running all tests and deploying to heroku
-on: 
-  push:
-    branches:
-      - main
-      - continuous-deployment
+run-name: ${{ github.actor }} running pipeline from ${{ github.ref_name }} branch
 
 jobs:
   run_linting_check:
@@ -14,12 +9,8 @@ jobs:
       - name: Check out respository code
         uses: actions/checkout@v3
 
-      - name: Build Docker image
-        run: docker build -t linting_image .
-
-      - name: Run tests inside Docker container
-        run: docker run linting_image flake8 .
-
+      - name: Run linting checks
+        run: python3 -m flake8 server/
 
   run_all_tests:
     name: Run all tests
@@ -38,6 +29,7 @@ jobs:
     needs: run_all_tests
     name: Deploy to Heroku
     runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
     steps:
       - name: Check out respository code
         uses: actions/checkout@v3
