@@ -1,14 +1,13 @@
 import os
 from flask import Flask
-from flask_cors import CORS, cross_origin
 from flask_login import LoginManager
 from website.views import views_blueprint
 from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
 from website.utilities.database import query_users_db
-from website.utilities.users import User
 from website.utilities.subscriber import process_tasks
 from threading import Thread
+
 
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
@@ -26,7 +25,6 @@ def create_app():
         user = query_users_db(user_id=user_id)
         return user if user else None
 
-    cors = CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
 
     app.register_blueprint(views_blueprint)

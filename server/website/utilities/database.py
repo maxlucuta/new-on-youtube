@@ -1,5 +1,5 @@
 """
-This file contains all functions related to database operations for the 
+This file contains all functions related to database operations for the
 applications Apache Cassandra DB hosted on AWS.
 
 Author: Alexander Arzt (ata122@ic.ac.uk)
@@ -23,16 +23,22 @@ def establish_connection():
         None
 
     Returns:
-        Return a instance of the Cluster class - which is an 
+        Return a instance of the Cluster class - which is an
         abstraction for the connection to the DB.
 
     """
     if os.environ.get('IN_DOCKER_CONTAINER', False):
-       cloud_config= {'secure_connect_bundle': '/website/utilities/secure-connect-yapp-db.zip'}
-    else:    
-        cloud_config= {'secure_connect_bundle': '/workspaces/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
-    auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM', 
-                                          '9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_bLyL9oCRlqfZ5bcIR-Bz2mMd3tcA05PXx_TZ_JcoCYZpRyD0SSZsS.Zt02jvzUmLU9F0+iA+6HYd0mY5wd61D8vQv8q+_-eKGU')
+        cloud_config = {'secure_connect_bundle':
+                        '/website/utilities/secure-connect-yapp-db.zip'}
+    else:
+        cloud_config = {'secure_connect_bundle':
+                        ("/workspaces/new-on-youtube/server/website/"
+                         "utilities/secure-connect-yapp-db.zip")}
+    auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM',
+                                          ("9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_"
+                                           "bLyL9oCRlqfZ5bcIR-Bz2mMd3tcA05PXx_"
+                                           "TZ_JcoCYZpRyD0SSZsS.Zt02jvzUmLU9F0"
+                                           "+iA+6HYd0mY5wd61D8vQv8q+_-eKGU"))
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
     session = cluster.connect()
     return session
@@ -40,13 +46,13 @@ def establish_connection():
 
 def query_yt_videos(keyword, k, session):
     """
-    This function performs a query on the DB and returns a list of  
-    dictionaries (video_title, channel_name, summary) - each belonging 
+    This function performs a query on the DB and returns a list of
+    dictionaries (video_title, channel_name, summary) - each belonging
     to one of the top k-ranked YT videos.
 
     Args:
         keyword (string): The keyword which is used to tag the videos
-        k (int): The first k ranked videos. 
+        k (int): The first k ranked videos.
         session (cassandra.cluster.Cluster): The connection object to the DB
 
     Returns:
@@ -54,24 +60,28 @@ def query_yt_videos(keyword, k, session):
 
     """
     query = session.execute(
-        f"select * from summaries.video_summaries where keyword = '{keyword}' limit {k}").all()
+        f"""select * from summaries.video_summaries where
+            keyword = '{keyword}' limit {k}""").all()
     if query:
         result = [{'video_title': x.video_title,
-                   'channel_name': x.channel_name, 'summary': x.summary} for x in query]
+                   'channel_name': x.channel_name,
+                   'summary': x.summary} for x in query]
         return result
     else:
-        create_task(keyword, str(k))
+        # create_task(keyword, str(k))
         return [{"ERROR": "Query failed"}]
 
 
 def insert_into_DB(video_dict, session):
     """
     This function performs an insertion into the DB and returns True
-    if the operation was successful - and false otherwise.   
+    if the operation was successful - and false otherwise.
 
     Args:
-        video_dict (dict): A dictionary containing the keys: {'keyword','video_title', 'channel_name', 'summary'}
-                           and the correspoding values must all be of type string. 
+        video_dict (dict): A dictionary containing the keys:
+                           {'keyword','video_title', 'channel_name',
+                           'summary'} and the correspoding values must
+                           all be of type string.
 
         session (cassandra.cluster.Cluster): The connection object to the DB
 
@@ -80,19 +90,31 @@ def insert_into_DB(video_dict, session):
 
     """
     vid_tags = ','.join(video_dict["video_tags"])
-    values = f""" VALUES ('{video_dict["keyword"]}', '{video_dict["video_name"]}', '{video_dict["channel_name"]}', '{video_dict["summary"]}', '{vid_tags}', {int(video_dict["views"])}, {int(video_dict["likes"])}, '{video_dict["published_at"]}')"""
-    prepend = "INSERT INTO summaries.video_summaries (keyword, video_title, channel_name, summary, video_tags, views, likes, published_at)"
+    values = f""" VALUES ('{video_dict["keyword"]}',
+                          '{video_dict["video_name"]}',
+                          '{video_dict["channel_name"]}',
+                          '{video_dict["summary"]}',
+                          '{vid_tags}',
+                          {int(video_dict["views"])},
+                          {int(video_dict["likes"])},
+                          '{video_dict["published_at"]}')"""
+    prepend = """INSERT INTO summaries.video_summaries (keyword,
+                 video_title, channel_name, summary, video_tags, views,
+                 likes, published_at)"""
     try:
-        result = session.execute(prepend+values)
+        # result = session.execute(prepend+values)
+        # Need to use result for error handling
+        session.execute(prepend+values)
         return True
-    except:
+    except Exception:
         return False
 
 
 def query_users_db(username=None, user_id=None):
     """
-    This function performs a query on the users DB based on either the username or user_id of a 
-    user and returns a User object if the user is present in the DB. Both username and user_id are
+    This function performs a query on the users DB based on either
+    the username or user_id of a user and returns a User object if
+    the user is present in the DB. Both username and user_id are
     possible arguments as both should be unique in the DB.
 
     Args:
@@ -102,31 +124,41 @@ def query_users_db(username=None, user_id=None):
         User object
 
     Raises:
-        HTTPException 500 if no valid search terms were passed as arguments or there are 
-        multiple users in the DB with the same username.
-    """   
+        HTTPException 500 if no valid search terms were passed as arguments
+        or there are multiple users in the DB with the same username.
+    """
     if not username and not user_id:
         return None
 
-    session = establish_connection()   # Need to update this to first check for global session, same for functions above
-    
+    session = establish_connection()
+    # Need to update this to first check for global session
+    # Same for functions higher up
+
     if username:
-        query = session.execute(f"select * from summaries.users where username = '{username}'").all()
+        query = session.execute(f"""select * from summaries.users
+                                    where username = '{username}'""").all()
     else:
         try:
             UUID(str(user_id))
         except ValueError:
             return None
-        query = session.execute(f"select * from summaries.users where id = {user_id} allow filtering").all()
-    
+        query = session.execute(f"""select * from summaries.users where
+                                 id = {user_id} allow filtering""").all()
+
     if len(query) > 1:
         abort(500)
-    
+
     if query:
         query = query[0]
-        categories = [x.strip() for x in query.categories.replace(';',',').split(",")]
-        channels = [x.strip() for x in query.channels.replace(';',',').split(",")]
-        userobj = User(query.id, query.username, query.password, categories, channels)
+        categories = [x.strip() for x in
+                      query.categories.replace(';', ',').split(",")]
+        channels = [x.strip() for x in
+                    query.channels.replace(';', ',').split(",")]
+        userobj = User(query.id,
+                       query.username,
+                       query.password,
+                       categories,
+                       channels)
         return userobj
     else:
         return None
@@ -135,25 +167,34 @@ def query_users_db(username=None, user_id=None):
 def insert_user_into_db(userobj):
     """
     This function performs an insertion into the users DB and returns True
-    if the operation was successful - and false otherwise.   
+    if the operation was successful - and false otherwise.
 
     Args:
-        userobj (User object): User object with all user information to insert into DB except
-                                for id.
+        userobj (User object): User object with all user information to
+        insert into DB except for id.
 
     Returns:
         Boolean
 
     """
-    if not type(userobj) is User or not userobj.username or not userobj.password:
-        return False  
+    if not type(userobj) is User or \
+       not userobj.username or \
+       not userobj.password:
+        return False
     try:
-        session = establish_connection()   # Need to update this to first check for global session, same for functions above
+        session = establish_connection()
+        # Need to update the above to first check for global session
+        # Same for functions higher up
         categories = ','.join(userobj.categories)
         channels = ','.join(userobj.channels)
-        values = f""" VALUES ('{userobj.username}','{categories}','{channels}',UUID(),'{userobj.password}')"""
-        prepend = "INSERT INTO summaries.users (username, categories, channels, id, password)"
-        result = session.execute(prepend+values)
+        values = f""" VALUES ('{userobj.username}',
+                      '{categories}','{channels}',
+                      UUID(),'{userobj.password}')"""
+        prepend = """INSERT INTO summaries.users
+                     (username, categories, channels, id, password)"""
+        # result = session.execute(prepend+values)
+        # Need to use result for error handling
+        session.execute(prepend+values)
         return True
-    except:
+    except Exception:
         return False

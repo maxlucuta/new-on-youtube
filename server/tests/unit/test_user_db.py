@@ -1,6 +1,6 @@
-import pytest 
 from website.utilities import database as db
 from website.utilities.users import User
+
 
 def test_no_user_in_db():
     """Tests db query response for incorrect username.
@@ -14,9 +14,11 @@ def test_no_user_in_db():
     Raises:
         Assertion error.
     """
-    assert(db.query_users_db(username='ThisCouldNotPossiblyBeAValidUserName') is None)
-    assert(db.query_users_db(user_id=1) is None)
-    assert(db.query_users_db() is None)
+    assert (db.query_users_db(username=
+                              'ThisCouldNotPossiblyBeAValidUserName') is None)
+    assert (db.query_users_db(user_id=1) is None)
+    assert (db.query_users_db() is None)
+
 
 def test_user_query_return_type():
     """Tests db query response for correct username.
@@ -30,8 +32,9 @@ def test_user_query_return_type():
     Raises:
         Assertion error.
     """
-    assert(isinstance(db.query_users_db(username='devuser4'), User))
+    assert (isinstance(db.query_users_db(username='devuser4'), User))
     return
+
 
 def test_invalid_insert_into_users_db():
     """Tests db insert request response for invalid insertion object
@@ -45,6 +48,6 @@ def test_invalid_insert_into_users_db():
     Raises:
         Assertion error.
     """
-    assert(not db.insert_user_into_db('NotAUserObject'))
-    assert(not db.insert_user_into_db(User(1, None, None)))
+    assert (not db.insert_user_into_db('NotAUserObject'))
+    assert (not db.insert_user_into_db(User(1, None, None)))
     return
