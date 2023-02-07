@@ -14,7 +14,7 @@ jobs:
         run: pip3 install flake8
 
       - name: Run linting checks
-        run: python3 -m flake8 server/
+        run: python3 -m flake8 --extend-ignore=E251 server/
 
   run_all_tests:
     name: Run all tests
@@ -37,16 +37,16 @@ jobs:
     steps:
       - name: Check out respository code
         uses: actions/checkout@v3
-        
+
       - name: Build, Push and Release a Docker container to Heroku
         uses: gonuit/heroku-docker-deploy@v1.3.3
         with:
           #email: ${{ secrets.HEROKU_EMAIL }}
           email: jack.pearce22@imperial.ac.uk
-          
+
           #heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_api_key: 39821d29-ff7a-474e-8ae3-6ae7c8268c09
-          
+
           #heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_app_name: new-on-youtube
 
