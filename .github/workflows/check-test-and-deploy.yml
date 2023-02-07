@@ -1,5 +1,6 @@
 name: Run all tests and deploy to heroku
 run-name: ${{ github.actor }} running pipeline from ${{ github.ref_name }} branch
+on: [push]
 
 jobs:
   run_linting_check:
