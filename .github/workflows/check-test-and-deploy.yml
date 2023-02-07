@@ -33,7 +33,7 @@ jobs:
     needs: run_all_tests
     name: Deploy to Heroku
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref_name == 'main' }}
     steps:
       - name: Check out respository code
         uses: actions/checkout@v3
