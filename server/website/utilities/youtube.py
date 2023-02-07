@@ -5,7 +5,7 @@ import time
 
 
 API_KEY = "AIzaSyCEYn_Co51eJlG5sCbzVbPQ9HQn-RHxRms"
-youtube = googleapi.build("youtube", "v3", developerKey = API_KEY)
+youtube = googleapi.build("youtube", "v3", developerKey=API_KEY)
 
 
 def get_most_popular_video_transcripts_by_topic(
@@ -94,15 +94,16 @@ def get_search_endpoint_ids(topic, num_videos, page_token):
         results: [{dict}] in the format found in models.py
 
     """
-    request = youtube.search().list(part = "snippet", q = topic,
-                                    maxResults = num_videos,
-                                    order = "viewCount",
-                                    pageToken = page_token,
-                                    type = "video",
-                                    regionCode = "gb",
-                                    safeSearch = "moderate",
-                                    videoDuration = "short",
-                                    videoCaption = "closedCaption")
+    request = youtube.search().list(part="snippet",
+                                    q=topic,
+                                    maxResults=num_videos,
+                                    order="viewCount",
+                                    pageToken=page_token,
+                                    type="video",
+                                    regionCode="gb",
+                                    safeSearch="moderate",
+                                    videoDuration="short",
+                                    videoCaption="closedCaption")
 
     response = request.execute()
 
@@ -202,10 +203,10 @@ def get_video_information_by_id(video_ids,
                             "topicDetails"]
 
     number_videos = len(video_ids)
-    request = youtube.videos().list(part = ",".join(information_sections),
-                                    id = ",".join(video_ids),
-                                    regionCode = "gb",
-                                    maxResults = number_videos)
+    request = youtube.videos().list(part=",".join(information_sections),
+                                    id=",".join(video_ids),
+                                    regionCode="gb",
+                                    maxResults=number_videos)
 
     response = request.execute()
 

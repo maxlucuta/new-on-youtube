@@ -36,7 +36,7 @@ def test_get_method_1(test_client):
         Assertion error.
     """
     test_query = {'topic': 'tennis', 'amount': '1'}
-    response = test_client.post("/request", data = test_query)
+    response = test_client.post("/request", data=test_query)
     summaries = json.loads(response.data)
 
     for summary in summaries:
@@ -65,7 +65,7 @@ def test_get_method_2(test_client):
         Assertion error.
     """
     test_query = {'topic': 'football'}
-    response = test_client.post("/request", data = test_query)
+    response = test_client.post("/request", data=test_query)
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -93,7 +93,7 @@ def test_get_method_3(test_client):
         Assertion error.
     """
     test_query = {'amount': '1'}
-    response = test_client.post("/request", data = test_query)
+    response = test_client.post("/request", data=test_query)
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -148,7 +148,7 @@ def test_get_method_5(test_client):
         Assertion error.
     """
     test_query = {'topic': 'football', 'amount': '0'}
-    response = test_client.post("/request", data = test_query)
+    response = test_client.post("/request", data=test_query)
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -174,7 +174,7 @@ def test_get_method_6(test_client):
         Assertion error.
     """
     test_query = {'topic': 'cars', 'amount': '2'}
-    response = test_client.post("/request", data = test_query)
+    response = test_client.post("/request", data=test_query)
     summaries = json.loads(response.data)
 
     for summary in summaries:

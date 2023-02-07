@@ -52,12 +52,12 @@ def summarize_yt_script_with_gpt3(yt_transcript,
    """
     openai.api_key = "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"
     response = openai.Completion.create(
-                    model = "text-davinci-003",
-                    prompt = yt_transcript,
-                    temperature = temperature,
-                    max_tokens = max_tokens,
-                    top_p = top_p,
-                    frequency_penalty = frequency_penalty,
-                    presence_penalty = presence_penalty)
+                    model="text-davinci-003",
+                    prompt=yt_transcript,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    top_p=top_p,
+                    frequency_penalty=frequency_penalty,
+                    presence_penalty=presence_penalty)
 
     return response['choices'][0]['text']

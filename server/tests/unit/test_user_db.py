@@ -14,8 +14,7 @@ def test_no_user_in_db():
     Raises:
         Assertion error.
     """
-    assert (db.query_users_db(username=
-                              'ThisCouldNotPossiblyBeAValidUserName') is None)
+    assert (db.query_users_db(username='ThisCouldNotBeAValidUserName') is None)
     assert (db.query_users_db(user_id=1) is None)
     assert (db.query_users_db() is None)
 

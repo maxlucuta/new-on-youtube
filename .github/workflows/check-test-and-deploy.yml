@@ -14,7 +14,7 @@ jobs:
         run: pip3 install flake8
 
       - name: Run linting checks
-        run: python3 -m flake8 --extend-ignore=E251 server/
+        run: python3 -m flake8 server/
 
   run_all_tests:
     name: Run all tests
