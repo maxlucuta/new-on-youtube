@@ -72,6 +72,22 @@ def query_yt_videos(keyword, k, session):
         return [{"ERROR": "Query failed"}]
 
 
+def string_cleaner(input_string):
+    """
+    This is a helper function which removes
+    quotation marks from a string in order to avoid
+    failure of DB insertion attempts.
+
+    Args:
+        input_string (str): The string to be cleaned.
+
+    Returns:
+        str: The cleaned string.
+    """
+
+    return input_string.replace("'", "").replace('"', '')
+
+
 def insert_into_DB(video_dict, session):
     """
     This function performs an insertion into the DB and returns True
@@ -90,10 +106,15 @@ def insert_into_DB(video_dict, session):
 
     """
     vid_tags = ','.join(video_dict["video_tags"])
-    values = f""" VALUES ('{video_dict["keyword"]}',
-                          '{video_dict["video_name"]}',
-                          '{video_dict["channel_name"]}',
-                          '{video_dict["summary"]}',
+    summary = string_cleaner(video_dict["summary"])
+    keyword = string_cleaner(video_dict["keyword"])
+    video_name = string_cleaner(video_dict["video_name"])
+    channel_name = string_cleaner(video_dict["channel_name"])
+
+    values = f""" VALUES ('{keyword}',
+                          '{video_name}',
+                          '{channel_name}',
+                          '{summary}',
                           '{vid_tags}',
                           {int(video_dict["views"])},
                           {int(video_dict["likes"])},
@@ -101,6 +122,7 @@ def insert_into_DB(video_dict, session):
     prepend = """INSERT INTO summaries.video_summaries (keyword,
                  video_title, channel_name, summary, video_tags, views,
                  likes, published_at)"""
+
     try:
         # result = session.execute(prepend+values)
         # Need to use result for error handling

@@ -8,9 +8,10 @@ import googleapiclient.errors as googleapi_errors
 
 try:
     conn = establish_connection()
-    res = get_most_popular_video_transcripts_by_topic("marble", 1)
+    res = get_most_popular_video_transcripts_by_topic("economy usa", 2)
 
     for i in res:
+
         ins = insert_into_DB(i, conn)
         print(ins)
 
