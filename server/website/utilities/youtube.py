@@ -1,4 +1,5 @@
 from youtube_transcript_api import YouTubeTranscriptApi
+import youtube_transcript_api
 from .gpt3 import summarize_yt_script_with_gpt3
 import googleapiclient.discovery as googleapi
 import time
@@ -134,8 +135,8 @@ def generate_transcript(key):
             final_transcript.append(word)
         return " ".join(final_transcript)
 
-    except YouTubeTranscriptApi.NoTranscriptFound:
-        return ""
+    except youtube_transcript_api.NoTranscriptFound:
+        return "No transcript available"
 
 
 def parse_video_endpoint_response(response_item):
