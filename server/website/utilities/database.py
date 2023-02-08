@@ -72,6 +72,27 @@ def query_yt_videos(keyword, k, session):
         return [{"ERROR": "Query failed"}]
 
 
+def check_if_video_is_already_in_DB(keyword, video_id, session):
+    """
+    This function checks if a video is already in our DB so
+    we don't have to summarize it all over again.
+
+    Args:
+        keyword (str): The keyword used to search the video.
+        video_id (str): The unique video ID of the video from YT API
+        session (cassandra.cluster.Cluster): The connection object to the DB
+    Return:
+        bool: True if video is in DB - False otherwise
+    """
+    query = session.execute(f"""select video_id from summaries.video_summaries
+                where keyword = '{keyword}';""")
+    if query:
+        result = [x.video_id for x in query]
+        return result[0] == video_id
+    else:
+        return False
+
+
 def string_cleaner(input_string):
     """
     This is a helper function which removes
@@ -106,29 +127,37 @@ def insert_into_DB(video_dict, session):
 
     """
     vid_tags = ','.join(video_dict["video_tags"])
+    vid_tags = string_cleaner(vid_tags)
     summary = string_cleaner(video_dict["summary"])
     keyword = string_cleaner(video_dict["keyword"])
     video_name = string_cleaner(video_dict["video_name"])
     channel_name = string_cleaner(video_dict["channel_name"])
+    video_id = video_dict["video_id"]
 
     values = f""" VALUES ('{keyword}',
-                          '{video_name}',
-                          '{channel_name}',
-                          '{summary}',
-                          '{vid_tags}',
                           {int(video_dict["views"])},
                           {int(video_dict["likes"])},
-                          '{video_dict["published_at"]}')"""
+                          '{video_name}',
+                          '{channel_name}',
+                          '{video_id}',
+                          '{video_dict["published_at"]}',
+                          '{summary}',
+                          '{vid_tags}')"""
+
     prepend = """INSERT INTO summaries.video_summaries (keyword,
-                 video_title, channel_name, summary, video_tags, views,
-                 likes, published_at)"""
+                 views, likes, video_title, channel_name, video_id,
+                 published_at, summary, video_tags)"""
 
     try:
-        # result = session.execute(prepend+values)
-        # Need to use result for error handling
         session.execute(prepend+values)
+        print("Insertion successful --------- ")
+        print("Keyword: " + keyword + " | Video Title: " + video_name +
+              " | Channel : " + channel_name + "\n")
         return True
     except Exception:
+        print("Insertion Failed ! ----------- ")
+        print("Keyword: " + keyword + " | Video Title: " + video_name +
+              " | Channel : " + channel_name + "\n")
         return False
 
 
