@@ -109,12 +109,10 @@ class YoutubeParser:
 
 
     def _generate_summaries(self, rate):
-        count = 0
         for data in self.response:
             try:
                 transcript = data['transcript']
                 data["summary"] = self.summarise(transcript, rate)
-                count += 1
                 print("Got " + str(count) + " video(s)!")
             except (RateLimitError, ServiceUnavailableError): 
                 continue
