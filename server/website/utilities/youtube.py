@@ -236,3 +236,16 @@ def get_video_information_by_id(video_ids,
         full_video_information.append(video_information)
 
     return full_video_information
+
+
+# function to populate topics list
+# def get_popular_topics():
+#     request = youtube.videos().list(
+#         part="snippet", regionCode="gb", maxResults=40, chart = "mostPopular"
+#     )
+#     results = request.execute()
+
+#     list_of_lists = [(snippet["tags"] if snippet.get("tags") else []) for snippet in [item["snippet"] for item in results["items"]]]
+#     with open("tags.txt" ,"w") as file:
+#         for tag in [l[i] for l in list_of_lists for i in range(len(l))]:
+#             file.write(f"'{tag}',\n")

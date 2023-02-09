@@ -7,6 +7,7 @@ otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
 from .utilities.database import establish_connection, query_yt_videos_list
+from .utilities.youtube import get_popular_topics
 # from werkzeug.exceptions import HTTPException
 
 request_blueprint = Blueprint("request_blueprint", __name__)
@@ -159,6 +160,7 @@ def request_summary():
 
 @request_blueprint.route("/popular_topics", methods=['get'])
 def popular_topics():
+    get_popular_topics()
     return ["elephants"]
 
 @request_blueprint.route("/popular_videos", methods=['get'])

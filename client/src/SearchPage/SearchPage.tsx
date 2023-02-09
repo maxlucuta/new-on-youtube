@@ -3,7 +3,7 @@ import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
 import testCategories from "../test/test_categories.json";
 import { Summary } from "../types";
-import testSummaries from "../test/test_summaries.json";
+import topics from "./tags";
 import Result from "../Result";
 import axios from "axios";
 import { RootContext } from "../context";
@@ -39,8 +39,7 @@ const SearchPage = () => {
     };
 
     const getPopularTopics = async () => {
-        const results = await (await axios.get(SERVER_URL + "/popular_topics")).data;
-        updateAvailable(results);
+        updateAvailable(topics);
     };
 
     useEffect(() => {
@@ -144,6 +143,8 @@ const CategoryContainer = styled.div`
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
+    overflow: scroll;
+    max-height: 80%;
 `;
 
 const Category = styled.button`
