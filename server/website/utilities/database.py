@@ -64,6 +64,7 @@ def query_yt_videos_list(topics, k, session):
         return result
     else:
         # create_task(keyword, str(k))
+        
         return [{ "id": "plv506632yo", "description": "spongebob", "title": "Funny moments from ze sponge" }]
 
 def query_yt_videos(keyword, k, session):
