@@ -12,7 +12,8 @@ from cassandra.auth import PlainTextAuthProvider
 from flask import abort
 from uuid import UUID
 from .users import User
-from .youtube_api_albert import get_videos_by_topic
+from .new_ty import get_videos_by_topic
+from .publisher import create_task
 
 
 def establish_connection():
@@ -105,7 +106,7 @@ def query_yt_videos(keyword, k, session):
                    'summary': x.summary} for x in query]
         return result
     else:
-        # create_task(keyword, str(k))
+        create_task(keyword, str(k))
         return [{"ERROR": "Query failed"}]
 
 
@@ -172,8 +173,8 @@ def insert_into_DB(video_dict, session):
     video_id = video_dict["video_id"]
 
     values = f""" VALUES ('{keyword}',
-                          {int(video_dict["views"])},
-                          {int(video_dict["likes"])},
+                          {video_dict["views"]},
+                          {video_dict["likes"]},
                           '{video_name}',
                           '{channel_name}',
                           '{video_id}',
@@ -192,6 +193,7 @@ def insert_into_DB(video_dict, session):
               " | Channel : " + channel_name + "\n")
         return True
     except Exception:
+        print(Exception)
         print("Insertion Failed ! ----------- ")
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")

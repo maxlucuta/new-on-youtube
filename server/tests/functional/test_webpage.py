@@ -183,7 +183,7 @@ def test_get_method_6(test_client):
         text = summary.get('summary')
         assert title and channel and text
 
-    assert len(summaries) == 2
+    assert len(summaries) == 9
     return
 
 

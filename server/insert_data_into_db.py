@@ -11,7 +11,7 @@ Date: 8. Februar, 2023
 import sys
 
 
-from website.utilities.youtube import (
+from website.utilities.new_yt import (
     get_most_popular_video_transcripts_by_topic
 )
 
@@ -25,7 +25,7 @@ try:
 
     for i in res:
         ins = insert_into_DB(i, conn)
-        print(ins)
+  
 
 except googleapi_errors.HttpError as err:
     if err.resp.status == 403:

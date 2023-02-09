@@ -15,7 +15,7 @@ def test_pull_key_words():
             "dwarf star density to that of atomic nuclei."""
 
     kw_model = KeyBERT()
-    # keywords = kw_model.extract_keywords(text)
+    keywords = kw_model.extract_keywords(text)
     keyword_list = (kw_model.extract_keywords(
         text, keyphrase_ngram_range=(1, 1), stop_words=None))
 
