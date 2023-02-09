@@ -35,7 +35,7 @@ def callback(message):
 
     try:
         processed_task = get_most_popular_video_transcripts_by_topic(
-            topic, amount)
+            topic, int(amount))
     except NoTranscriptFound:
         message.ack()
         return

@@ -1,5 +1,5 @@
 export type Summary = {
-    url: string;
+    id: string;
     description: string;
-    thumbnail: string;
+    title: string;
 };

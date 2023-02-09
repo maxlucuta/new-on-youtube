@@ -29,11 +29,16 @@ def establish_connection():
     """
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         cloud_config = {'secure_connect_bundle':
-                        '/website/utilities/secure-connect-yapp-db.zip'}
+                        './website/utilities/secure-connect-yapp-db.zip'}
     else:
         cloud_config = {'secure_connect_bundle':
                         ("/workspaces/new-on-youtube/server/website/"
                          "utilities/secure-connect-yapp-db.zip")}
+
+    # albert
+    # cloud_config = {'secure_connect_bundle':
+    #                     '/Users/albert/projects/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
+
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM',
                                           ("9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_"
                                            "bLyL9oCRlqfZ5bcIR-Bz2mMd3tcA05PXx_"
@@ -43,6 +48,23 @@ def establish_connection():
     session = cluster.connect()
     return session
 
+def query_yt_videos_list(topics, k, session):
+    # query database using a list of topics of interes
+    # return list of [{ id, title, description }]
+
+    keywords_tuple = "(" + ",".join([f"'{topic}'" for topic in topics]) + ")"
+
+    query = session.execute(
+        f"""select * from summaries.video_summaries where
+            keyword in {keywords_tuple} limit {k}""").all()
+    if len(query) != 0:
+        result = [{'id': x.id,
+                   'title': x.video_title,
+                   'description': x.description} for x in query]
+        return result
+    else:
+        # create_task(keyword, str(k))
+        return [{ "id": "plv506632yo", "description": "spongebob", "title": "Funny moments from ze sponge" }]
 
 def query_yt_videos(keyword, k, session):
     """

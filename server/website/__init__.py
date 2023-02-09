@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from flask_login import LoginManager
 from website.views import views_blueprint
 from website.request_handler import request_blueprint
@@ -14,6 +15,8 @@ def create_app():
         app = Flask(__name__, static_folder='../static', static_url_path='/')
     else:
         app = Flask(__name__, static_folder='../../client/build')
+
+    CORS(app)
     app.secret_key = "3ce02ed1f5e5d521adaf7ffca7a05703"
 
     login_manager = LoginManager()
@@ -31,6 +34,7 @@ def create_app():
     app.register_blueprint(request_blueprint)
     app.register_blueprint(auth_blueprint)
 
-    Thread(name="background", target=process_tasks, daemon=True).start()
+    # disbale background tasks for now
+    # Thread(name="background", target=process_tasks, daemon=True).start()
 
     return app

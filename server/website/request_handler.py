@@ -6,7 +6,7 @@ that the request contains both topic=x and amount=y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
-from .utilities.database import establish_connection, query_yt_videos
+from .utilities.database import establish_connection, query_yt_videos_list
 # from werkzeug.exceptions import HTTPException
 
 request_blueprint = Blueprint("request_blueprint", __name__)
@@ -64,7 +64,7 @@ def server_error(e):
     return {'ERROR': 'Database connection failiure.', 'STATUS CODE': 500}
 
 
-def valid_get_request(topic, amount):
+def valid_get_request(topics, amount):
     """Checks if the POST request params are valid.
 
     Args:
@@ -75,10 +75,8 @@ def valid_get_request(topic, amount):
         True if request is valid.
         False if request is invalid.
     """
-    if not topic or not amount:
-        return False
-
-    if not topic.isalpha() or not amount.isdigit():
+    print(topics, amount)
+    if not topics or not amount:
         return False
 
     if 0 >= int(amount) or int(amount) > 20:
@@ -102,17 +100,19 @@ def valid_query_response(topic_summaries, amount):
         HTTPException 404.
     """
     for query_response in topic_summaries:
-        if query_response.get("ERROR") or len(query_response) != 3:
+        if len(query_response) != 3:
+            print("bad query reponse fields", query_response)
             abort(404)
 
-        video_title = query_response.get('video_title')
-        channel_name = query_response.get('channel_name')
-        summary = query_response.get('summary')
+        title = query_response.get('title')
+        id = query_response.get('id')
+        description = query_response.get('description')
 
-        if not video_title or not channel_name or not summary:
+        if not title or not id or not description:
+            print("bad query reponse fields", query_response)
             return False
 
-    return len(topic_summaries) == amount
+    return True
 
 
 @request_blueprint.route("/", methods=['POST'])
@@ -135,19 +135,32 @@ def request_summary():
     Raises:
         HTTPException 400 / 404 / 408 / 417 / 500
     """
-    topic = request.form.get('topic')
-    amount = request.form.get('amount')
+    topics = request.json["topics"]
+    amount = request.json["amount"]
     global session
 
     if not session:
+        print("Session could not be established")
         session = establish_connection()
 
-    if not valid_get_request(topic, amount):
+    if not valid_get_request(topics, amount):
+        print("Invalid Request", topics, amount)
         abort(400)
 
-    topic_summaries = query_yt_videos(topic, int(amount), session)
+    topic_summaries = query_yt_videos_list(topics, int(amount), session)
 
     if not valid_query_response(topic_summaries, int(amount)):
+        print("Invalid Database Query", topic_summaries, amount)
         abort(417)
 
+    print(topics)
     return topic_summaries
+
+
+@request_blueprint.route("/popular_topics", methods=['get'])
+def popular_topics():
+    return ["elephants"]
+
+@request_blueprint.route("/popular_videos", methods=['get'])
+def popular_videos():
+    return [{ "id": "plv506632yo", "descripion": "spongebob", "title": "Funny moments from ze sponge" }]

@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
 import testCategories from "../test/test_categories.json";
 import { Summary } from "../types";
 import testSummaries from "../test/test_summaries.json";
+import Result from "../Result";
+import axios from "axios";
+import { RootContext } from "../context";
 
 const SearchPage = () => {
     const [searchValue, updateSearchValue] = useState("");
@@ -11,6 +14,7 @@ const SearchPage = () => {
     const [available, updateAvailable] = useState(testCategories as string[]);
     const [displaySelector, updateDisplaySelector] = useState(true);
     const [searchResults, updateSearchResults] = useState([] as Summary[]);
+    const { SERVER_URL } = useContext(RootContext);
 
     const searchCompleted = searchResults.length > 0;
 
@@ -28,9 +32,20 @@ const SearchPage = () => {
         }
     };
 
-    const handleSubmission = () => {
-        updateSearchResults(testSummaries);
+    const handleSubmission = async () => {
+        const payload = { topics: selection, amount: 10 };
+        const results = await (await axios.post(SERVER_URL + "/request", payload)).data;
+        updateSearchResults(results);
     };
+
+    const getPopularTopics = async () => {
+        const results = await (await axios.get(SERVER_URL + "/popular_topics")).data;
+        updateAvailable(results);
+    };
+
+    useEffect(() => {
+        getPopularTopics();
+    }, []);
 
     return (
         <div>
@@ -67,16 +82,11 @@ const SearchPage = () => {
             </SearchButton>
             <SearchResults>
                 {searchCompleted ? (
-                    searchResults.map(r => (
-                        <Result href={r.url}>
-                            <Img src={r.thumbnail} />
-                            <Description>{r.description}</Description>
-                        </Result>
-                    ))
+                    searchResults.map(r => <Result summary={r} />)
                 ) : (
-                    <Result>
+                    <Container>
                         <Description>Select topics and click search!</Description>
-                    </Result>
+                    </Container>
                 )}
             </SearchResults>
         </div>
@@ -182,7 +192,7 @@ const SearchResults = styled.div`
     margin: auto;
 `;
 
-const Result = styled.a`
+const Container = styled.a`
     display: flex;
     text-decoration: none;
     color: black;
