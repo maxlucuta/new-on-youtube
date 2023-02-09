@@ -37,10 +37,6 @@ def establish_connection():
                         ("/workspaces/new-on-youtube/server/website/"
                          "utilities/secure-connect-yapp-db.zip")}
 
-    # albert
-    cloud_config = {'secure_connect_bundle':
-                        '/Users/albert/projects/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
-
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM',
                                           ("9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_"
                                            "bLyL9oCRlqfZ5bcIR-Bz2mMd3tcA05PXx_"
@@ -50,7 +46,7 @@ def establish_connection():
     session = cluster.connect()
     return session
 
-def parseResults(results): 
+def parseResults(results):
     return [{'id': x.video_id, 'title': x.video_title, 'description': x.summary} for x in results]
 
 def query_yt_videos_list(topics, k, session):
@@ -69,7 +65,7 @@ def query_yt_videos_list(topics, k, session):
     # try fetching results using youtube API
     youtube_query = get_videos_by_topic(topics, k)
     if len(youtube_query) != 0: return parseResults(youtube_query)
-    
+
     # try returning all results from database
     all_database  = session.execute("""select * from summaries.video_summaries """).all()
     if all_database and len(all_database) != 0: return parseResults(all_database[:20])
