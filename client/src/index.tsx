@@ -6,6 +6,8 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./HomePage/HomePage";
 import SearchPage from "./SearchPage/SearchPage";
 import FeedPage from "./FeedPage/FeedPage";
+import RegisterPage from "./RegisterPage/RegisterPage";
+import SignInPage from "./RegisterPage/SignInPage";
 
 // conditionally switched to production url in live
 const PRODUCTION = !window.location.href.startsWith("http://localhost");
@@ -23,6 +25,14 @@ const router = createBrowserRouter([
     {
         path: "/Feed",
         element: <FeedPage />,
+    },
+    {
+        path: "/Register",
+        element: <RegisterPage />,
+    },
+    {
+        path: "/SignIn",
+        element: <SignInPage />,
     },
 ]);
 
