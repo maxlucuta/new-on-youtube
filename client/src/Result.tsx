@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { thumbnail } from "./functions";
 import { Summary } from "./types";
 
 type ResultProps = {
@@ -6,13 +7,10 @@ type ResultProps = {
 };
 
 const Result = (props: ResultProps) => {
-    const thumbnail = (id: string) => "http://img.youtube.com/vi/" + id + "/hqdefault.jpg";
-    const url = (id: string) => "https://www.youtube.com/watch?v=" + id;
-
     return (
-        <Container href={url(props.summary.id)}>
+        <Container>
             <Img src={thumbnail(props.summary.id)} />
-            <Description>{props.summary.description}</Description>
+            <Description>{props.summary.title}</Description>
         </Container>
     );
 };

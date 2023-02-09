@@ -6,9 +6,18 @@ import topics from "./tags";
 import Result from "../Result";
 import axios from "axios";
 import { RootContext } from "../context";
+import SummaryModal from "./SummaryModal";
+
+const defualtSummary: Summary = {
+    id: "plv506632yo",
+    description: "spongebob",
+    title: "Funny moments from ze sponge",
+};
 
 const SearchPage = () => {
     const [searchValue, updateSearchValue] = useState("");
+    const [summaryModalOpen, updateSummaryModalOpen] = useState(false);
+    const [selectedSummary, updateSelectedSummary] = useState(defualtSummary as Summary);
     const [selection, updateSelection] = useState([] as string[]);
     const [filtered, updateFiltered] = useState(topics as string[]);
     const [displaySelector, updateDisplaySelector] = useState(true);
@@ -51,9 +60,20 @@ const SearchPage = () => {
         }
     };
 
+    const selectResult = (summary: Summary) => {
+        updateSelectedSummary(summary);
+        updateSummaryModalOpen(true);
+    };
+
     return (
         <div>
             <NavBar />
+            {summaryModalOpen && (
+                <SummaryModal
+                    updateSummaryModalOpen={updateSummaryModalOpen}
+                    summary={selectedSummary}
+                />
+            )}
             <div style={{ backgroundColor: "#FAD000" }}>
                 <Title>Select Your Categories!</Title>
             </div>
@@ -103,7 +123,11 @@ const SearchPage = () => {
             </SearchButton>
             <SearchResults>
                 {searchCompleted ? (
-                    searchResults.map(r => <Result summary={r} />)
+                    searchResults.map(r => (
+                        <span onClick={() => selectResult(r)}>
+                            <Result summary={r} />
+                        </span>
+                    ))
                 ) : (
                     <Container>
                         <Description>Select topics and click search!</Description>
