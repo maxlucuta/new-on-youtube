@@ -1,6 +1,6 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 import googleapiclient.discovery as googleapi
-from gpt3 import summarize_yt_script_with_gpt3
+from .gpt3 import summarize_yt_script_with_gpt3
 from openai.error import RateLimitError, ServiceUnavailableError
 from youtubesearchpython import *
 import youtube_transcript_api, time, functools, requests, openai
@@ -39,7 +39,6 @@ class YoutubeParser:
                 if len(self.response) >= self.amount: break
                 self._insert_results(result[i])
             query.next()
-            print(len(self.response))
         return 
 
 
@@ -56,10 +55,16 @@ class YoutubeParser:
         data['likes'] = self._get_likes(result['link'])
         data["video_tags"] = self.get_keywords(result['link'])
         if not self._has_transcript_available(data): return
+        if not self._no_empty_fields(data): return 
         self._convert_ints(data)
         self.response.append(data)
         self.videos.add(result['id'])
         return
+
+
+    def _no_empty_fields(self, data):
+        [return False if not data[i] for i in data]
+        return len(data) == 9
 
 
     def _has_transcript_available(self, data):
@@ -103,12 +108,9 @@ class YoutubeParser:
     def _generate_summaries(self, rate):
         for data in self.response:
             try:
-                name = data.get('video_name')
                 transcript = data['transcript']
                 data["summary"] = self.summarise(transcript, rate)
-                print(f"{name} summary inserted!")
             except (RateLimitError, ServiceUnavailableError): 
-                print(f"{name} failed.")
                 continue
         return 
 

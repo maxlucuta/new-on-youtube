@@ -12,6 +12,7 @@ from cassandra.auth import PlainTextAuthProvider
 from flask import abort
 from uuid import UUID
 from .users import User
+from .publisher import create_task
 
 
 def establish_connection():
@@ -68,7 +69,7 @@ def query_yt_videos(keyword, k, session):
                    'summary': x.summary} for x in query]
         return result
     else:
-        # create_task(keyword, str(k))
+        create_task(keyword, str(k))
         return [{"ERROR": "Query failed"}]
 
 
