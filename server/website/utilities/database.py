@@ -36,9 +36,9 @@ def establish_connection():
                         ("/workspaces/new-on-youtube/server/website/"
                          "utilities/secure-connect-yapp-db.zip")}
 
-    # albert
-    cloud_config = {'secure_connect_bundle':
-                        '/Users/albert/projects/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
+    # # albert
+    # cloud_config = {'secure_connect_bundle':
+    #                     '/Users/albert/projects/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
 
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM',
                                           ("9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_"
