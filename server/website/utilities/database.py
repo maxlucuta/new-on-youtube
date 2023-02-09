@@ -36,8 +36,8 @@ def establish_connection():
                          "utilities/secure-connect-yapp-db.zip")}
 
     # albert
-    # cloud_config = {'secure_connect_bundle':
-    #                     '/Users/albert/projects/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
+    cloud_config = {'secure_connect_bundle':
+                        '/Users/albert/projects/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
 
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM',
                                           ("9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_"
@@ -58,9 +58,9 @@ def query_yt_videos_list(topics, k, session):
         f"""select * from summaries.video_summaries where
             keyword in {keywords_tuple} limit {k}""").all()
     if len(query) != 0:
-        result = [{'id': x.id,
+        result = [{'id': x.video_id,
                    'title': x.video_title,
-                   'description': x.description} for x in query]
+                   'description': x.summary} for x in query]
         return result
     else:
         # create_task(keyword, str(k))

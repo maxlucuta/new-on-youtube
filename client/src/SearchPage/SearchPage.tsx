@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
-import testCategories from "../test/test_categories.json";
 import { Summary } from "../types";
 import topics from "./tags";
 import Result from "../Result";
@@ -11,7 +10,7 @@ import { RootContext } from "../context";
 const SearchPage = () => {
     const [searchValue, updateSearchValue] = useState("");
     const [selection, updateSelection] = useState([] as string[]);
-    const [available, updateAvailable] = useState(testCategories as string[]);
+    const [filtered, updateFiltered] = useState(topics as string[]);
     const [displaySelector, updateDisplaySelector] = useState(true);
     const [searchResults, updateSearchResults] = useState([] as Summary[]);
     const { SERVER_URL } = useContext(RootContext);
@@ -20,14 +19,17 @@ const SearchPage = () => {
 
     const handleSearchChange = (e: any) => {
         updateSearchValue(e.target.value);
+        if (e.target.value.length !== 0) {
+            updateFiltered(topics.filter(c => c.startsWith(e.target.value)));
+        } else {
+            updateFiltered(topics);
+        }
     };
 
-    const handleSelection = (c: string, type: "select" | "unselect") => {
-        if (type === "select") {
-            updateAvailable(a => a.filter(cat => cat !== c));
+    const handleSelection = (c: string) => {
+        if (!selection.includes(c)) {
             updateSelection(selection.concat([c]));
         } else {
-            updateAvailable(available.concat([c]));
             updateSelection(s => s.filter(cat => cat !== c));
         }
     };
@@ -38,13 +40,16 @@ const SearchPage = () => {
         updateSearchResults(results);
     };
 
-    const getPopularTopics = async () => {
-        updateAvailable(topics);
+    const handleNewEntryEnter = (e: any) => {
+        if (e.key != "Enter") return;
+        if (filtered.length !== 0) return;
+        if (true) {
+            updateSelection(selection.concat([searchValue]));
+            e.target.value = "";
+            updateSearchValue("");
+            updateFiltered(topics);
+        }
     };
-
-    useEffect(() => {
-        getPopularTopics();
-    }, []);
 
     return (
         <div>
@@ -58,10 +63,25 @@ const SearchPage = () => {
             <TwoPanel style={{ display: displaySelector ? "flex" : "none" }}>
                 <LeftPanel>
                     <PanelTitle>Available Topics</PanelTitle>
-                    <SearchBar placeholder="Search" onChange={handleSearchChange} />
+                    <SearchBar
+                        placeholder="Search"
+                        onChange={handleSearchChange}
+                        onKeyDown={handleNewEntryEnter}
+                    />
                     <CategoryContainer>
-                        {available.map(c => (
-                            <Category onClick={() => handleSelection(c, "select")}>{c}</Category>
+                        {searchValue.length !== 0 && (
+                            <Category
+                                selected={selection.includes(searchValue)}
+                                onClick={() => handleSelection(searchValue)}>
+                                Add Custom Topic: {searchValue}
+                            </Category>
+                        )}
+                        {filtered.map(c => (
+                            <Category
+                                selected={selection.includes(c)}
+                                onClick={() => handleSelection(c)}>
+                                {c}
+                            </Category>
                         ))}
                     </CategoryContainer>
                 </LeftPanel>
@@ -69,7 +89,9 @@ const SearchPage = () => {
                     <PanelTitle>Selected Topics</PanelTitle>
                     <CategoryContainer>
                         {selection.map(c => (
-                            <Category onClick={() => handleSelection(c, "unselect")}>{c}</Category>
+                            <Category selected={true} onClick={() => handleSelection(c)}>
+                                {c}
+                            </Category>
                         ))}
                     </CategoryContainer>
                 </RightPanel>
@@ -147,12 +169,12 @@ const CategoryContainer = styled.div`
     max-height: 80%;
 `;
 
-const Category = styled.button`
+const Category = styled.button<{ selected: boolean }>`
     margin: 10px;
     font-size: 30px;
     padding: 10px;
     border-style: none;
-    background-color: #fad000;
+    background-color: ${props => (props.selected ? "orange" : "#fad000")};
     border-radius: 5px;
     &:hover {
         transform: scale(1.1);
