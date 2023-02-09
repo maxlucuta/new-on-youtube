@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { RootContext } from "../context";
 import img from "./img.png";
@@ -9,7 +10,9 @@ const RegisterPage = () => {
     const [username, updateUsername] = useState("");
     const [password1, updatePassword1] = useState("");
     const [password2, updatePassword2] = useState("");
+    const [userAlreadyExists, updateUserAlreadyExists] = useState(false);
     const { SERVER_URL } = useContext(RootContext);
+    const navigate = useNavigate();
 
     const handleEmailChange = (e: any) => {
         updateUsername(e.target.value);
@@ -21,8 +24,11 @@ const RegisterPage = () => {
 
     const handleSubmit = async () => {
         const payload = { username, password: password1, confirmation: password2 };
-        const success = (await axios.post(SERVER_URL + "/register", payload)).data;
-        console.log(success);
+        const { message } = (await axios.post(SERVER_URL + "/register", payload)).data;
+        if (message === "already logged in") navigate("/");
+        else if (message === "invalid fields") alert("Incorrect input!");
+        else if (message === "already exists") updateUserAlreadyExists(true);
+        else if (message === "successfully added") navigate("/SignIn");
     };
 
     const validPassword = password1.length !== 0 && password1 === password2;

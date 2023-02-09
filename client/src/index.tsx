@@ -12,6 +12,11 @@ import SignInPage from "./RegisterPage/SignInPage";
 // conditionally switched to production url in live
 const PRODUCTION = !window.location.href.startsWith("http://localhost");
 const SERVER_URL = PRODUCTION ? "https://new-on-youtube.herokuapp.com" : "http://localhost:5000";
+var user = "";
+const updateUser = (n: string) => {
+    console.log("user updated!");
+    user = n;
+};
 
 const router = createBrowserRouter([
     {
@@ -38,7 +43,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
-        <RootContext.Provider value={{ SERVER_URL }}>
+        <RootContext.Provider value={{ SERVER_URL, user, updateUser }}>
             <RouterProvider router={router} />
         </RootContext.Provider>
     </React.StrictMode>
