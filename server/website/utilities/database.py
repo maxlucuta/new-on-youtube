@@ -12,7 +12,8 @@ from cassandra.auth import PlainTextAuthProvider
 from flask import abort
 from uuid import UUID
 from .users import User
-from .youtube_api_albert import get_videos_by_topic
+from .new_yt import get_videos_by_topic
+from .publisher import create_task
 
 
 def establish_connection():
@@ -36,10 +37,6 @@ def establish_connection():
                         ("/workspaces/new-on-youtube/server/website/"
                          "utilities/secure-connect-yapp-db.zip")}
 
-    # albert
-    cloud_config = {'secure_connect_bundle':
-                        '/Users/albert/projects/new-on-youtube/server/website/utilities/secure-connect-yapp-db.zip'}
-
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM',
                                           ("9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_"
                                            "bLyL9oCRlqfZ5bcIR-Bz2mMd3tcA05PXx_"
@@ -49,7 +46,7 @@ def establish_connection():
     session = cluster.connect()
     return session
 
-def parseResults(results): 
+def parseResults(results):
     return [{'id': x.video_id, 'title': x.video_title, 'description': x.summary} for x in results]
 
 def query_yt_videos_list(topics, k, session):
@@ -68,7 +65,7 @@ def query_yt_videos_list(topics, k, session):
     # try fetching results using youtube API
     youtube_query = get_videos_by_topic(topics, k)
     if len(youtube_query) != 0: return parseResults(youtube_query)
-    
+
     # try returning all results from database
     all_database  = session.execute("""select * from summaries.video_summaries """).all()
     if all_database and len(all_database) != 0: return parseResults(all_database[:20])
@@ -105,7 +102,7 @@ def query_yt_videos(keyword, k, session):
                    'summary': x.summary} for x in query]
         return result
     else:
-        # create_task(keyword, str(k))
+        create_task(keyword, str(k))
         return [{"ERROR": "Query failed"}]
 
 
@@ -172,8 +169,8 @@ def insert_into_DB(video_dict, session):
     video_id = video_dict["video_id"]
 
     values = f""" VALUES ('{keyword}',
-                          {int(video_dict["views"])},
-                          {int(video_dict["likes"])},
+                          {video_dict["views"]},
+                          {video_dict["likes"]},
                           '{video_name}',
                           '{channel_name}',
                           '{video_id}',
@@ -192,6 +189,7 @@ def insert_into_DB(video_dict, session):
               " | Channel : " + channel_name + "\n")
         return True
     except Exception:
+        print(Exception)
         print("Insertion Failed ! ----------- ")
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")

@@ -8,7 +8,7 @@ otherwise an error code will be returned.
 from flask import Blueprint, request, abort
 from .utilities.database import establish_connection, query_yt_videos_list
 from .utilities.youtube import get_popular_topics
-# from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 session = None
