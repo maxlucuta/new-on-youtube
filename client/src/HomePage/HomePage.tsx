@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RootContext } from "../context";
 import styled from "styled-components";
 import testSummaries from "../test/test_summaries.json";
@@ -9,18 +9,23 @@ import select from "../assets/select.png";
 import read from "../assets/read.png";
 import NavBar from "../NavBar/Navbar";
 import { Link } from "react-router-dom";
+import { Summary } from "../types";
+import Result from "../Result";
 
 const HomePage = () => {
-    const [selectedCategories, updateSelectedCategories] = useState([] as any[]);
+    const [summaries, updateSummaries] = useState([] as Summary[]);
     const [mode, updateMode] = useState("Feed" as "Feed" | "Popular");
 
     const { SERVER_URL } = useContext(RootContext);
 
-    const testServer = async () => {
-        console.log(SERVER_URL);
-        console.log("Testing backend");
-        console.log((await axios.get(SERVER_URL + "/test")).data);
+    const getPopularVideos = async () => {
+        const results = await (await axios.get(SERVER_URL + "/popular_videos")).data;
+        updateSummaries(results);
     };
+
+    useEffect(() => {
+        getPopularVideos();
+    }, []);
 
     return (
         <div>
@@ -105,11 +110,8 @@ const HomePage = () => {
             </div>
 
             <div style={{ width: "60%", margin: "auto" }}>
-                {testSummaries.map(r => (
-                    <Result href={r.url}>
-                        <Img src={r.thumbnail} />
-                        <Description>{r.description}</Description>
-                    </Result>
+                {summaries.map(r => (
+                    <Result summary={r} />
                 ))}
             </div>
         </div>
@@ -179,30 +181,4 @@ const FeedSelector = styled.div<{ selected: boolean }>`
         color: #fad000;
         cursor: pointer;
     }
-`;
-
-const Result = styled.a`
-    display: flex;
-    text-decoration: none;
-    color: black;
-    align-items: center;
-    padding: 10px;
-    background-color: #e1e1e1;
-    border-radius: 10px;
-    margin: 20px 0;
-    &:hover {
-        cursor: pointer;
-        background-color: #fff1ac;
-    }
-`;
-
-const Img = styled.img`
-    border-radius: 10px;
-    width: 15%;
-`;
-
-const Description = styled.div`
-    text-align: center;
-    width: 85%;
-    font-size: 25px;
 `;

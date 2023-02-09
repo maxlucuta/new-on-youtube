@@ -6,9 +6,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import HomePage from "./HomePage/HomePage";
 import SearchPage from "./SearchPage/SearchPage";
 import FeedPage from "./FeedPage/FeedPage";
+import RegisterPage from "./RegisterPage/RegisterPage";
+import SignInPage from "./RegisterPage/SignInPage";
 
 // conditionally switched to production url in live
-const SERVER_URL = "http://localhost:5000";
+const PRODUCTION = !window.location.href.startsWith("http://localhost");
+const SERVER_URL = PRODUCTION ? "https://new-on-youtube.herokuapp.com" : "http://localhost:5000";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +25,14 @@ const router = createBrowserRouter([
     {
         path: "/Feed",
         element: <FeedPage />,
+    },
+    {
+        path: "/Register",
+        element: <RegisterPage />,
+    },
+    {
+        path: "/SignIn",
+        element: <SignInPage />,
     },
 ]);
 

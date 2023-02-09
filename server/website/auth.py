@@ -9,24 +9,25 @@ auth_blueprint = Blueprint('auth_blueprint', __name__)
 
 @auth_blueprint.route('/register', methods=['GET', 'POST'])
 def user_register():
+    print("trying")
     if current_user.is_authenticated:
         flash('You are already logged in. Go to /logout to logout')
-        return redirect('/welcome')
+        return redirect('success')
 
     if request.method == "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        confirm_password = request.form.get("confirmation")
+        username = request.json["username"]
+        password = request.json["password"]
+        confirm_password = request.json["confirmation"]
 
         if not username or not password or password != confirm_password:
             flash("""Please enter a username, password and matching password
                    confirmation""")
-            return render_template("register.html")
+            return { "message": "invalid fields" }
 
         user = query_users_db(username=username)
         if user:
             flash('Username already exists, please enter a different username')
-            return render_template("register.html")
+            return { "message": "already exists" }
 
         hashed_pwd = generate_password_hash(password, method="pbkdf2:sha256",
                                             salt_length=8)
@@ -34,10 +35,10 @@ def user_register():
                         ['placeholder_category'], ['placeholder_channel'])
         if insert_user_into_db(new_user):
             flash('Successfully registered, please login')
-            return redirect('/login')
+            return { "message": "success" }
 
         flash('Registration unsuccessful, please try again')
-        return render_template("register.html")
+        return { "message": "unrecognised error" }
 
     return render_template("register.html")
 
