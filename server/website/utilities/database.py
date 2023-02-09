@@ -63,8 +63,8 @@ def query_yt_videos_list(topics, k, session):
     # create_task(topics) TODO
 
     # try fetching results using youtube API
-    youtube_query = get_videos_by_topic(topics, k)
-    if len(youtube_query) != 0: return parseResults(youtube_query)
+    #youtube_query = get_videos_by_topic(topics, k)
+    #if len(youtube_query) != 0: return parseResults(youtube_query)
 
     # try returning all results from database
     all_database  = session.execute("""select * from summaries.video_summaries """).all()
