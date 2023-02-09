@@ -12,6 +12,7 @@ from cassandra.auth import PlainTextAuthProvider
 from flask import abort
 from uuid import UUID
 from .users import User
+from .youtube_api_albert import get_videos_by_topic
 
 
 def establish_connection():
@@ -48,24 +49,37 @@ def establish_connection():
     session = cluster.connect()
     return session
 
+def parseResults(results): 
+    return [{'id': x.video_id, 'title': x.video_title, 'description': x.summary} for x in results]
+
 def query_yt_videos_list(topics, k, session):
-    # query database using a list of topics of interes
+    # query database or youtube using a list of topics of interest
     # return list of [{ id, title, description }]
 
+    # try fetching results from database
     keywords_tuple = "(" + ",".join([f"'{topic}'" for topic in topics]) + ")"
+    queryString = f"""select * from summaries.video_summaries where keyword in {keywords_tuple} limit {k}"""
+    query = session.execute(queryString).all()
+    if len(query) != 0: return parseResults(query)
 
-    query = session.execute(
-        f"""select * from summaries.video_summaries where
-            keyword in {keywords_tuple} limit {k}""").all()
-    if len(query) != 0:
-        result = [{'id': x.video_id,
-                   'title': x.video_title,
-                   'description': x.summary} for x in query]
-        return result
-    else:
-        # create_task(keyword, str(k))
-        
-        return [{ "id": "plv506632yo", "description": "spongebob", "title": "Funny moments from ze sponge" }]
+    # set up background task to populate daatbase
+    # create_task(topics) TODO
+
+    # try fetching results using youtube API
+    youtube_query = get_videos_by_topic(topics, k)
+    if len(youtube_query) != 0: return parseResults(youtube_query)
+    
+    # try returning all results from database
+    all_database  = session.execute("""select * from summaries.video_summaries """).all()
+    if all_database and len(all_database) != 0: return parseResults(all_database[:20])
+
+    # return a default video
+    return [{
+        "id": "JRPC7a_AcQo",
+        "description": "This is just a placeholder video, database connection failed or empty",
+        "title": "Placeholder video",
+    }]
+
 
 def query_yt_videos(keyword, k, session):
     """
