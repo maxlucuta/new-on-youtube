@@ -12,6 +12,6 @@ enable_stdio_inheritance = True
 reload = True
 
 # Logging
-loglevel = "debug"
-accesslog = "stdout.log"
-errorlog = "stderr.log"
+# loglevel = "debug"
+# accesslog = "stdout.log"
+# errorlog = "stderr.log"
