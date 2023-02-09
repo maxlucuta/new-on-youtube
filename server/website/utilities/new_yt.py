@@ -12,6 +12,12 @@ class YoutubeParser:
         self.amount = amount
         self.response = []
 
+    
+    def execute(self, rate=1):
+        self._search()
+        self._generate_summaries(rate)
+        return self.response
+
 
     def _search(self):
         query = CustomSearch(self.topic, VideoSortOrder.viewCount, 
@@ -19,12 +25,6 @@ class YoutubeParser:
         result = query.result()['result']
         [self._insert_results(result[i]) for i in range(self.amount)]
         return
-
-    
-    def execute(self, rate=1):
-        self._search()
-        self._generate_summaries(rate)
-        return self.response
 
 
     def _insert_results(self, result, data={}):
