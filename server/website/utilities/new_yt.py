@@ -36,7 +36,7 @@ class YoutubeParser:
         data['views'] = result['viewCount']['text']
         data['published_at'] = result['publishedTime']
         data['likes'] = pafy.new(data['url']).likes
-        data["video_tags"] = self._get_keywords(data["url"])
+        data["video_tags"] = self.get_keywords(data["url"])
         del data["url"]
         self.response.append(data)
         return
@@ -60,24 +60,33 @@ class YoutubeParser:
                 raw = YouTubeTranscriptApi.get_transcript(
                 id, languages=['en', 'en-GB'])
                 transcript = self._format_transcript(raw)
-                data["summary"] = self._summarise(transcript, rate)
+                data["summary"] = self.summarise(transcript, rate)
             except youtube_transcript_api.NoTranscriptFound:
                 del self.response[i]
 
 
     @staticmethod
-    def _get_keywords(url):
+    def get_keywords(url):
         return Video.get(url)["keywords"]
 
 
     @staticmethod
-    def _summarise(transcript, limiter, keywords=None):
+    def get_suggestions(topic):
+        suggestions = Suggestions(language='en', region='US')
+        topics = suggestions.get(topic)['result']
+        del topics[0]
+        return topics
+
+
+    @staticmethod
+    def summarise(transcript, limiter, keywords=None):
         task = "Please summarise this transcript for me in a \
         few sentences: " + transcript + "\n\nTl;dr"
         summary = summarize_yt_script_with_gpt3(task)
         summary = summary.strip(" :-")
         time.sleep(limiter)
         return summary
+
 
 
 def get_most_popular_video_transcripts_by_topic(topic, amount):
