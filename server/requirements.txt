@@ -1,6 +1,7 @@
 cassandra_driver==3.25.0
 Flask==2.2.2
 Flask_Login==0.6.2
+Flask-Cors==3.0.10
 google_api_python_client==2.77.0
 keybert==0.7.0
 openai==0.26.5
