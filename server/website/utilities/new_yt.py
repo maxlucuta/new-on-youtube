@@ -162,6 +162,9 @@ def get_most_popular_video_transcripts_by_topic(topic, amount, rate=10):
     parser = YoutubeParser(topic, amount)
     return parser.execute(rate)
 
+def get_videos_by_topic():
+    return []
+
 
         
 

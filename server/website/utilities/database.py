@@ -12,7 +12,7 @@ from cassandra.auth import PlainTextAuthProvider
 from flask import abort
 from uuid import UUID
 from .users import User
-from .youtube_api_albert import get_videos_by_topic
+from .new_ty import get_videos_by_topic
 from .publisher import create_task
 
 
