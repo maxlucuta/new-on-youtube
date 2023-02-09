@@ -77,7 +77,8 @@ class YoutubeParser:
             data['transcript'] = transcript
         except (youtube_transcript_api.NoTranscriptFound,
             youtube_transcript_api.TranscriptsDisabled,
-            youtube_transcript_api.NoTranscriptAvailable):
+            youtube_transcript_api.NoTranscriptAvailable,
+            youtube_transcript_api.YouTubeRequestFailed):
             return False
         return True
          
