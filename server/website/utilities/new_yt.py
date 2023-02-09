@@ -63,7 +63,9 @@ class YoutubeParser:
 
 
     def _no_empty_fields(self, data):
-        [return False if not data[i] for i in data]
+        for i in data:
+            if not data[i]:
+                return False
         return len(data) == 9
 
 
