@@ -35,13 +35,14 @@ def test_get_method_1(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic': 'tennis', 'amount': '1'}
-    response = test_client.post("/request", data=test_query)
+    test_query = {'topics': ['tennis'], 'amount': '1'}
+    response = test_client.post("/request", json=test_query)
     summaries = json.loads(response.data)
+    with open("file.txt", "a") as file: file.write(f"{summaries}\n")
 
     for summary in summaries:
-        title = summary.get('video_title')
-        channel = summary.get('channel_name')
+        title = summary.get('title')
+        channel = summary.get('id')
         text = summary.get('summary')
         assert title and channel and text
 
@@ -64,7 +65,7 @@ def test_get_method_2(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic': 'football'}
+    test_query = {'topics': ['football']}
     response = test_client.post("/request", data=test_query)
     error_codes = json.loads(response.data)
 
@@ -173,15 +174,15 @@ def test_get_method_6(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic': 'cars', 'amount': '2'}
+    test_query = {'topic': ['cars'], 'amount': '2'}
     response = test_client.post("/request", data=test_query)
     summaries = json.loads(response.data)
 
     for summary in summaries:
-        title = summary.get('video_title')
-        channel = summary.get('channel_name')
-        text = summary.get('summary')
-        assert title and channel and text
+        title = summary.get('title')
+        id = summary.get('id')
+        description = summary.get('description')
+        assert title and description and id
 
     assert len(summaries) == 9
     return

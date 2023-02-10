@@ -66,6 +66,7 @@ def server_error(e):
 
 
 def valid_get_request(topics, amount):
+    with open("file.txt", "a") as file: file.write(f"{topics} {amount}\n")
     """Checks if the POST request params are valid.
 
     Args:
@@ -158,11 +159,13 @@ def request_summary():
     return topic_summaries
 
 
-@request_blueprint.route("/popular_topics", methods=['get'])
-def popular_topics():
-    get_popular_topics()
-    return ["elephants"]
+# @request_blueprint.route("/popular_topics", methods=['get'])
+# def popular_topics():
+#     return get_popular_topics()
 
 @request_blueprint.route("/popular_videos", methods=['get'])
 def popular_videos():
-    return [{ "id": "plv506632yo", "descripion": "spongebob", "title": "Funny moments from ze sponge" }]
+    global session
+    if not session:
+        session = establish_connection()
+    return query_yt_videos_list("music", 20, session)

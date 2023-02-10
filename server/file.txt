@@ -1,0 +1,10 @@
+ERROR
+{'ERROR': 'GET Request failed.', 'STATUS CODE': 400}
+{'ERROR': 'GET Request failed.', 'STATUS CODE': 400}
+{'ERROR': 'GET Request failed.', 'STATUS CODE': 400}
+{'ERROR': 'GET Request failed.', 'STATUS CODE': 400}
+{'ERROR': 'GET Request failed.', 'STATUS CODE': 400}
+{'ERROR': 'Database connection failiure.', 'STATUS CODE': 500}
+{'ERROR': 'Database connection failiure.', 'STATUS CODE': 500}
+{'ERROR': 'Database connection failiure.', 'STATUS CODE': 500}
+{'ERROR': 'Database connection failiure.', 'STATUS CODE': 500}

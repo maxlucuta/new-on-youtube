@@ -11,6 +11,7 @@ import NavBar from "../NavBar/Navbar";
 import { Link } from "react-router-dom";
 import { Summary } from "../types";
 import Result from "../Result";
+import Feed from "../Feed/Feed";
 
 const HomePage = () => {
     const [summaries, updateSummaries] = useState([] as Summary[]);
@@ -109,11 +110,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            <div style={{ width: "60%", margin: "auto" }}>
-                {summaries.map(r => (
-                    <Result summary={r} />
-                ))}
-            </div>
+            <Feed results={summaries} />
         </div>
     );
 };
@@ -172,11 +169,11 @@ const Start = styled.button`
 `;
 
 const FeedSelector = styled.div<{ selected: boolean }>`
-    font-size: 50px;
+    font-size: ${props => (props.selected ? "50px" : "30px")};
     font-weight: bold;
     font-family: "Monaco", "Courier New", monospace;
-    text-decoration: ${props => (props.selected ? "underline" : "none")};
     margin: 20px;
+    color: ${props => (props.selected ? "black" : "grey")};
     &:hover {
         color: #fad000;
         cursor: pointer;

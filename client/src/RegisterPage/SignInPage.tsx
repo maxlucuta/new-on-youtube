@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { RootContext } from "../context";
+import NavBar from "../NavBar/Navbar";
 import img from "./img.png";
 import "./signin.css";
 
@@ -36,6 +37,7 @@ const SignInPage = () => {
 
     return (
         <div className="signin_background">
+            <NavBar />
             <div className="container">
                 <div className="form">
                     <h2>SIGN IN</h2>

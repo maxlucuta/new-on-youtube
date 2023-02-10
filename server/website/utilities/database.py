@@ -231,8 +231,8 @@ def query_users_db(username=None, user_id=None):
         query = session.execute(f"""select * from summaries.users where
                                  id = {user_id} allow filtering""").all()
 
-    if len(query) > 1:
-        abort(500)
+    # if len(query) > 1:
+    #     abort(500)
 
     if query:
         query = query[0]

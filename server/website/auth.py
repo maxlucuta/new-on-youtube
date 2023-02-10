@@ -74,7 +74,6 @@ def welcome():
 
 
 @auth_blueprint.route('/logout', methods = ['POST'])
-@login_required
 def logout():
     logout_user()
     return { "message": "logged out" }

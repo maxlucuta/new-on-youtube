@@ -34,7 +34,6 @@ def create_app():
     app.register_blueprint(request_blueprint)
     app.register_blueprint(auth_blueprint)
 
-    # disbale background tasks for now
-    # Thread(name="background", target=process_tasks, daemon=True).start()
+    Thread(name="background", target=process_tasks, daemon=True).start()
 
     return app

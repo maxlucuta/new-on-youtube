@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { RootContext } from "../context";
+import NavBar from "../NavBar/Navbar";
 import img from "./img.png";
 import "./register.css";
 
@@ -26,15 +27,16 @@ const RegisterPage = () => {
         const payload = { username, password: password1, confirmation: password2 };
         const { message } = (await axios.post(SERVER_URL + "/register", payload)).data;
         if (message === "already logged in") navigate("/");
-        else if (message === "invalid fields") alert("Incorrect input!");
-        else if (message === "already exists") updateUserAlreadyExists(true);
-        else if (message === "successfully added") navigate("/SignIn");
+        if (message === "invalid fields") alert("Incorrect input!");
+        if (message === "already exists") updateUserAlreadyExists(true);
+        if (message === "successfully added") navigate("/SignIn");
     };
 
     const validPassword = password1.length !== 0 && password1 === password2;
 
     return (
         <div className="signin_background">
+            <NavBar />
             <div className="container">
                 <div className="form">
                     <h2>REGISTER</h2>

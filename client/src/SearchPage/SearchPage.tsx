@@ -1,23 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
 import { Summary } from "../types";
 import topics from "./tags";
-import Result from "../Result";
 import axios from "axios";
 import { RootContext } from "../context";
-import SummaryModal from "./SummaryModal";
-
-const defualtSummary: Summary = {
-    id: "plv506632yo",
-    description: "spongebob",
-    title: "Funny moments from ze sponge",
-};
+import Feed from "../Feed/Feed";
 
 const SearchPage = () => {
     const [searchValue, updateSearchValue] = useState("");
-    const [summaryModalOpen, updateSummaryModalOpen] = useState(false);
-    const [selectedSummary, updateSelectedSummary] = useState(defualtSummary as Summary);
     const [selection, updateSelection] = useState([] as string[]);
     const [filtered, updateFiltered] = useState(topics as string[]);
     const [displaySelector, updateDisplaySelector] = useState(true);
@@ -60,20 +51,9 @@ const SearchPage = () => {
         }
     };
 
-    const selectResult = (summary: Summary) => {
-        updateSelectedSummary(summary);
-        updateSummaryModalOpen(true);
-    };
-
     return (
         <div>
             <NavBar />
-            {summaryModalOpen && (
-                <SummaryModal
-                    updateSummaryModalOpen={updateSummaryModalOpen}
-                    summary={selectedSummary}
-                />
-            )}
             <div style={{ backgroundColor: "#FAD000" }}>
                 <Title>Select Your Categories!</Title>
             </div>
@@ -121,19 +101,13 @@ const SearchPage = () => {
                 onClick={handleSubmission}>
                 Search!
             </SearchButton>
-            <SearchResults>
-                {searchCompleted ? (
-                    searchResults.map(r => (
-                        <span onClick={() => selectResult(r)}>
-                            <Result summary={r} />
-                        </span>
-                    ))
-                ) : (
-                    <Container>
-                        <Description>Select topics and click search!</Description>
-                    </Container>
-                )}
-            </SearchResults>
+            {searchCompleted ? (
+                <Feed results={searchResults} />
+            ) : (
+                <Container>
+                    <Description>Select topics and click search!</Description>
+                </Container>
+            )}
         </div>
     );
 };
@@ -233,34 +207,18 @@ const SearchButton = styled.div`
     }
 `;
 
-const SearchResults = styled.div`
-    width: 60%;
-    border-top: 5px solid black;
-    margin: auto;
-`;
-
 const Container = styled.a`
     display: flex;
     text-decoration: none;
     color: black;
     align-items: center;
     padding: 10px;
-    background-color: #e1e1e1;
-    border-radius: 10px;
     margin: 20px 0;
-    &:hover {
-        cursor: pointer;
-        background-color: #fff1ac;
-    }
-`;
-
-const Img = styled.img`
-    border-radius: 10px;
-    width: 15%;
 `;
 
 const Description = styled.div`
     text-align: center;
     width: 85%;
     font-size: 25px;
+    margin: auto;
 `;
