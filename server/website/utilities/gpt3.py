@@ -8,6 +8,7 @@ Key Facts:
 
 """
 import openai
+from keybert import KeyBERT
 
 
 def summarize_yt_script_with_gpt3(yt_transcript,
@@ -61,3 +62,22 @@ def summarize_yt_script_with_gpt3(yt_transcript,
                     presence_penalty=presence_penalty)
 
     return response['choices'][0]['text']
+
+
+def pull_key_words(summary):
+    """ Uses keybert lib to deduce and fetch keywords for video
+        summaries/transcripts, returning processed data to be
+        stored in the cassandra database.
+
+        Args:
+            transcript_or_summary: string -> video transcript or
+            video summary
+
+        Returns:
+            transcript: [(word, ngram)] in the format found in models.py
+    """
+    model = KeyBERT()
+    keywords_list = (model.extract_keywords(summary, 
+    keyphrase_ngram_range=(1, 1), stop_words=None))
+    keywords = [i[0] for i in keywords_list]
+    return keywords

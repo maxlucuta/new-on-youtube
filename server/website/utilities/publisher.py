@@ -3,7 +3,6 @@ from os import environ
 
 TOPIC_PATH = "projects/new-on-youtube-375417/topics/gpt-tasks"
 
-
 def publisher_connect():
     """Connects to Google PubSub Publisher Client
 
@@ -32,5 +31,4 @@ def create_task(topic, amount):
     attributes = {'search_term': topic, 'amount': amount}
     future = publisher.publish(TOPIC_PATH, data, **attributes)
     publisher.publish(TOPIC_PATH, data, **attributes)
-
     return

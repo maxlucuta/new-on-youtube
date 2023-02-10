@@ -12,7 +12,6 @@ from cassandra.auth import PlainTextAuthProvider
 from flask import abort
 from uuid import UUID
 from .users import User
-from .new_yt import get_videos_by_topic
 from .publisher import create_task
 
 
@@ -45,38 +44,6 @@ def establish_connection():
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
     session = cluster.connect()
     return session
-
-def parseResults(results):
-    return [{'id': x.video_id, 'title': x.video_title, 'description': x.summary} for x in results]
-
-def query_yt_videos_list(topics, k, session):
-    # query database or youtube using a list of topics of interest
-    # return list of [{ id, title, description }]
-
-    # try fetching results from database
-    keywords_tuple = "(" + ",".join([f"'{topic}'" for topic in topics]) + ")"
-    queryString = f"""select * from summaries.video_summaries where keyword in {keywords_tuple} limit {k}"""
-    query = session.execute(queryString).all()
-    if len(query) != 0: return parseResults(query)
-
-    # set up background task to populate daatbase
-    # create_task(topics) TODO
-
-    # try fetching results using youtube API
-    #youtube_query = get_videos_by_topic(topics, k)
-    #if len(youtube_query) != 0: return parseResults(youtube_query)
-
-    # try returning all results from database
-    all_database  = session.execute("""select * from summaries.video_summaries """).all()
-    if all_database and len(all_database) != 0: return parseResults(all_database[:20])
-
-    # return a default video
-    return [{
-        "id": "JRPC7a_AcQo",
-        "description": "This is just a placeholder video, database connection failed or empty",
-        "title": "Placeholder video",
-    }]
-
 
 def query_yt_videos(keyword, k, session):
     """
@@ -139,7 +106,6 @@ def string_cleaner(input_string):
     Returns:
         str: The cleaned string.
     """
-
     return input_string.replace("'", "").replace('"', '')
 
 
@@ -187,13 +153,13 @@ def insert_into_DB(video_dict, session):
         print("Insertion successful --------- ")
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")
-        return True
     except Exception:
         print(Exception)
         print("Insertion Failed ! ----------- ")
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")
         return False
+    return True
 
 
 def query_users_db(username=None, user_id=None):
@@ -217,9 +183,6 @@ def query_users_db(username=None, user_id=None):
         return None
 
     session = establish_connection()
-    # Need to update this to first check for global session
-    # Same for functions higher up
-
     if username:
         query = session.execute(f"""select * from summaries.users
                                     where username = '{username}'""").all()
@@ -230,9 +193,6 @@ def query_users_db(username=None, user_id=None):
             return None
         query = session.execute(f"""select * from summaries.users where
                                  id = {user_id} allow filtering""").all()
-
-    # if len(query) > 1:
-    #     abort(500)
 
     if query:
         query = query[0]
@@ -246,8 +206,7 @@ def query_users_db(username=None, user_id=None):
                        categories,
                        channels)
         return userobj
-    else:
-        return None
+    return None
 
 
 def insert_user_into_db(userobj):
@@ -269,8 +228,6 @@ def insert_user_into_db(userobj):
         return False
     try:
         session = establish_connection()
-        # Need to update the above to first check for global session
-        # Same for functions higher up
         categories = ','.join(userobj.categories)
         channels = ','.join(userobj.channels)
         values = f""" VALUES ('{userobj.username}',
@@ -278,9 +235,7 @@ def insert_user_into_db(userobj):
                       UUID(),'{userobj.password}')"""
         prepend = """INSERT INTO summaries.users
                      (username, categories, channels, id, password)"""
-        # result = session.execute(prepend+values)
-        # Need to use result for error handling
         session.execute(prepend+values)
-        return True
     except Exception:
         return False
+    return True

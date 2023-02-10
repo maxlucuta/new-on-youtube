@@ -1,7 +1,7 @@
 from google.cloud import pubsub_v1 as pubsub
 from concurrent.futures import TimeoutError
 from youtube_transcript_api import NoTranscriptFound
-from .new_yt import get_most_popular_video_transcripts_by_topic
+from .youtube import get_most_popular_video_transcripts_by_topic
 from .database import insert_into_DB, establish_connection
 from os import environ
 

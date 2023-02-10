@@ -11,7 +11,7 @@ Date: 8. Februar, 2023
 import sys
 
 
-from website.utilities.new_yt import (
+from website.utilities.youtube import (
     get_most_popular_video_transcripts_by_topic
 )
 

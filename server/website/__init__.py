@@ -13,10 +13,11 @@ from threading import Thread
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         app = Flask(__name__, static_folder='../static', static_url_path='/')
-    else:
+    else: 
         app = Flask(__name__, static_folder='../../client/build')
 
     CORS(app)
+    app.config['CORS_HEADERS'] = 'Content-Type'
     app.secret_key = "3ce02ed1f5e5d521adaf7ffca7a05703"
 
     login_manager = LoginManager()
@@ -27,8 +28,6 @@ def create_app():
     def load_user(user_id):
         user = query_users_db(user_id=user_id)
         return user if user else None
-
-    app.config['CORS_HEADERS'] = 'Content-Type'
 
     app.register_blueprint(views_blueprint)
     app.register_blueprint(request_blueprint)

@@ -1,6 +1,5 @@
 from flask_login import UserMixin
 
-
 class User(UserMixin):
     """ User class that is initialised when a user is loaded i.e. logs in
         Attributes can be accessed via current_user.attribute when a user
