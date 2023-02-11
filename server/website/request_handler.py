@@ -129,4 +129,4 @@ def request_summary():
 
 @request_blueprint.route("/popular_videos", methods=['GET'])
 def popular_videos():
-	return query_yt_videos_list("music", 20, SESSION)
+	return query_yt_videos("music", 20, SESSION)
