@@ -38,6 +38,7 @@ class YoutubeParser:
                 if len(self.response) >= self.amount: break
                 self._insert_results(result[i])
             query.next()
+            print("Got " + str(len(self.response)) +" response(s) ...", end='\r')
         return 
 
 
@@ -112,7 +113,7 @@ class YoutubeParser:
             try:
                 transcript = data['transcript']
                 data["summary"] = self.summarise(transcript, rate)
-                print("Got " + str(count) + " video(s)!")
+                print("Got " + str(count) + " video(s)!", end='\r')
             except (RateLimitError, ServiceUnavailableError): 
                 continue
         return 
