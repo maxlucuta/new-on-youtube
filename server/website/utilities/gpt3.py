@@ -8,7 +8,7 @@ Key Facts:
 
 """
 import openai
-#from keybert import KeyBERT
+from keybert import KeyBERT
 
 
 def summarize_yt_script_with_gpt3(yt_transcript,
