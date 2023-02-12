@@ -8,26 +8,26 @@ import youtube_transcript_api, time, functools, requests, openai
 
 
 class YouTubeScraper:
-
     def __init__(self):
         self.response = []
 
     @abstractmethod
-    def execute(): pass
+    def execute(self): pass
+
+    @abstractmethod
+    def _insert_results(self, result): pass
 
     @staticmethod
     def get_keywords(url):
-        try:
-            return Video.get(url)["keywords"]
-        except (TypeError, ValueError):
-            return None
+        try: return Video.get(url)["keywords"]
+        except (TypeError, ValueError): return None
 
     @staticmethod
     def get_popular_topics(amount):
         query = VideoSearch(VideoSortOrder.viewCount, 
         limit = amount, language = 'en', region = 'US')
         return query.result()['result']
-
+        
     @staticmethod
     def get_suggestions(topic):
         suggestions = Suggestions(language='en', region='US')
@@ -60,12 +60,11 @@ class YouTubeScraper:
 
     
 class YouTubeSummaries(YouTubeScraper):
-
-    def __init__(self, topic, amount, rate=10):
+    def __init__(self, topic, amount):
         super().__init__()
         self.topic = topic
         self.amount = amount
-        self.rate = rate
+        self.rate = 10
         self.videos = set()
 
     def execute(self):
@@ -92,8 +91,6 @@ class YouTubeSummaries(YouTubeScraper):
                 if len(self.response) >= self.amount: break
                 self._insert_results(result[i])
             query.next()
-            print("Got " + str(len(self.response)) +" response(s) ...", end='\r')
-        print("")
         return
 
     def _extract_metadata(self, result):
@@ -146,10 +143,8 @@ class YouTubeSummaries(YouTubeScraper):
             try:
                 transcript = data['transcript']
                 data["summary"] = self.summarise(transcript, self.rate)
-                print("Got " + str(i+1) + " summary(s)!", end='\r')
             except (RateLimitError, ServiceUnavailableError): 
                 continue
-        print("")
         return 
 
     def _garbage_collector(self):
@@ -162,7 +157,6 @@ class YouTubeSummaries(YouTubeScraper):
 
 
 class YouTubeUpdates(YouTubeScraper):
-
     PREFIX = "https://www.youtube.com/watch?v="
 
     def __init__(self, video_id):
@@ -183,15 +177,13 @@ class YouTubeUpdates(YouTubeScraper):
         self.response.append(results)
         return 
         
-    def _generate_urls(self):
-        url_list = []
-        for id in self.video_id:
-            url_list.add(PREFIX + id)
-        return url_list
-
         
-def get_most_popular_video_transcripts_by_topic(topic, amount, rate=10):
+def get_most_popular_video_transcripts_by_topic(topic, amount):
     parser = YouTubeSummaries(topic, amount)
+    return parser.execute()
+
+def get_updated_likes_and_views(video_id):
+    parser = YouTubeUpdates(video_id)
     return parser.execute()
 
 
