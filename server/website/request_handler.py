@@ -6,12 +6,11 @@ that the request contains both topic=x and amount=y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
-from .utilities.database import establish_connection, query_yt_videos
+from .utilities.database import query_yt_videos
 from werkzeug.exceptions import HTTPException
 import re, random
 
 request_blueprint = Blueprint("request_blueprint", __name__)
-SESSION = establish_connection()
 
 @request_blueprint.errorhandler(400)
 def bad_request(e):
@@ -116,7 +115,7 @@ def request_summary():
 
 	response = []
 	for topic in topics:
-		query_response = (query_yt_videos(topic, int(amount), SESSION))
+		query_response = (query_yt_videos(topic, int(amount)))
 		for summary in query_response:
 			response.append(summary)
 	
@@ -129,4 +128,4 @@ def request_summary():
 
 @request_blueprint.route("/popular_videos", methods=['GET'])
 def popular_videos():
-	return query_yt_videos("music", 20, SESSION)
+	return query_yt_videos("music", 20)

@@ -14,7 +14,6 @@ from uuid import UUID
 from .users import User
 from .publisher import create_task
 
-
 def establish_connection():
     """
     This function initializes the connection to the DB using
@@ -45,7 +44,7 @@ def establish_connection():
     session = cluster.connect()
     return session
 
-def query_yt_videos(keyword, k, session):
+def query_yt_videos(keyword, k):
     """
     This function performs a query on the DB and returns a list of
     dictionaries (video_title, channel_name, summary) - each belonging
@@ -60,6 +59,7 @@ def query_yt_videos(keyword, k, session):
         [dict]
 
     """
+    session = establish_connection()
     query = session.execute(
         f"""select * from summaries.video_summaries where
             keyword = '{keyword}' limit {k}""").all()
@@ -73,7 +73,7 @@ def query_yt_videos(keyword, k, session):
         return [{"ERROR": "Query failed"}]
 
 
-def check_if_video_is_already_in_DB(keyword, video_id, session):
+def check_if_video_is_already_in_DB(keyword, video_id):
     """
     This function checks if a video is already in our DB so
     we don't have to summarize it all over again.
@@ -85,6 +85,7 @@ def check_if_video_is_already_in_DB(keyword, video_id, session):
     Return:
         bool: True if video is in DB - False otherwise
     """
+    session = establish_connection()
     query = session.execute(f"""select video_id from summaries.video_summaries
                 where keyword = '{keyword}';""")
     if query:
@@ -109,7 +110,7 @@ def string_cleaner(input_string):
     return input_string.replace("'", "").replace('"', '')
 
 
-def insert_into_DB(video_dict, session):
+def insert_into_DB(video_dict):
     """
     This function performs an insertion into the DB and returns True
     if the operation was successful - and false otherwise.
@@ -126,6 +127,7 @@ def insert_into_DB(video_dict, session):
         Boolean
 
     """
+    session = establish_connection()
     vid_tags = ','.join(video_dict["video_tags"])
     vid_tags = string_cleaner(vid_tags)
     summary = string_cleaner(video_dict["summary"])

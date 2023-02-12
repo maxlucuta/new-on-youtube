@@ -1,8 +1,6 @@
 from google.cloud import pubsub_v1 as pubsub
-from concurrent.futures import TimeoutError
-from youtube_transcript_api import NoTranscriptFound
 from .youtube import get_most_popular_video_transcripts_by_topic
-from .database import insert_into_DB, establish_connection
+from .database import insert_into_DB
 from os import environ
 
 SUBSCRIBER_PATH = "projects/new-on-youtube-375417/subscriptions/gpt-tasks-sub"
@@ -31,27 +29,20 @@ def callback(message):
     
     topic = message.attributes.get('search_term')
     amount = int(message.attributes.get('amount'))
-    message.ack()
     print(f"{topic} revieved!")
 
-    try:
-        processed_task = get_most_popular_video_transcripts_by_topic(
-            topic, int(amount))
-    except NoTranscriptFound:
-        print(f"{topic} failed!", flush=True)
-        message.ack()
-        return
-
-    SESSION = establish_connection()
+    processed_task = get_most_popular_video_transcripts_by_topic(
+    topic, int(amount))
 
     for data in processed_task:
-        insert_into_DB(data, SESSION)
+        insert_into_DB(data)
     
     print(f"{topic} processed!", flush=True)
+    message.ack()
     return
 
 
-def process_tasks(timeout=10):
+def process_tasks():
     """Stream processes subsriber content indefinitely until
        current thread is terminated.
     """
@@ -65,7 +56,7 @@ def process_tasks(timeout=10):
 
     with subscriber:
         try:
-            streaming_pull_future.result(timeout=timeout)
+            streaming_pull_future.result(timeout=1000)
         except TimeoutError:
             streaming_pull_future.cancel()
             streaming_pull_future.result()

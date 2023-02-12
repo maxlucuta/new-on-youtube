@@ -2,32 +2,86 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from .gpt3 import summarize_yt_script_with_gpt3
 from openai.error import RateLimitError, ServiceUnavailableError
 from youtubesearchpython import *
+from abc import abstractmethod
+from .database import check_if_video_is_already_in_DB as in_db
 import youtube_transcript_api, time, functools, requests, openai
 
-class YoutubeParser:
 
-    def __init__(self, topic, amount):
-        self.topic = topic
-        self.amount = amount
-        self.videos = set()
+class YouTubeScraper:
+
+    def __init__(self):
         self.response = []
 
+    @abstractmethod
+    def execute(): pass
+
+    @staticmethod
+    def get_keywords(url):
+        try:
+            return Video.get(url)["keywords"]
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def get_popular_topics(amount):
+        query = VideoSearch(VideoSortOrder.viewCount, 
+        limit = amount, language = 'en', region = 'US')
+        return query.result()['result']
+
+    @staticmethod
+    def get_suggestions(topic):
+        suggestions = Suggestions(language='en', region='US')
+        topics = suggestions.get(topic)['result']
+        del topics[0]
+        return topics
+
+    def _convert_ints(self, raw):
+        fields = ['likes', 'views']
+        for data in fields:
+            cleaned = "".join([i for i in raw[data] if i.isdigit()])
+            raw[data] = int(cleaned) if cleaned else 0
+        return
+
+    def _get_likes(self, url):
+        r = requests.get(url, headers={'User-Agent': ''})
+        likes = r.text[:r.text.find(' likes"')]
+        return likes[likes.rfind('"') + 1:]
+
+    def _get_views(self, url):
+        r = requests.get(url, headers={'User-Agent': ''})
+        views = r.text[:r.text.find(' views"')]
+        return views[views.rfind('"') + 1:]
+
+    def _no_empty_fields(self, data, expected):
+        for key in data:
+            if not data[key]:
+                return False
+        return len(data) == expected
+
     
-    def execute(self, rate=1):
+class YouTubeSummaries(YouTubeScraper):
+
+    def __init__(self, topic, amount, rate=10):
+        super().__init__()
+        self.topic = topic
+        self.amount = amount
+        self.rate = rate
+        self.videos = set()
+
+    def execute(self):
         self._search()
-        self._generate_summaries(rate)
+        self._generate_summaries()
         self.response = self._garbage_collector()
         return self.response
 
-    
-    def exception_handler(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            try: func(*args, **kwargs)
-            except TypeError: pass
-            except KeyError: pass
-        return wrapper
-    
+    @staticmethod
+    def summarise(transcript, limiter, keywords=None):
+        task = "Please summarise this transcript for me in a \
+        few sentences: " + transcript + "\n\nTl;dr"
+        summary = summarize_yt_script_with_gpt3(task)
+        summary = summary.strip(" :-")
+        time.sleep(limiter)
+        return summary
 
     def _search(self):
         query = CustomSearch(self.topic, VideoDurationFilter.short,
@@ -40,35 +94,30 @@ class YoutubeParser:
             query.next()
             print("Got " + str(len(self.response)) +" response(s) ...", end='\r')
         print("")
-        return 
+        return
 
-
-    @exception_handler
-    def _insert_results(self, result):
-        if result['id'] in self.videos: return
+    def _extract_metadata(self, result):
         data = dict()
         data["keyword"] = self.topic
         data["video_id"] = result['id']
         data["video_name"] = result['title']
-        data["channel_name"] = result['channel']['name'] 
-        data['views'] = result['viewCount']['text']
+        data["channel_name"] = result['channel']['name']
         data['published_at'] = result['publishedTime']
-        data['likes'] = self._get_likes(result['link'])
+        data['views'] = self._get_views(result['link'])
         data["video_tags"] = self.get_keywords(result['link'])
-        if not self._has_transcript_available(data): return
-        if not self._no_empty_fields(data): return 
+        data['likes'] = self._get_likes(result['link'])
+        return data
+
+    def _insert_results(self, result):
+        if in_db(self.topic, result['id']): return
+        if result['id'] in self.videos: return
+        data = self._extract_metadata(result)
+        if not self._has_transcript_available(data): return 
+        if not self._no_empty_fields(data, 9): return 
         self._convert_ints(data)
         self.response.append(data)
         self.videos.add(result['id'])
         return
-
-
-    def _no_empty_fields(self, data):
-        for i in data:
-            if not data[i]:
-                return False
-        return len(data) == 9
-
 
     def _has_transcript_available(self, data):
         try:
@@ -82,22 +131,6 @@ class YoutubeParser:
             youtube_transcript_api.YouTubeRequestFailed):
             return False
         return True
-         
-
-    def _convert_ints(self, data):
-        likes = "".join([i for i in data['likes'] if i.isdigit()])
-        views = "".join([i for i in data['views'] if i.isdigit()])
-        data['likes'] = int(likes) if likes else 0
-        data['views'] = int(views) if views else 0
-        return
-
-    
-    def _get_likes(self, url):
-        r = requests.get(url, headers={'User-Agent': ''})
-        likes = r.text[:r.text.find(' likes"')]
-        dislikes = r.text[:r.text.find(' dislikes"')]
-        return likes[likes.rfind('"') + 1:]
-
 
     def _format_transcript(self, raw_transcript):
         final_transcript = []
@@ -108,21 +141,17 @@ class YoutubeParser:
             final_transcript.append(word)
         return " ".join(final_transcript)
 
-
-    def _generate_summaries(self, rate):
-        count = 0
-        for data in self.response:
+    def _generate_summaries(self):
+        for i, data in enumerate(self.response):
             try:
                 transcript = data['transcript']
-                data["summary"] = self.summarise(transcript, rate)
-                count += 1
-                print("Got " + str(count) + " summary(s)!", end='\r')
+                data["summary"] = self.summarise(transcript, self.rate)
+                print("Got " + str(i+1) + " summary(s)!", end='\r')
             except (RateLimitError, ServiceUnavailableError): 
                 continue
         print("")
         return 
 
-    
     def _garbage_collector(self):
         new_response = []
         for data in self.response:
@@ -130,41 +159,40 @@ class YoutubeParser:
                 del data['transcript']
                 new_response.append(data)
         return new_response
+
+
+class YouTubeUpdates(YouTubeScraper):
+
+    PREFIX = "https://www.youtube.com/watch?v="
+
+    def __init__(self, video_id):
+        self.video_id = video_id
+
+    def execute(self):
+        for id in self.video_id:
+            url, data = PREFIX + id, {}
+            data['views'] = self._get_views(url)
+            data['likes'] = self._get_likes(url)
+            data['video_id'] = id
+            self._insert_results(data)
+        return self.response
+
+    def _insert_results(self, results):
+        if not self._no_empty_fields(results, 3): return 
+        self._convert_ints(results)
+        self.response.append(results)
+        return 
         
+    def _generate_urls(self):
+        url_list = []
+        for id in self.video_id:
+            url_list.add(PREFIX + id)
+        return url_list
 
-    @staticmethod
-    def get_keywords(url):
-        return Video.get(url)["keywords"]
-
-
-    @staticmethod
-    def get_suggestions(topic):
-        suggestions = Suggestions(language='en', region='US')
-        topics = suggestions.get(topic)['result']
-        del topics[0]
-        return topics
-
-
-    @staticmethod
-    def summarise(transcript, limiter, keywords=None):
-        task = "Please summarise this transcript for me in a \
-        few sentences: " + transcript + "\n\nTl;dr"
-        summary = summarize_yt_script_with_gpt3(task)
-        summary = summary.strip(" :-")
-        time.sleep(limiter)
-        return summary
-
-
-    @staticmethod
-    def get_popular_topics(amount):
-        query = VideoSearch(VideoSortOrder.viewCount, 
-        limit = amount, language = 'en', region = 'US')
-        return query.result()['result']
-
-
+        
 def get_most_popular_video_transcripts_by_topic(topic, amount, rate=10):
-    parser = YoutubeParser(topic, amount)
-    return parser.execute(rate)
+    parser = YouTubeSummaries(topic, amount)
+    return parser.execute()
 
 
 

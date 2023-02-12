@@ -9,8 +9,17 @@ Date: 8. Februar, 2023
 
 
 import sys
+from threading import Thread
+from website.utilities.subscriber import process_tasks
+from website.utilities.database import query_yt_videos
+
+t = Thread(name="background", target=process_tasks, daemon=True)
+t.start()
+t.join()
+print(query_yt_videos("sea world", 3))
 
 
+"""
 from website.utilities.youtube import (
     get_most_popular_video_transcripts_by_topic
 )
@@ -30,3 +39,7 @@ try:
 except googleapi_errors.HttpError as err:
     if err.resp.status == 403:
         print("Warning: Daily YouTube API quota exceeded.")
+
+"""
+
+
