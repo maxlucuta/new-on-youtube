@@ -1,6 +1,6 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 from .gpt3 import summarize_yt_script_with_gpt3
-from openai.error import RateLimitError, ServiceUnavailableError
+from openai.error import RateLimitError, ServiceUnavailableError, InvalidRequestError
 from youtubesearchpython import *
 from abc import abstractmethod
 from .database import check_if_video_is_already_in_DB as in_db
@@ -143,8 +143,8 @@ class YouTubeSummaries(YouTubeScraper):
             try:
                 transcript = data['transcript']
                 data["summary"] = self.summarise(transcript, self.rate)
-            except (RateLimitError, ServiceUnavailableError): 
-                continue
+            except (RateLimitError, ServiceUnavailableError,
+            InvalidRequestError): continue
         return 
 
     def _garbage_collector(self):

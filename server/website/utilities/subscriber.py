@@ -29,7 +29,7 @@ def callback(message):
     
     topic = message.attributes.get('search_term')
     amount = int(message.attributes.get('amount'))
-    print(f"{topic} revieved!")
+    print(f"{topic} recieved!")
 
     processed_task = get_most_popular_video_transcripts_by_topic(
     topic, int(amount))
@@ -51,12 +51,11 @@ def process_tasks():
     flow_control = pubsub.types.FlowControl(max_messages=1)
 
     streaming_pull_future = subscriber.subscribe(SUBSCRIBER_PATH,
-                                                 callback=callback,
-                                                 flow_control=flow_control)
+    callback=callback, flow_control=flow_control)
 
     with subscriber:
         try:
-            streaming_pull_future.result(timeout=1000)
+            streaming_pull_future.result()
         except TimeoutError:
             streaming_pull_future.cancel()
             streaming_pull_future.result()
