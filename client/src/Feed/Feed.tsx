@@ -9,9 +9,10 @@ type FeedProps = {
 };
 
 const defualtSummary: Summary = {
-    id: "JRPC7a_AcQo",
-    description: "This is just a placeholder video, database connection failed or empty",
-    title: "Placeholder video",
+    video_id: "JRPC7a_AcQo",
+    summary: "This is just a placeholder video, database connection failed or empty",
+    video_title: "Placeholder video",
+    channel_name: "Placeholder channel name"
 };
 
 const Feed = (props: FeedProps) => {

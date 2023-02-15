@@ -62,17 +62,29 @@ def query_yt_videos(keyword, k):
 
     """
     session = establish_connection()
-    query = session.execute(
-        f"""select * from summaries.video_summaries where
-            keyword = '{keyword}' limit {k}""").all()
-    if query:
-        result = [{'video_title': x.video_title,
-                   'channel_name': x.channel_name,
-                   'summary': x.summary} for x in query]
-        return result
+
+    try:
+        query = session.execute(
+            f"""select * from summaries.video_summaries where
+                keyword = '{keyword}' limit {k}""").all()
+    except:
+        # better to catch specific errors
+        # perhaps should be outputted to logfile
+        print("Database Query Error") 
+        return []
     else:
-        create_task(keyword, str(k))
-        return [{"ERROR": "Query failed"}]
+        # videos for that topic exist in database
+        if len(query) > 0:
+            result = [{'video_title': x.video_title,
+                    'channel_name': x.channel_name,
+                    'summary': x.summary,
+                    'video_id': x.video_id } for x in query]
+            return result
+        else:
+            create_task(keyword, str(k))
+            return []
+            # the below exception should probably be handled in the try-except statement
+            # return [{"ERROR": "Query failed"}]
 
 
 def check_if_video_is_already_in_DB(keyword, video_id):

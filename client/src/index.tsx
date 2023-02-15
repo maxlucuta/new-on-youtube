@@ -13,7 +13,7 @@ const App = () => {
     const [user, updateUser] = useState("");
 
     // conditionally switched to production url in live
-    const PRODUCTION = !window.location.href.startsWith("http://localhost");
+    const PRODUCTION = window.location.href === "https://new-on-youtube.herokuapp.com";
     const SERVER_URL = PRODUCTION
         ? "https://new-on-youtube.herokuapp.com"
         : "http://localhost:5000";

@@ -9,8 +9,8 @@ type ResultProps = {
 const Result = (props: ResultProps) => {
     return (
         <Container>
-            <Img src={thumbnail(props.summary.id)} />
-            <Description>{props.summary.title}</Description>
+            <Img src={thumbnail(props.summary.video_id)} />
+            <Description>{props.summary.summary}</Description>
         </Container>
     );
 };

@@ -13,14 +13,14 @@ const SummaryModal = (props: SummaryModalProps) => {
     return (
         <Container onClick={() => props.updateSummaryModalOpen(false)}>
             <Modal>
-                <Title>{props.summary.title}</Title>
+                <Title>{props.summary.video_title}</Title>
                 <div style={{ textAlign: "center" }}>
-                    <a href={url(props.summary.id)}>
-                        <Img src={thumbnail(props.summary.id)} />
+                    <a href={url(props.summary.video_id)}>
+                        <Img src={thumbnail(props.summary.video_id)} />
                     </a>
                 </div>
                 <div style={{ textAlign: "center", fontSize: "10px" }}>click to visit!</div>
-                <Description>{props.summary.description}</Description>
+                <Description>{props.summary.summary}</Description>
             </Modal>
         </Container>
     );

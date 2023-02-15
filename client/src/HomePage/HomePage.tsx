@@ -20,8 +20,9 @@ const HomePage = () => {
     const { SERVER_URL } = useContext(RootContext);
 
     const getPopularVideos = async () => {
-        const results = await (await axios.get(SERVER_URL + "/popular_videos")).data;
-        updateSummaries(results);
+        const response = await (await axios.get(SERVER_URL + "/popular_videos")).data;
+        if (response.status_code != 200) alert(SERVER_URL)
+        else updateSummaries(response.results);
     };
 
     useEffect(() => {

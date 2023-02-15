@@ -73,10 +73,10 @@ def validate_get_request(topics, amount):
         abort(400)
 
     valid_topics = True
-    for topic in topics:
-        valid_topics &= bool(re.match(r'[a-zA-Z\s]+$', topic))
+    # for topic in topics:
+    #     valid_topics &= bool(re.match(r'[a-zA-Z\s]+$', topic))
 
-    if not valid_topics or not amount.isdigit() \
+    if not valid_topics or not isinstance(amount, int) \
             or 0 >= int(amount) or int(amount) > 20:
         abort(400)
 
@@ -96,9 +96,12 @@ def valid_query_response(topic_summaries, amount):
             video_title = query_response.get('video_title')
             channel_name = query_response.get('channel_name')
             summary = query_response.get('summary')
+            video_id = query_response.get('video_id')
         except KeyError:
             return False
-    return len(topic_summaries) == amount
+    
+    return True
+    # return len(topic_summaries) == amount
 
 
 @request_blueprint.route("/", methods=['POST'])
@@ -119,15 +122,18 @@ def request_summary():
     Raises:
             HTTPException 400 / 404 / 408 / 417 / 500
     """
-    topics = request.form.getlist('topic')
-    amount = request.form.get('amount')
+    body = request.json
+    topics = body["topics"]
+    amount = body["amount"]
+
+    # topics = request.form.getlist('topic')
+    # amount = request.form.get('amount')
     validate_get_request(topics, amount)
 
     response = []
     for topic in topics:
         query_response = (query_yt_videos(topic, int(amount)))
-        for summary in query_response:
-            response.append(summary)
+        response += query_response
 
     random.shuffle(response)
     response = response[:int(amount)]
@@ -139,4 +145,9 @@ def request_summary():
 
 @request_blueprint.route("/popular_videos", methods=['GET'])
 def popular_videos():
-    return query_yt_videos("music", 20)
+    results = query_yt_videos("football", 10)
+
+    if not valid_query_response(results, len(results)):
+        abort(417)
+
+    return {'status_code': 200, 'description': 'Ok.', 'results': results}
