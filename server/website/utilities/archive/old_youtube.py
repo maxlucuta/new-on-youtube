@@ -10,11 +10,11 @@ youtube = googleapi.build("youtube", "v3", developerKey=API_KEY)
 
 
 def get_most_popular_video_transcripts_by_topic(
-                                                topic,
-                                                videos_requested,
-                                                fast_summarizer=False,
-                                                include_summary=True,
-                                                pause_length=1):
+        topic,
+        videos_requested,
+        fast_summarizer=False,
+        include_summary=True,
+        pause_length=1):
     """Calls youtube data api to fetch metadata for videos of
     the specific topic, returning processed data to be stored in the database.
     A maximum of 50 videos can be fetched from the API per call.
@@ -238,14 +238,17 @@ def get_video_information_by_id(video_ids,
     return full_video_information
 
 
-# function to populate topics list
+#  function to populate topics list
 def get_popular_topics():
     request = youtube.videos().list(
-        part="snippet", regionCode="gb", maxResults=40, chart = "mostPopular"
+        part="snippet", regionCode="gb", maxResults=40, chart="mostPopular"
     )
     results = request.execute()
 
-    list_of_lists = [(snippet["tags"] if snippet.get("tags") else []) for snippet in [item["snippet"] for item in results["items"]]]
-    with open("tags.txt" ,"w") as file:
-        for tag in [l[i] for l in list_of_lists for i in range(len(l))]:
+    list_of_lists = [(snippet["tags"] if snippet.get("tags") else [])
+                     for snippet in [item["snippet"]
+                     for item in results["items"]]]
+    with open("tags.txt", "w") as file:
+        for tag in [list[i] for list in list_of_lists
+                    for i in range(len(list))]:
             file.write(f"'{tag}',\n")

@@ -13,7 +13,7 @@ from threading import Thread
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         app = Flask(__name__, static_folder='../static', static_url_path='/')
-    else: 
+    else:
         app = Flask(__name__, static_folder='../../client/build')
 
     CORS(app)

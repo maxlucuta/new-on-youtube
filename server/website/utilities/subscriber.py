@@ -5,6 +5,7 @@ from os import environ
 
 SUBSCRIBER_PATH = "projects/new-on-youtube-375417/subscriptions/gpt-tasks-sub"
 
+
 def subscriber_connect():
     """Connects to Google PubSub Subscriber Client
 
@@ -26,17 +27,17 @@ def callback(message):
         message (pubsub.message): connection to substriber client
         and an instance of the subscriber session.
     """
-    
+
     topic = message.attributes.get('search_term')
     amount = int(message.attributes.get('amount'))
     print(f"{topic} recieved!")
 
     processed_task = get_most_popular_video_transcripts_by_topic(
-    topic, int(amount))
+        topic, int(amount))
 
     for data in processed_task:
         insert_into_DB(data)
-    
+
     print(f"{topic} processed!", flush=True)
     message.ack()
     return
@@ -51,7 +52,8 @@ def process_tasks():
     flow_control = pubsub.types.FlowControl(max_messages=1)
 
     streaming_pull_future = subscriber.subscribe(SUBSCRIBER_PATH,
-    callback=callback, flow_control=flow_control)
+                                                 callback=callback,
+                                                 flow_control=flow_control)
 
     with subscriber:
         try:

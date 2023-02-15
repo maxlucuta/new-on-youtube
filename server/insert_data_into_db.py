@@ -28,12 +28,8 @@ try:
 
     for i in res:
         ins = insert_into_DB(i, conn)
-  
+
 
 except googleapi_errors.HttpError as err:
     if err.resp.status == 403:
         print("Warning: Daily YouTube API quota exceeded.")
-
-
-
-

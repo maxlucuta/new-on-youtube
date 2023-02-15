@@ -63,6 +63,7 @@ def summarize_yt_script_with_gpt3(yt_transcript,
 
     return response['choices'][0]['text']
 
+
 """
 def pull_key_words(summary):
     "" Uses keybert lib to deduce and fetch keywords for video

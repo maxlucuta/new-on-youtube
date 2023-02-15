@@ -3,6 +3,7 @@ from os import environ
 
 TOPIC_PATH = "projects/new-on-youtube-375417/topics/gpt-tasks"
 
+
 def publisher_connect():
     """Connects to Google PubSub Publisher Client
 

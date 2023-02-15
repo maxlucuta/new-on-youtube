@@ -1,10 +1,16 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 from .gpt3 import summarize_yt_script_with_gpt3
-from openai.error import RateLimitError, ServiceUnavailableError, InvalidRequestError
+from openai.error import RateLimitError
+from openai.error import ServiceUnavailableError
+from openai.error import InvalidRequestError
 from youtubesearchpython import *
 from abc import abstractmethod
 from .database import check_if_video_is_already_in_DB as in_db
-import youtube_transcript_api, time, functools, requests, openai
+import youtube_transcript_api
+import time
+import functools
+import requests
+import openai
 
 
 class YouTubeScraper:
@@ -19,15 +25,17 @@ class YouTubeScraper:
 
     @staticmethod
     def get_keywords(url):
-        try: return Video.get(url)["keywords"]
-        except (TypeError, ValueError): return None
+        try:
+            return Video.get(url)["keywords"]
+        except (TypeError, ValueError):
+            return None
 
     @staticmethod
     def get_popular_topics(amount):
-        query = VideoSearch(VideoSortOrder.viewCount, 
-        limit = amount, language = 'en', region = 'US')
+        query = VideoSearch(VideoSortOrder.viewCount,
+                            limit=amount, language='en', region='US')
         return query.result()['result']
-        
+
     @staticmethod
     def get_suggestions(topic):
         suggestions = Suggestions(language='en', region='US')
@@ -58,7 +66,7 @@ class YouTubeScraper:
                 return False
         return len(data) == expected
 
-    
+
 class YouTubeSummaries(YouTubeScraper):
     def __init__(self, topic, amount):
         super().__init__()
@@ -84,11 +92,12 @@ class YouTubeSummaries(YouTubeScraper):
 
     def _search(self):
         query = CustomSearch(self.topic, VideoDurationFilter.short,
-        language='en', region='US', limit=self.amount)
+                             language='en', region='US', limit=self.amount)
         while len(self.response) < self.amount:
             result = query.result()['result']
             for i in range(len(result)):
-                if len(self.response) >= self.amount: break
+                if len(self.response) >= self.amount:
+                    break
                 self._insert_results(result[i])
             query.next()
         return
@@ -106,11 +115,15 @@ class YouTubeSummaries(YouTubeScraper):
         return data
 
     def _insert_results(self, result):
-        if in_db(self.topic, result['id']): return
-        if result['id'] in self.videos: return
+        if in_db(self.topic, result['id']):
+            return
+        if result['id'] in self.videos:
+            return
         data = self._extract_metadata(result)
-        if not self._has_transcript_available(data): return 
-        if not self._no_empty_fields(data, 9): return 
+        if not self._has_transcript_available(data):
+            return
+        if not self._no_empty_fields(data, 9):
+            return
         self._convert_ints(data)
         self.response.append(data)
         self.videos.add(result['id'])
@@ -119,13 +132,13 @@ class YouTubeSummaries(YouTubeScraper):
     def _has_transcript_available(self, data):
         try:
             raw = YouTubeTranscriptApi.get_transcript(
-            data['video_id'], languages=['en', 'en-GB'])
+                data['video_id'], languages=['en', 'en-GB'])
             transcript = self._format_transcript(raw)
             data['transcript'] = transcript
         except (youtube_transcript_api.NoTranscriptFound,
-            youtube_transcript_api.TranscriptsDisabled,
-            youtube_transcript_api.NoTranscriptAvailable,
-            youtube_transcript_api.YouTubeRequestFailed):
+                youtube_transcript_api.TranscriptsDisabled,
+                youtube_transcript_api.NoTranscriptAvailable,
+                youtube_transcript_api.YouTubeRequestFailed):
             return False
         return True
 
@@ -144,8 +157,9 @@ class YouTubeSummaries(YouTubeScraper):
                 transcript = data['transcript']
                 data["summary"] = self.summarise(transcript, self.rate)
             except (RateLimitError, ServiceUnavailableError,
-            InvalidRequestError): continue
-        return 
+                    InvalidRequestError):
+                continue
+        return
 
     def _garbage_collector(self):
         new_response = []
@@ -172,31 +186,18 @@ class YouTubeUpdates(YouTubeScraper):
         return self.response
 
     def _insert_results(self, results):
-        if not self._no_empty_fields(results, 3): return 
+        if not self._no_empty_fields(results, 3):
+            return
         self._convert_ints(results)
         self.response.append(results)
-        return 
-        
-        
+        return
+
+
 def get_most_popular_video_transcripts_by_topic(topic, amount):
     parser = YouTubeSummaries(topic, amount)
     return parser.execute()
 
+
 def get_updated_likes_and_views(video_id):
     parser = YouTubeUpdates(video_id)
     return parser.execute()
-
-
-
-        
-
-
-
-
-
-
-
-
-
-
-

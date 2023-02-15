@@ -14,6 +14,7 @@ from uuid import UUID
 from .users import User
 from .publisher import create_task
 
+
 def establish_connection():
     """
     This function initializes the connection to the DB using
@@ -43,6 +44,7 @@ def establish_connection():
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
     session = cluster.connect()
     return session
+
 
 def query_yt_videos(keyword, k):
     """

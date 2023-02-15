@@ -32,18 +32,19 @@ def test_post_method_1(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic':['tennis'], 'amount':'1'}
-    response = test_client.post("/request", data = test_query)
+    test_query = {'topic': ['tennis'], 'amount': '1'}
+    response = test_client.post("/request", data=test_query)
     summaries = json.loads(response.data)
-    
+
     for summary in summaries:
         title = summary.get('video_title')
         channel = summary.get('channel_name')
         text = summary.get('summary')
         assert title and channel and text
-    
+
     assert len(summaries) == 1
     return
+
 
 def test_post_method_2(test_client):
     """Tests POST request response is correct for
@@ -57,8 +58,8 @@ def test_post_method_2(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic':['football']}
-    response = test_client.post("/request", data = test_query)
+    test_query = {'topic': ['football']}
+    response = test_client.post("/request", data=test_query)
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -82,8 +83,8 @@ def test_post_method_3(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'amount':'1'}
-    response = test_client.post("/request", data = test_query)
+    test_query = {'amount': '1'}
+    response = test_client.post("/request", data=test_query)
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -93,6 +94,7 @@ def test_post_method_3(test_client):
     assert description and description == "POST Request failed."
     assert status_code and status_code == 400
     return
+
 
 def test_post_method_4(test_client):
     """Tests POST request response is correct for
@@ -115,7 +117,8 @@ def test_post_method_4(test_client):
     assert len(error_codes) == 2
     assert description and description == "POST Request failed."
     assert status_code and status_code == 400
-    return 
+    return
+
 
 def test_post_method_5(test_client):
     """Tests POST request response is correct for
@@ -129,8 +132,8 @@ def test_post_method_5(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic':['football'], 'amount':'0'}
-    response = test_client.post("/request", data = test_query)
+    test_query = {'topic': ['football'], 'amount': '0'}
+    response = test_client.post("/request", data=test_query)
     error_codes = json.loads(response.data)
 
     description = error_codes.get('ERROR')
@@ -140,7 +143,8 @@ def test_post_method_5(test_client):
     assert description and description == "POST Request failed."
     assert status_code and status_code == 400
     return
-    
+
+
 def test_post_method_6(test_client):
     """Tests POST request response is valid.
     Args:
@@ -151,8 +155,8 @@ def test_post_method_6(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic':['joe rogan'], 'amount':'2'}
-    response = test_client.post("/request", data = test_query)
+    test_query = {'topic': ['joe rogan'], 'amount': '2'}
+    response = test_client.post("/request", data=test_query)
     summaries = json.loads(response.data)
 
     for summary in summaries:
@@ -160,7 +164,7 @@ def test_post_method_6(test_client):
         channel = summary.get('channel_name')
         text = summary.get('summary')
         assert title and channel and text
-    
+
     assert len(summaries) == 2
     return
 
