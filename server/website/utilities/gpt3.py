@@ -8,7 +8,7 @@ Key Facts:
 
 """
 import openai
-from keybert import KeyBERT
+# from keybert import KeyBERT
 
 
 def summarize_yt_script_with_gpt3(yt_transcript,
@@ -53,19 +53,19 @@ def summarize_yt_script_with_gpt3(yt_transcript,
    """
     openai.api_key = "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"
     response = openai.Completion.create(
-                    model="text-davinci-003",
-                    prompt=yt_transcript,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                    top_p=top_p,
-                    frequency_penalty=frequency_penalty,
-                    presence_penalty=presence_penalty)
+        model="text-davinci-003",
+        prompt=yt_transcript,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        top_p=top_p,
+        frequency_penalty=frequency_penalty,
+        presence_penalty=presence_penalty)
 
     return response['choices'][0]['text']
 
-
+"""
 def pull_key_words(summary):
-    """ Uses keybert lib to deduce and fetch keywords for video
+    "" Uses keybert lib to deduce and fetch keywords for video
         summaries/transcripts, returning processed data to be
         stored in the cassandra database.
 
@@ -75,9 +75,11 @@ def pull_key_words(summary):
 
         Returns:
             transcript: [(word, ngram)] in the format found in models.py
-    """
+    ""
     model = KeyBERT()
-    keywords_list = (model.extract_keywords(summary, 
-    keyphrase_ngram_range=(1, 1), stop_words=None))
+    keywords_list = (model.extract_keywords(summary,
+                                            keyphrase_ngram_range=(1, 1),
+                                            stop_words=None))
     keywords = [i[0] for i in keywords_list]
     return keywords
+"""
