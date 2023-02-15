@@ -32,7 +32,7 @@ def user_register():
     new_user = User(-1, username, hashed_pwd,
                     ['placeholder_category'], ['placeholder_channel'])
     if insert_user_into_db(new_user):
-        flash('Successfully registered, please login')
+        flash('Successfully registered, please login!')
         return {"message": "successfully added"}
 
     flash('Registration unsuccessful, please try again')
