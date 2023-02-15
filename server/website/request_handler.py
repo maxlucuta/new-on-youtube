@@ -20,7 +20,7 @@ def bad_request(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'ERROR': 'POST Request failed.', 'STATUS CODE': 400}
+    return [{'ERROR': 'POST Request failed.', 'STATUS CODE': 400}]
 
 
 @request_blueprint.errorhandler(404)
@@ -29,7 +29,7 @@ def not_found(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'ERROR': 'Topic not found.', 'STATUS CODE': 404}
+    return [{'ERROR': 'Topic not found.', 'STATUS CODE': 404}]
 
 
 @request_blueprint.errorhandler(408)
@@ -38,7 +38,7 @@ def timeout(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'ERROR': 'Database connection timed out.', 'STATUS CODE': 408}
+    return [{'ERROR': 'Database connection timed out.', 'STATUS CODE': 408}]
 
 
 @request_blueprint.errorhandler(417)
@@ -47,8 +47,8 @@ def query_failure(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'ERROR': 'Unable to fetch request from database.',
-            'STATUS CODE': 417}
+    return [{'ERROR': 'Unable to fetch request from database.',
+            'STATUS CODE': 417}]
 
 
 @request_blueprint.errorhandler(500)
@@ -57,7 +57,7 @@ def server_error(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'ERROR': 'Database connection failiure.', 'STATUS CODE': 500}
+    return [{'ERROR': 'Database connection failiure.', 'STATUS CODE': 500}]
 
 
 def validate_get_request(topics, amount):
