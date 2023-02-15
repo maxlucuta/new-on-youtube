@@ -34,7 +34,10 @@ def test_post_method_1(test_client):
     """
     test_query = {'topic': ['tennis'], 'amount': '1'}
     response = test_client.post("/request", data=test_query)
-    summaries = json.loads(response.data)
+    response = json.loads(response.data)
+
+    assert response['status_code'] == 200
+    summaries = response['results']
 
     for summary in summaries:
         title = summary.get('video_title')
@@ -60,12 +63,11 @@ def test_post_method_2(test_client):
     """
     test_query = {'topic': ['football']}
     response = test_client.post("/request", data=test_query)
-    error_codes = json.loads(response.data)
+    response = json.loads(response.data)
 
-    description = error_codes.get('ERROR')
-    status_code = error_codes.get('STATUS CODE')
+    status_code = response['status_code']
+    description = response['description']
 
-    assert len(error_codes) == 2
     assert description and description == "POST Request failed."
     assert status_code and status_code == 400
     return
@@ -85,12 +87,11 @@ def test_post_method_3(test_client):
     """
     test_query = {'amount': '1'}
     response = test_client.post("/request", data=test_query)
-    error_codes = json.loads(response.data)
+    response = json.loads(response.data)
 
-    description = error_codes.get('ERROR')
-    status_code = error_codes.get('STATUS CODE')
+    status_code = response['status_code']
+    description = response['description']
 
-    assert len(error_codes) == 2
     assert description and description == "POST Request failed."
     assert status_code and status_code == 400
     return
@@ -109,12 +110,11 @@ def test_post_method_4(test_client):
         Assertion error.
     """
     response = test_client.post("/request")
-    error_codes = json.loads(response.data)
+    response = json.loads(response.data)
 
-    description = error_codes.get('ERROR')
-    status_code = error_codes.get('STATUS CODE')
+    status_code = response['status_code']
+    description = response['description']
 
-    assert len(error_codes) == 2
     assert description and description == "POST Request failed."
     assert status_code and status_code == 400
     return
@@ -134,12 +134,11 @@ def test_post_method_5(test_client):
     """
     test_query = {'topic': ['football'], 'amount': '0'}
     response = test_client.post("/request", data=test_query)
-    error_codes = json.loads(response.data)
+    response = json.loads(response.data)
 
-    description = error_codes.get('ERROR')
-    status_code = error_codes.get('STATUS CODE')
+    status_code = response['status_code']
+    description = response['description']
 
-    assert len(error_codes) == 2
     assert description and description == "POST Request failed."
     assert status_code and status_code == 400
     return
@@ -157,7 +156,10 @@ def test_post_method_6(test_client):
     """
     test_query = {'topic': ['joe rogan'], 'amount': '2'}
     response = test_client.post("/request", data=test_query)
-    summaries = json.loads(response.data)
+    response = json.loads(response.data)
+
+    assert response['status_code'] == 200
+    summaries = response['results']
 
     for summary in summaries:
         title = summary.get('video_title')

@@ -20,7 +20,7 @@ def bad_request(e):
             Returns: dict containing error description
                              and status code.
     """
-    return [{'ERROR': 'POST Request failed.', 'STATUS CODE': 400}]
+    return {'status_code': 400, 'description': 'POST Request failed.', 'results': []}
 
 
 @request_blueprint.errorhandler(404)
@@ -29,7 +29,7 @@ def not_found(e):
             Returns: dict containing error description
                              and status code.
     """
-    return [{'ERROR': 'Topic not found.', 'STATUS CODE': 404}]
+    return {'status_code': 404, 'description': 'Topic not found.', 'results': []}
 
 
 @request_blueprint.errorhandler(408)
@@ -38,7 +38,7 @@ def timeout(e):
             Returns: dict containing error description
                              and status code.
     """
-    return [{'ERROR': 'Database connection timed out.', 'STATUS CODE': 408}]
+    return {'status_code': 408, 'description': 'Database connection timed out.', 'results': []}
 
 
 @request_blueprint.errorhandler(417)
@@ -47,8 +47,7 @@ def query_failure(e):
             Returns: dict containing error description
                              and status code.
     """
-    return [{'ERROR': 'Unable to fetch request from database.',
-            'STATUS CODE': 417}]
+    return {'status_code': 417, 'description': 'Unable to fetch request from database.', 'results': []}
 
 
 @request_blueprint.errorhandler(500)
@@ -57,7 +56,7 @@ def server_error(e):
             Returns: dict containing error description
                              and status code.
     """
-    return [{'ERROR': 'Database connection failiure.', 'STATUS CODE': 500}]
+    return {'status_code': 500, 'description': 'Database connection failiure.', 'results': []}
 
 
 def validate_get_request(topics, amount):
@@ -135,7 +134,7 @@ def request_summary():
     if not valid_query_response(response, int(amount)):
         abort(417)
 
-    return response[:int(amount)]
+    return {'status_code': 200, 'description': 'Ok.', 'results': response}
 
 
 @request_blueprint.route("/popular_videos", methods=['GET'])
