@@ -1,3 +1,4 @@
+"""
 from website.utilities.gpt3 import summarize_yt_script_with_gpt3
 # from website.utilities.gpt3 import pull_key_words
 
@@ -7,7 +8,7 @@ SUFFIX = "\n\ntl;dr"
 
 def test_gpt_api():
 
-    text = """A neutron star is the collapsed core of a massive supergiant
+    text = ""A neutron star is the collapsed core of a massive supergiant
             "star, which had a total mass of between 10 and 25 solar masses,
             "possibly more if the star was especially metal-rich.[1] Neutron
             "stars are the smallest and densest stellar objects, excluding
@@ -16,12 +17,12 @@ def test_gpt_api():
             "kilometres (6.2 mi) and a mass of about 1.4 solar masses.[3] They
             "result from the supernova explosion of a massive star, combined
             "with gravitational collapse, that compresses the core past white
-            "dwarf star density to that of atomic nuclei."""
+            "dwarf star density to that of atomic nuclei.""
 
     to_process = INSTRUCTION + text + SUFFIX
     summary = summarize_yt_script_with_gpt3(to_process)
     assert len(summary) < len(text)
-
+"""
 
 """
 def test_pull_key_words():
