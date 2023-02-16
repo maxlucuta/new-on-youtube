@@ -40,13 +40,13 @@ class YouTubeScraper:
     def get_popular_topics(amount):
         query = VideosSearch(
             VideoSortOrder.viewCount,
-            limit=amount, language='en', region='US'
+            limit=amount, language='en', region='GB'
         )
         return query.result()['result']
 
     @staticmethod
     def get_suggestions(topic):
-        suggestions = Suggestions(language='en', region='US')
+        suggestions = Suggestions(language='en', region='GB')
         topics = suggestions.get(topic)['result']
         del topics[0]
         return topics
@@ -100,7 +100,7 @@ class YouTubeSummaries(YouTubeScraper):
 
     def _search(self):
         query = CustomSearch(self.topic, VideoDurationFilter.short,
-                             language='en', region='US', limit=self.amount)
+                             language='en', region='GB', limit=self.amount)
         while len(self.response) < self.amount:
             result = query.result()['result']
             for i in range(len(result)):
