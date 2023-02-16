@@ -208,4 +208,3 @@ def get_most_popular_video_transcripts_by_topic(topic, amount):
 def get_updated_likes_and_views(video_id):
     parser = YouTubeUpdates(video_id)
     return parser.execute()
-

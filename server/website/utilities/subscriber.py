@@ -6,12 +6,12 @@ from os import environ
 
 SUBSCRIBER_PATH = "projects/new-on-youtube-375417/subscriptions/gpt-tasks-sub"
 
+
 class Subscriber:
     def __init__(self, topic=SUBSCRIBER_PATH):
         self.subscriber = self.subscriber_connect()
         self.logger = Logger("subscriber")
         self.topic = topic
-
 
     def subscriber_connect(self):
         """Connects to Google PubSub Subscriber Client
@@ -24,7 +24,6 @@ class Subscriber:
             "./website/utilities/pubsub_privatekey.json"
         subscriber = pubsub.SubscriberClient()
         return subscriber
-
 
     def callback(self, message):
         """Processes pulled message from Subscriber queue and calls
@@ -60,7 +59,6 @@ class Subscriber:
         message.ack()
         return
 
-
     def process_tasks(self):
         """Stream processes subsriber content indefinitely until
         current thread is terminated.
@@ -69,8 +67,8 @@ class Subscriber:
         flow_control = pubsub.types.FlowControl(max_messages=1)
 
         streaming_pull_future = self.subscriber.subscribe(self.topic,
-                                                    callback=self.callback,
-                                                    flow_control=flow_control)
+                                                          callback=self.callback,
+                                                          flow_control=flow_control)
 
         with self.subscriber:
             try:
