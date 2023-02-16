@@ -9,10 +9,9 @@ Date: 19. Januar 2023
 import os
 from cassandra.cluster import Cluster, DriverException
 from cassandra.auth import PlainTextAuthProvider
-# from flask import abort
 from uuid import UUID
 from .users import User
-from .publisher import create_task
+from .publisher import Publisher
 import threading
 import website
 
@@ -63,23 +62,14 @@ def query_yt_videos(keyword, k):
         [dict]
 
     """
-    for thread in threading.enumerate():
-        print(thread.name)
-
-    # session = establish_connection()
-    session = website.session
-
+    publisher = Publisher()
     try:
-        query = session.execute(
+        query = website.session.execute(
             f"""select * from summaries.video_summaries where
                 keyword = '{keyword}' limit {k}""").all()
     except DriverException:
-        # better to catch specific errors
-        # perhaps should be outputted to logfile
-        print("Database Query Error")
         return []
     else:
-        # videos for that topic exist in database
         if len(query) > 0:
             result = [{
                 'video_title': x.video_title,
@@ -88,8 +78,7 @@ def query_yt_videos(keyword, k):
                 'video_id': x.video_id} for x in query]
             return result
         else:
-
-            create_task(keyword, str(k))
+            publisher.create_task(keyword, str(k))
             return []
             # the below exception should probably be
             # handled in the try-except statement
@@ -108,10 +97,8 @@ def check_if_video_is_already_in_DB(keyword, video_id):
     Return:
         bool: True if video is in DB - False otherwise
     """
-    # session = establish_connection()
-    session = website.session
-    query = session.execute(f"""select video_id from summaries.video_summaries
-                where keyword = '{keyword}';""")
+    query = website.session.execute(f"""select video_id from 
+            summaries.video_summaries where keyword = '{keyword}';""")
     if query:
         result = [x.video_id for x in query]
         return result[0] == video_id
@@ -151,8 +138,6 @@ def insert_into_DB(video_dict):
         Boolean
 
     """
-    # session = establish_connection()
-    session = website.session
     vid_tags = ','.join(video_dict["video_tags"])
     vid_tags = string_cleaner(vid_tags)
     summary = string_cleaner(video_dict["summary"])
@@ -176,7 +161,7 @@ def insert_into_DB(video_dict):
                  published_at, summary, video_tags)"""
 
     try:
-        session.execute(prepend+values)
+        website.session.execute(prepend+values)
         print("Insertion successful --------- ")
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")
@@ -209,17 +194,15 @@ def query_users_db(username=None, user_id=None):
     if not username and not user_id:
         return None
 
-    # session = establish_connection()
-    session = website.session
     if username:
-        query = session.execute(f"""select * from summaries.users
+        query = website.session.execute(f"""select * from summaries.users
                                     where username = '{username}'""").all()
     else:
         try:
             UUID(str(user_id))
         except ValueError:
             return None
-        query = session.execute(f"""select * from summaries.users where
+        query = website.session.execute(f"""select * from summaries.users where
                                  id = {user_id} allow filtering""").all()
 
     if query:
@@ -255,8 +238,6 @@ def insert_user_into_db(userobj):
        not userobj.password:
         return False
     try:
-        # session = establish_connection()
-        session = website.session
         categories = ','.join(userobj.categories)
         channels = ','.join(userobj.channels)
         values = f""" VALUES ('{userobj.username}',
@@ -264,7 +245,7 @@ def insert_user_into_db(userobj):
                       UUID(),'{userobj.password}')"""
         prepend = """INSERT INTO summaries.users
                      (username, categories, channels, id, password)"""
-        session.execute(prepend+values)
+        website.session.execute(prepend+values)
     except Exception:
         return False
     return True

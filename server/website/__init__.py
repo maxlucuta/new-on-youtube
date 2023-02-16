@@ -6,7 +6,7 @@ from website.views import views_blueprint
 from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
 from website.utilities.database import query_users_db, establish_connection
-from website.utilities.subscriber import process_tasks
+from website.utilities.subscriber import run_background_task
 from threading import Thread
 
 
@@ -36,6 +36,6 @@ def create_app():
     global session
     session = establish_connection()
 
-    Thread(name="background", target=process_tasks, daemon=True).start()
+    Thread(name="background", target=run_background_task, daemon=True).start()
 
     return app

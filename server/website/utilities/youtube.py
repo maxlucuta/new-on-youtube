@@ -16,7 +16,6 @@ from .database import check_if_video_is_already_in_DB as in_db
 import youtube_transcript_api
 import time
 import requests
-# import openai
 
 
 class YouTubeScraper:
@@ -209,3 +208,4 @@ def get_most_popular_video_transcripts_by_topic(topic, amount):
 def get_updated_likes_and_views(video_id):
     parser = YouTubeUpdates(video_id)
     return parser.execute()
+
