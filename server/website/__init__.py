@@ -36,6 +36,6 @@ def create_app():
     global session
     session = establish_connection()
 
-    # Thread(name="background", target=process_tasks, daemon=True).start()
+    Thread(name="background", target=process_tasks, daemon=True).start()
 
     return app

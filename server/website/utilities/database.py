@@ -69,9 +69,6 @@ def query_yt_videos(keyword, k):
     # session = establish_connection()
     session = website.session
 
-    for thread in threading.enumerate():
-        print(thread.name)
-
     try:
         query = session.execute(
             f"""select * from summaries.video_summaries where
@@ -92,7 +89,7 @@ def query_yt_videos(keyword, k):
             return result
         else:
 
-            # create_task(keyword, str(k))
+            create_task(keyword, str(k))
             return []
             # the below exception should probably be
             # handled in the try-except statement
