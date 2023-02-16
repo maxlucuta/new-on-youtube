@@ -36,7 +36,7 @@ class Subscriber:
 
         topic = message.attributes.get('search_term')
         amount = int(message.attributes.get('amount'))
-        log = topic + "," + amount
+        log = topic + "," + str(amount)
 
         print(f"{topic} recieved!")
 

@@ -6,16 +6,14 @@ class Logger:
         self.add(message)
 
     def add(self, message):
-        log = ",".join([str(message[key]) for key in message])
         file = open(self.log, "a")
-        file.write(log)
+        file.write(message)
         file.write("\n")
         file.close()
 
     def get(self, message):
-        log = ",".join([str(message[key]) for key in message])
         for line in open(self.log):
-            if line.strip("\n") == log:
+            if line.strip("\n") == message:
                 return True
         return False
 
