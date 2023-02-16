@@ -9,7 +9,6 @@ from website.utilities.database import query_users_db, establish_connection
 from website.utilities.subscriber import process_tasks
 from threading import Thread
 
-session
 
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
