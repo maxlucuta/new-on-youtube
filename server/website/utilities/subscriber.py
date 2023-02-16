@@ -35,7 +35,10 @@ def callback(message):
     processed_task = get_most_popular_video_transcripts_by_topic(
         topic, int(amount))
 
+    print(processed_task, flush=True)
+
     for data in processed_task:
+        print('subscriber running insert into db', flush=True)
         insert_into_DB(data)
 
     print(f"{topic} processed!", flush=True)
