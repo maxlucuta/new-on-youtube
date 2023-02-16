@@ -82,7 +82,7 @@ def query_yt_videos(keyword, k):
                 'video_id': x.video_id} for x in query]
             return result
         else:
-            create_task(keyword, str(k))
+            # create_task(keyword, str(k))
             return []
             # the below exception should probably be
             # handled in the try-except statement
