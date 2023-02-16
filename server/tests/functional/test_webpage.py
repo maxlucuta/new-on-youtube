@@ -4,7 +4,8 @@ from website import create_app
 
 # headers should indicate JSON for all post requests
 mimetype = 'application/json'
-headers = { 'Content-Type': mimetype, 'Accept': mimetype }
+headers = {'Content-Type': mimetype, 'Accept': mimetype}
+
 
 @pytest.fixture(scope='module')
 def test_client():

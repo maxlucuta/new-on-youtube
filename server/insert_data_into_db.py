@@ -9,9 +9,10 @@ Date: 8. Februar, 2023
 
 
 import sys
-from threading import Thread
-from website.utilities.subscriber import process_tasks
-from website.utilities.database import query_yt_videos
+
+# from threading import Thread
+# from website.utilities.subscriber import process_tasks
+# from website.utilities.database import query_yt_videos
 
 
 from website.utilities.youtube import (

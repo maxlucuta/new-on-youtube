@@ -7,8 +7,7 @@ otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
 from .utilities.database import query_yt_videos
-from werkzeug.exceptions import HTTPException
-import re
+# from werkzeug.exceptions import HTTPException
 import random
 
 request_blueprint = Blueprint("request_blueprint", __name__)
@@ -20,7 +19,11 @@ def bad_request(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'status_code': 400, 'description': 'POST Request failed.', 'results': []}
+    return {
+        'status_code': 400,
+        'description': 'POST Request failed.',
+        'results': []
+    }
 
 
 @request_blueprint.errorhandler(404)
@@ -29,7 +32,11 @@ def not_found(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'status_code': 404, 'description': 'Topic not found.', 'results': []}
+    return {
+        'status_code': 404,
+        'description': 'Topic not found.',
+        'results': []
+    }
 
 
 @request_blueprint.errorhandler(408)
@@ -38,7 +45,11 @@ def timeout(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'status_code': 408, 'description': 'Database connection timed out.', 'results': []}
+    return {
+        'status_code': 408,
+        'description': 'Database connection timed out.',
+        'results': []
+    }
 
 
 @request_blueprint.errorhandler(417)
@@ -47,7 +58,11 @@ def query_failure(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'status_code': 417, 'description': 'Unable to fetch request from database.', 'results': []}
+    return {
+        'status_code': 417,
+        'description': 'Unable to fetch request from database.',
+        'results': []
+    }
 
 
 @request_blueprint.errorhandler(500)
@@ -56,7 +71,11 @@ def server_error(e):
             Returns: dict containing error description
                              and status code.
     """
-    return {'status_code': 500, 'description': 'Database connection failiure.', 'results': []}
+    return {
+        'status_code': 500,
+        'description': 'Database connection failiure.',
+        'results': []
+    }
 
 
 def validate_get_request(topics, amount):
@@ -93,13 +112,13 @@ def valid_query_response(topic_summaries, amount):
     """
     for query_response in topic_summaries:
         try:
-            video_title = query_response.get('video_title')
-            channel_name = query_response.get('channel_name')
-            summary = query_response.get('summary')
-            video_id = query_response.get('video_id')
+            query_response.get('video_title')
+            query_response.get('channel_name')
+            query_response.get('summary')
+            query_response.get('video_id')
         except KeyError:
             return False
-    
+
     return True
     # return len(topic_summaries) == amount
 
@@ -122,7 +141,7 @@ def request_summary():
     Raises:
             HTTPException 400 / 404 / 408 / 417 / 500
     """
-    
+
     body = request.get_json()
     try:
         topics = body["topics"]
@@ -132,7 +151,7 @@ def request_summary():
 
     # topics = request.form.getlist('topics', type=str)
     # amount = request.form.get('amount')
-    
+
     validate_get_request(topics, amount)
 
     response = []

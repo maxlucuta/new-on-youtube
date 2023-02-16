@@ -3,14 +3,20 @@ from .gpt3 import summarize_yt_script_with_gpt3
 from openai.error import RateLimitError
 from openai.error import ServiceUnavailableError
 from openai.error import InvalidRequestError
-from youtubesearchpython import *
+from youtubesearchpython import (
+    Video,
+    Suggestions,
+    VideoDurationFilter,
+    VideoSortOrder,
+    CustomSearch,
+    VideosSearch,
+)
 from abc import abstractmethod
 from .database import check_if_video_is_already_in_DB as in_db
 import youtube_transcript_api
 import time
-import functools
 import requests
-import openai
+# import openai
 
 
 class YouTubeScraper:
@@ -32,8 +38,10 @@ class YouTubeScraper:
 
     @staticmethod
     def get_popular_topics(amount):
-        query = VideoSearch(VideoSortOrder.viewCount,
-                            limit=amount, language='en', region='US')
+        query = VideosSearch(
+            VideoSortOrder.viewCount,
+            limit=amount, language='en', region='US'
+        )
         return query.result()['result']
 
     @staticmethod
@@ -178,7 +186,7 @@ class YouTubeUpdates(YouTubeScraper):
 
     def execute(self):
         for id in self.video_id:
-            url, data = PREFIX + id, {}
+            url, data = self.PREFIX + id, {}
             data['views'] = self._get_views(url)
             data['likes'] = self._get_likes(url)
             data['video_id'] = id

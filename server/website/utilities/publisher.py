@@ -30,6 +30,6 @@ def create_task(topic, amount):
     data = "GPT-Job"
     data = data.encode("utf-8")
     attributes = {'search_term': topic, 'amount': amount}
-    future = publisher.publish(TOPIC_PATH, data, **attributes)
+    # future = publisher.publish(TOPIC_PATH, data, **attributes)
     publisher.publish(TOPIC_PATH, data, **attributes)
     return

@@ -7,9 +7,9 @@ Date: 19. Januar 2023
 
 """
 import os
-from cassandra.cluster import Cluster
+from cassandra.cluster import Cluster, DriverException
 from cassandra.auth import PlainTextAuthProvider
-from flask import abort
+# from flask import abort
 from uuid import UUID
 from .users import User
 from .publisher import create_task
@@ -67,23 +67,25 @@ def query_yt_videos(keyword, k):
         query = session.execute(
             f"""select * from summaries.video_summaries where
                 keyword = '{keyword}' limit {k}""").all()
-    except:
+    except DriverException:
         # better to catch specific errors
         # perhaps should be outputted to logfile
-        print("Database Query Error") 
+        print("Database Query Error")
         return []
     else:
         # videos for that topic exist in database
         if len(query) > 0:
-            result = [{'video_title': x.video_title,
-                    'channel_name': x.channel_name,
-                    'summary': x.summary,
-                    'video_id': x.video_id } for x in query]
+            result = [{
+                'video_title': x.video_title,
+                'channel_name': x.channel_name,
+                'summary': x.summary,
+                'video_id': x.video_id} for x in query]
             return result
         else:
             create_task(keyword, str(k))
             return []
-            # the below exception should probably be handled in the try-except statement
+            # the below exception should probably be
+            # handled in the try-except statement
             # return [{"ERROR": "Query failed"}]
 
 
