@@ -3,8 +3,6 @@ import styled from 'styled-components'
 
 type SimpleProps = {
     defaultState: number;
-    a: string;
-    b: number;
 }
 
 const Simple = (props: SimpleProps) => {
