@@ -13,6 +13,7 @@ from cassandra.auth import PlainTextAuthProvider
 from uuid import UUID
 from .users import User
 from .publisher import create_task
+import threading
 
 
 def establish_connection():
@@ -61,7 +62,13 @@ def query_yt_videos(keyword, k):
         [dict]
 
     """
+    for thread in threading.enumerate():
+        print(thread.name)
+
     session = establish_connection()
+
+    for thread in threading.enumerate():
+        print(thread.name)
 
     try:
         query = session.execute(
@@ -82,6 +89,7 @@ def query_yt_videos(keyword, k):
                 'video_id': x.video_id} for x in query]
             return result
         else:
+
             # create_task(keyword, str(k))
             return []
             # the below exception should probably be
