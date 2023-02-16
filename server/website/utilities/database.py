@@ -14,6 +14,7 @@ from uuid import UUID
 from .users import User
 from .publisher import create_task
 import threading
+import website
 
 
 def establish_connection():
@@ -43,8 +44,8 @@ def establish_connection():
                                            "TZ_JcoCYZpRyD0SSZsS.Zt02jvzUmLU9F0"
                                            "+iA+6HYd0mY5wd61D8vQv8q+_-eKGU"))
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
-    session = cluster.connect()
-    return session
+    s = cluster.connect()
+    return s
 
 
 def query_yt_videos(keyword, k):
@@ -65,7 +66,8 @@ def query_yt_videos(keyword, k):
     for thread in threading.enumerate():
         print(thread.name)
 
-    session = establish_connection()
+    # session = establish_connection()
+    session = website.session
 
     for thread in threading.enumerate():
         print(thread.name)
@@ -109,7 +111,8 @@ def check_if_video_is_already_in_DB(keyword, video_id):
     Return:
         bool: True if video is in DB - False otherwise
     """
-    session = establish_connection()
+    # session = establish_connection()
+    session = website.session
     query = session.execute(f"""select video_id from summaries.video_summaries
                 where keyword = '{keyword}';""")
     if query:
@@ -151,7 +154,8 @@ def insert_into_DB(video_dict):
         Boolean
 
     """
-    session = establish_connection()
+    # session = establish_connection()
+    session = website.session
     vid_tags = ','.join(video_dict["video_tags"])
     vid_tags = string_cleaner(vid_tags)
     summary = string_cleaner(video_dict["summary"])
@@ -208,7 +212,8 @@ def query_users_db(username=None, user_id=None):
     if not username and not user_id:
         return None
 
-    session = establish_connection()
+    # session = establish_connection()
+    session = website.session
     if username:
         query = session.execute(f"""select * from summaries.users
                                     where username = '{username}'""").all()
@@ -253,7 +258,8 @@ def insert_user_into_db(userobj):
        not userobj.password:
         return False
     try:
-        session = establish_connection()
+        # session = establish_connection()
+        session = website.session
         categories = ','.join(userobj.categories)
         channels = ','.join(userobj.channels)
         values = f""" VALUES ('{userobj.username}',

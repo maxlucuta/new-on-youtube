@@ -5,10 +5,11 @@ from flask_login import LoginManager
 from website.views import views_blueprint
 from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
-from website.utilities.database import query_users_db
+from website.utilities.database import query_users_db, establish_connection
 from website.utilities.subscriber import process_tasks
 from threading import Thread
 
+session
 
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
@@ -32,6 +33,9 @@ def create_app():
     app.register_blueprint(views_blueprint)
     app.register_blueprint(request_blueprint)
     app.register_blueprint(auth_blueprint)
+
+    global session
+    session = establish_connection()
 
     # Thread(name="background", target=process_tasks, daemon=True).start()
 
