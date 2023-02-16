@@ -40,11 +40,11 @@ class Subscriber:
 
         print(f"{topic} recieved!")
 
-        if self.log.get(log):
+        if self.logger.get(log):
             message.ack()
             return
         else:
-            self.log(log)
+            self.logger(log)
 
         processed_task = get_most_popular_video_transcripts_by_topic(
             topic, int(amount))
@@ -66,9 +66,9 @@ class Subscriber:
 
         flow_control = pubsub.types.FlowControl(max_messages=1)
 
-        streaming_pull_future = self.subscriber.subscribe(self.topic,
-                                                          callback=self.callback,
-                                                          flow_control=flow_control)
+        streaming_pull_future = self.subscriber.subscribe(
+            self.topic,
+            callback=self.callback, flow_control=flow_control)
 
         with self.subscriber:
             try:

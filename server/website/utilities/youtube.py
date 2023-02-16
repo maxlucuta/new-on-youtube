@@ -23,10 +23,12 @@ class YouTubeScraper:
         self.response = []
 
     @abstractmethod
-    def execute(self): pass
+    def execute(self):
+        pass
 
     @abstractmethod
-    def _insert_results(self, result): pass
+    def _insert_results(self, result):
+        pass
 
     @staticmethod
     def get_keywords(url):

@@ -12,7 +12,6 @@ from cassandra.auth import PlainTextAuthProvider
 from uuid import UUID
 from .users import User
 from .publisher import Publisher
-import threading
 import website
 
 
@@ -97,8 +96,9 @@ def check_if_video_is_already_in_DB(keyword, video_id):
     Return:
         bool: True if video is in DB - False otherwise
     """
-    query = website.session.execute(f"""select video_id from 
-            summaries.video_summaries where keyword = '{keyword}';""")
+    query = website.session.execute(
+        f"""select video_id from summaries.video_summaries
+         where keyword = '{keyword}';""")
     if query:
         result = [x.video_id for x in query]
         return result[0] == video_id
