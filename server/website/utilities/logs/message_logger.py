@@ -1,4 +1,3 @@
-
 class Logger:
     def __init__(self, log):
         self.log = log + "_log.txt"
