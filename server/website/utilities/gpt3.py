@@ -51,7 +51,7 @@ def summarize_yt_script_with_gpt3(yt_transcript,
         string: The summary of the transcript of the a given YT video.
 
    """
-    openai.api_key = "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"
+    openai.api_key = "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"
     response = openai.Completion.create(
         model="text-davinci-003",
         prompt=yt_transcript,
