@@ -1,5 +1,6 @@
 PATH = "./website/utilities/logs"
 
+
 class Logger:
     def __init__(self, log):
         self.log = PATH + log + "_log.txt"
