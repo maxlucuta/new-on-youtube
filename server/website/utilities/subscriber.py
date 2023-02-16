@@ -36,9 +36,8 @@ class Subscriber:
 
         topic = message.attributes.get('search_term')
         amount = int(message.attributes.get('amount'))
+        print(f"{topic} recieved!", flush=True)
         log = topic + "," + str(amount)
-
-        print(f"{topic} recieved!")
 
         if self.logger.get(log):
             print("Duplicate message found!", flush=True)
@@ -49,8 +48,6 @@ class Subscriber:
 
         processed_task = get_most_popular_video_transcripts_by_topic(
             topic, int(amount))
-
-        print(processed_task, flush=True)
 
         for data in processed_task:
             print('subscriber running insert into db', flush=True)
