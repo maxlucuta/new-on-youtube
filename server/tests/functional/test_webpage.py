@@ -2,6 +2,9 @@ import pytest
 import json
 from website import create_app
 
+# headers should indicate JSON for all post requests
+mimetype = 'application/json'
+headers = { 'Content-Type': mimetype, 'Accept': mimetype }
 
 @pytest.fixture(scope='module')
 def test_client():
@@ -32,8 +35,8 @@ def test_post_method_1(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic': ['tennis'], 'amount': '1'}
-    response = test_client.post("/request", data=test_query)
+    test_query = json.dumps({'topics': ['tennis'], 'amount': 1})
+    response = test_client.post("/request", data=test_query, headers=headers)
     response = json.loads(response.data)
 
     assert response['status_code'] == 200
@@ -61,8 +64,8 @@ def test_post_method_2(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic': ['football']}
-    response = test_client.post("/request", data=test_query)
+    test_query = json.dumps({'topics': ['football']})
+    response = test_client.post("/request", data=test_query, headers=headers)
     response = json.loads(response.data)
 
     status_code = response['status_code']
@@ -85,8 +88,8 @@ def test_post_method_3(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'amount': '1'}
-    response = test_client.post("/request", data=test_query)
+    test_query = json.dumps({'amount': '1'})
+    response = test_client.post("/request", data=test_query, headers=headers)
     response = json.loads(response.data)
 
     status_code = response['status_code']
@@ -132,8 +135,8 @@ def test_post_method_5(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic': ['football'], 'amount': '0'}
-    response = test_client.post("/request", data=test_query)
+    test_query = json.dumps({'topic': ['football'], 'amount': '0'})
+    response = test_client.post("/request", data=test_query, headers=headers)
     response = json.loads(response.data)
 
     status_code = response['status_code']
@@ -154,8 +157,8 @@ def test_post_method_6(test_client):
     Raises:
         Assertion error.
     """
-    test_query = {'topic': ['joe rogan'], 'amount': '2'}
-    response = test_client.post("/request", data=test_query)
+    test_query = json.dumps({'topics': ['joe rogan'], 'amount': '2'})
+    response = test_client.post("/request", data=test_query, headers=headers)
     response = json.loads(response.data)
 
     assert response['status_code'] == 200

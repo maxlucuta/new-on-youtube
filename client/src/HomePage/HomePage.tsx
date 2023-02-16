@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { Summary } from "../types";
 import Result from "../Result";
 import Feed from "../Feed/Feed";
+import Simple from "./Simple";
 
 const HomePage = () => {
     const [summaries, updateSummaries] = useState([] as Summary[]);
@@ -112,6 +113,8 @@ const HomePage = () => {
             </div>
 
             <Feed results={summaries} />
+
+            
         </div>
     );
 };

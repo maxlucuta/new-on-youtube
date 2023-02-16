@@ -76,7 +76,7 @@ def validate_get_request(topics, amount):
     # for topic in topics:
     #     valid_topics &= bool(re.match(r'[a-zA-Z\s]+$', topic))
 
-    if not valid_topics or not isinstance(amount, int) \
+    if not valid_topics or not str(amount).isdigit() \
             or 0 >= int(amount) or int(amount) > 20:
         abort(400)
 
@@ -122,12 +122,17 @@ def request_summary():
     Raises:
             HTTPException 400 / 404 / 408 / 417 / 500
     """
-    body = request.json
-    topics = body["topics"]
-    amount = body["amount"]
+    
+    body = request.get_json()
+    try:
+        topics = body["topics"]
+        amount = body["amount"]
+    except KeyError:
+        abort(400)
 
-    # topics = request.form.getlist('topic')
+    # topics = request.form.getlist('topics', type=str)
     # amount = request.form.get('amount')
+    
     validate_get_request(topics, amount)
 
     response = []
