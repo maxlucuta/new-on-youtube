@@ -41,6 +41,7 @@ class Subscriber:
         print(f"{topic} recieved!")
 
         if self.logger.get(log):
+            print("Duplicate message found!", flush=True)
             message.ack()
             return
         else:
