@@ -1,4 +1,4 @@
-PATH = "./website/utilities/logs"
+PATH = "./website/utilities/logs/"
 
 
 class Logger:
