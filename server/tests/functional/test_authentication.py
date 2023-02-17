@@ -15,11 +15,3 @@ def test_client():
         with flask_app.app_context():
             yield testing_client
     return
-
-
-def test_login_required_pages_when_logged_in(test_client):
-    """ Tests if pages requiring login are accessible for a logged in user.
-    """
-    response = test_client.get('/welcome')
-    assert response.status_code == 200
-    return

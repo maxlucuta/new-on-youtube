@@ -56,7 +56,7 @@ const SearchPage = () => {
         <div>
             <NavBar />
             <div style={{ backgroundColor: "#FAD000" }}>
-                <Title>Select Your Categories!</Title>
+                <Title>Select Your Topics!</Title>
             </div>
             <SelectorToggle onClick={() => updateDisplaySelector(!displaySelector)}>
                 {displaySelector ? "hide" : "show"} topic selection

@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request
-from flask_login import login_user, login_required, current_user, logout_user
+from flask import Blueprint, request
+from flask_login import login_user, current_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from .utilities.database import query_users_db, insert_user_into_db
 from .utilities.users import User
@@ -26,7 +26,7 @@ def user_register():
     hashed_pwd = generate_password_hash(password, method="pbkdf2:sha256",
                                         salt_length=8)
     new_user = User(-1, username, hashed_pwd,
-                    ['placeholder_topic'], [])
+                    ['placeholder_topics'], [])
     if insert_user_into_db(new_user):
         added_user = query_users_db(username=username)
         login_user(added_user, remember=True)
@@ -58,10 +58,10 @@ def login():
     return {"message": "logged in"}
 
 
-@auth_blueprint.route('/welcome')
-@login_required
-def welcome():
-    return render_template('profile.html', username=current_user.username)
+@auth_blueprint.route('/logged_in', methods=['POST'])
+def logged_in():
+    user = current_user.username if current_user.is_authenticated else ""
+    return {"user": user}
 
 
 @auth_blueprint.route('/logout', methods=['POST'])
