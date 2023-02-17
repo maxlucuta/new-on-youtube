@@ -63,11 +63,11 @@ def login():
 
 @auth_blueprint.route('/logged_in', methods=['POST'])
 def logged_in():
-    result = current_user.username if current_user.is_authenticated else ""
+    user_logged_in = current_user.is_authenticated
     print(f"is_auth: {current_user.is_authenticated}")
-    if current_user.is_authenticated:
-        print(f"username: {current_user.username}")
-    return {"message": result}
+    user = current_user.username if user_logged_in else ""
+    print(f"user: {user}")
+    return {"user": user}
 
 
 @auth_blueprint.route('/welcome', methods=['POST'])

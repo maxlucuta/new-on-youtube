@@ -35,7 +35,8 @@ jobs:
     #needs: run_all_tests
     name: Deploy to Heroku
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'run_deploy')
+    # if: github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, 'run_deploy')
+    if: contains(github.event.head_commit.message, 'run_deploy')
     steps:
       - name: Check out respository code
         uses: actions/checkout@v3

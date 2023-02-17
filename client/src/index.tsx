@@ -18,12 +18,15 @@ const App = () => {
         : "http://localhost:5000";
 
     const loggedInFunc = async () => {
-        const { message } = (await axios.post(SERVER_URL + "/logged_in", {})).data;
-        console.log("Logged in: ", message)
+        const { user } = (await axios.post(SERVER_URL + "/logged_in", {})).data;
+        console.log("Logged in: ", user)
+        if (user !== "") updateUser(user);
+        return user
     }
-    loggedInFunc();
     const [user, updateUser] = useState("");
-    console.log("this was run")
+    console.log(user)
+    loggedInFunc();
+    console.log("loggedInFunc was run")
     console.log(user)
 
 
