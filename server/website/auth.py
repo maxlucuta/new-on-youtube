@@ -55,9 +55,6 @@ def login():
         return {"message": "incorrect password"}
 
     login_user(user, remember=True)
-    print(f"is_auth: {current_user.is_authenticated}")
-    if current_user.is_authenticated:
-        print(f"username: {current_user.username}")
     return {"message": "logged in"}
 
 
