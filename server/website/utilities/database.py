@@ -244,7 +244,7 @@ def insert_user_into_db(userobj):
                       '{topics}','{channels}',
                       UUID(),'{userobj.password}')"""
         prepend = """INSERT INTO summaries.users
-                     (username, topics, channels, id, password)"""
+                     (username, categories, channels, id, password)"""
         website.session.execute(prepend+values)
     except Exception:
         return False
