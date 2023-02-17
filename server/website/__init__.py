@@ -23,9 +23,12 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth_blueprint.login'
     login_manager.init_app(app)
+    # login_manager.session_protection = "strong"
+    # login_serializer = URLSafeTimedSerializer(app.secret_key)
 
     @login_manager.user_loader
     def load_user(user_id):
+        print(f'load_user called with user_id: {user_id}')
         user = query_users_db(user_id=user_id)
         return user if user else None
 

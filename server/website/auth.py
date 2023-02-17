@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from .utilities.database import query_users_db, insert_user_into_db
@@ -55,10 +55,22 @@ def login():
         return {"message": "incorrect password"}
 
     login_user(user, remember=True)
+    print(f"is_auth: {current_user.is_authenticated}")
+    if current_user.is_authenticated:
+        print(f"username: {current_user.username}")
     return {"message": "logged in"}
 
 
-@auth_blueprint.route('/welcome')
+@auth_blueprint.route('/logged_in', methods=['POST'])
+def logged_in():
+    result = current_user.username if current_user.is_authenticated else ""
+    print(f"is_auth: {current_user.is_authenticated}")
+    if current_user.is_authenticated:
+        print(f"username: {current_user.username}")
+    return {"message": result}
+
+
+@auth_blueprint.route('/welcome', methods=['POST'])
 @login_required
 def welcome():
     return render_template('profile.html', username=current_user.username)
