@@ -10,6 +10,8 @@ import "./signin.css";
 const SignInPage = () => {
     const [username, updateUsername] = useState("");
     const [password, updatePassword] = useState("");
+    const [userDoesNotExist, updateUserDoesNotExist] = useState(false);
+    const [invalidPassword, updateInvalidPassword] = useState(false);
     const { SERVER_URL, updateUser } = useContext(RootContext);
     const navigate = useNavigate();
 
@@ -25,11 +27,13 @@ const SignInPage = () => {
         const payload = { username, password: password };
         const { message } = (await axios.post(SERVER_URL + "/login", payload)).data;
         console.log(message);
-        if (message === "already logged in") navigate("/");
-        else if (message === "invalid fields") alert("Incorrect input!");
-        else if (message === "no username") alert("Incorrect username");
-        else if (message === "incorrect password") alert("Incorrect password");
-        else if (message === "logged in") {
+        if (message === "user already logged in") alert("You are already logged in. Go to /logout to logout");
+        else if (message === "did not provide all fields") alert("Please enter a username and password");
+        else if (message === "username does not exist in db") updateUserDoesNotExist(true);
+        else if (message === "incorrect password") {
+            updateInvalidPassword(true);
+            updateUserDoesNotExist(false);
+        } else if (message === "logged in") {
             updateUser(username);
             navigate("/");
         }
@@ -48,6 +52,7 @@ const SignInPage = () => {
                         placeholder="Enter Email"
                         onChange={handleEmailChange}
                     />
+                    {userDoesNotExist ? <div>Username not found, please try again"</div> : <div></div>}
                     <input
                         type="password"
                         name="password"
@@ -55,10 +60,11 @@ const SignInPage = () => {
                         placeholder="Enter Password"
                         onChange={e => handlePasswordChange(e)}
                     />
+                    {invalidPassword ? <div>Invalid password, please try again</div> : <div></div>}
                     <SubmitButton
                         active={password.length > 0 && username.length > 0}
                         onClick={handleSubmit}>
-                        SIGN UP
+                        SIGN IN
                     </SubmitButton>
                     <a href="#">Forgotten Password?</a>
                 </div>

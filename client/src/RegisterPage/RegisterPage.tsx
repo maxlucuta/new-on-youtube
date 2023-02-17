@@ -12,7 +12,7 @@ const RegisterPage = () => {
     const [password1, updatePassword1] = useState("");
     const [password2, updatePassword2] = useState("");
     const [userAlreadyExists, updateUserAlreadyExists] = useState(false);
-    const { SERVER_URL } = useContext(RootContext);
+    const { SERVER_URL, updateUser } = useContext(RootContext);
     const navigate = useNavigate();
 
     const handleEmailChange = (e: any) => {
@@ -26,10 +26,13 @@ const RegisterPage = () => {
     const handleSubmit = async () => {
         const payload = { username, password: password1, confirmation: password2 };
         const { message } = (await axios.post(SERVER_URL + "/register", payload)).data;
-        if (message === "already logged in") navigate("/");
-        if (message === "invalid fields") alert("Incorrect input!");
-        if (message === "already exists") updateUserAlreadyExists(true);
-        if (message === "successfully added") navigate("/SignIn");
+        if (message === "already logged in") alert("You are already logged in. Go to /logout to logout");
+        if (message === "invalid fields") alert("Please enter a username, password, and matching password confirmation");
+        if (message === "username already in use") updateUserAlreadyExists(true);
+        if (message === "successfully added and logged in") {
+            updateUser(username);
+            navigate("/");
+        } if (message === "unrecognised error") alert("Registration unsuccessful, please try again")
     };
 
     const validPassword = password1.length !== 0 && password1 === password2;
@@ -47,6 +50,9 @@ const RegisterPage = () => {
                         placeholder="Enter Email"
                         onChange={handleEmailChange}
                     />
+                    {userAlreadyExists
+                        ? username.length > 0 && <div>That username is already in use, please try a different username</div>
+                        : <div></div>}
                     <input
                         type="password"
                         name="password"
@@ -67,7 +73,7 @@ const RegisterPage = () => {
                     <SubmitButton
                         active={validPassword && username.length > 0}
                         onClick={handleSubmit}>
-                        SIGN UP
+                        REGISTER
                     </SubmitButton>
                 </div>
                 <div className="side">
