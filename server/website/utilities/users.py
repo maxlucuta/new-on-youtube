@@ -8,12 +8,12 @@ class User(UserMixin):
     """
 
     def __init__(self, user_id, username, password,
-                 categories=[], channels=[]):
+                 topics=[], channels=[]):
         self.id = user_id
         self.username = username
         self.password = password
         self.authenticated = False
-        self.categories = categories
+        self.topics = topics
         self.channels = channels
 
     @property
