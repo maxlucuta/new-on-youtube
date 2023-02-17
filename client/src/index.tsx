@@ -19,6 +19,7 @@ const App = () => {
 
     const loggedInFunc = async () => {
         const { user } = (await axios.post(SERVER_URL + "/logged_in", {})).data;
+        console.log("User: ", user);
         if (user !== "") updateUser(user);
         return user
     }
