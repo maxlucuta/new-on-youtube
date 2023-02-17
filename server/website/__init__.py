@@ -26,7 +26,6 @@ def create_app():
 
     @login_manager.user_loader
     def load_user(user_id):
-        print(f'load_user called with user_id: {user_id}')
         user = query_users_db(user_id=user_id)
         return user if user else None
 

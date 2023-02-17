@@ -19,16 +19,11 @@ const App = () => {
 
     const loggedInFunc = async () => {
         const { user } = (await axios.post(SERVER_URL + "/logged_in", {})).data;
-        console.log("Logged in: ", user)
         if (user !== "") updateUser(user);
         return user
     }
     const [user, updateUser] = useState("");
-    console.log(user)
     loggedInFunc();
-    console.log("loggedInFunc was run")
-    console.log(user)
-
 
     const router = createBrowserRouter([
         {
