@@ -7,7 +7,7 @@ otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
 from .utilities.database import query_yt_videos
-# from werkzeug.exceptions import HTTPException
+from flask_login import current_user
 import random
 
 request_blueprint = Blueprint("request_blueprint", __name__)
@@ -174,4 +174,12 @@ def popular_videos():
     if not valid_query_response(results, len(results)):
         abort(417)
 
+    return {'status_code': 200, 'description': 'Ok.', 'results': results}
+
+
+@request_blueprint.route("/user_topics", methods=['POST'])
+def get_user_topics():
+    if not current_user.is_authenticated:
+        return {'status_code': 417, 'description': 'Currently no user logged in', 'results': []}
+    results = current_user.topics
     return {'status_code': 200, 'description': 'Ok.', 'results': results}

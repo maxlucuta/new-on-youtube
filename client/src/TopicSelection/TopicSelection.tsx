@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useContext, useState , useEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
-import testSummaries from "../test/test_summaries.json";
+import axios from "axios";
+import { RootContext } from "../context";
 
 const TopicSelection = () => {
+    const { SERVER_URL } = useContext(RootContext);
+    const [selectedTopics, updateSelectedTopics] = useState([]);
+
+    const handleSelectedTopics= async () => {
+        const response = (await axios.post(SERVER_URL + "/user_topics")).data;
+        if (response.status_code != 200) console.log("Request Error!", response)
+        else updateSelectedTopics(response.results);
+    };
 
     return (
         <div>
@@ -22,10 +31,12 @@ const TopicSelection = () => {
             </div>
 
             <div style={{ width: "60%", margin: "auto" }}>
-                {testSummaries.map(r => (
-                    <Description>Video placeholder</Description>
-                ))}
+                {selectedTopics.map(r => (<Title>{r}</Title>))}
             </div>
+
+            <SubmitButton active={true} onClick={handleSelectedTopics}>
+                Load Topics
+            </SubmitButton>
         </div>
     );
 };
@@ -76,4 +87,21 @@ const Description = styled.div`
     text-align: center;
     width: 85%;
     font-size: 25px;
+`;
+
+const SubmitButton = styled.button<{ active: boolean }>`
+    padding: 12px 30px;
+    width: 40%;
+    margin-top: 40px;
+    background-color: black;
+    opacity: ${props => (props.active ? "1" : "0.2")};
+    color: white;
+    font-weight: bold;
+    border: none;
+    outline: none;
+    border-radius: 20px;
+    &:hover {
+        cursor: ${props => (props.active ? "pointer" : "not-allowed")};
+        background-color: ${props => (props.active ? "#750000" : "black")};
+    }
 `;
