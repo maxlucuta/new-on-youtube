@@ -8,6 +8,9 @@ from website.auth import auth_blueprint
 from website.utilities.database import query_users_db, establish_connection
 from website.utilities.subscriber import run_background_task
 from threading import Thread
+from flask_jwt_extended import get_jwt,get_jwt_identity, \
+                               unset_jwt_cookies, jwt_required, JWTManager
+from datetime import timedelta                               
 
 
 def create_app():
@@ -16,18 +19,13 @@ def create_app():
     else:
         app = Flask(__name__, static_folder='../../client/build')
 
-    CORS(app)
     app.config['CORS_HEADERS'] = 'Content-Type'
+    app.config["JWT_SECRET_KEY"] = "this-ranch-aint-big-enough-for-the-two-of-us"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
     app.secret_key = "3ce02ed1f5e5d521adaf7ffca7a05703"
 
-    login_manager = LoginManager()
-    login_manager.login_view = 'auth_blueprint.login'
-    login_manager.init_app(app)
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        user = query_users_db(user_id=user_id)
-        return user if user else None
+    jwt = JWTManager(app)
+    CORS(app)
 
     app.register_blueprint(views_blueprint)
     app.register_blueprint(request_blueprint)

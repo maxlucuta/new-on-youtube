@@ -4,15 +4,17 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import { RootContext } from "../context";
+import { tokenToEmail, usePost } from "../functions";
 
 const NavBar = () => {
-    const { user, updateUser, SERVER_URL } = useContext(RootContext);
-    const signOut = async () => {
-        const { message } = (await axios.post(SERVER_URL + "/logout", {})).data;
-        console.log(message);
-        if (message === "logged out") updateUser("");
-        else alert("Unable to sign out");
-    };
+    const { token, setToken } = useContext(RootContext);
+    const post = usePost();
+    const signOut = async () => { setToken("") };
+    const testJWT = () => {
+        const res = post("/my_categories", {echo: "ecgo"})
+        console.log("Response: ", res, token)
+    }
+    
 
     return (
         <Bar>
@@ -30,20 +32,25 @@ const NavBar = () => {
             <Link to="/Feed">
                 <Item>Feed</Item>
             </Link>
-            {!user && (
-                <Link to={user ? "/" : "/SignIn"}>
+            {!token && (
+                <Link to={token ? "/" : "/SignIn"}>
                     <Item>Sign In</Item>
                 </Link>
             )}
-            {!user && (
-                <Link to={user ? "/" : "/Register"}>
+            {!token && (
+                <Link to={token ? "/" : "/Register"}>
                     <Item>Register</Item>
                 </Link>
             )}
-            {user && <SignedInIcon>Signed in as: {user}</SignedInIcon>}
-            {user && (
+            {token && <SignedInIcon>Signed in as: {tokenToEmail(token)}</SignedInIcon>}
+            {token && (
                 <Item onClick={signOut} style={{ cursor: "pointer" }}>
                     Sign Out
+                </Item>
+            )}
+            {token && (
+                <Item onClick={testJWT} style={{ cursor: "pointer" }}>
+                    Test JWT refresh
                 </Item>
             )}
         </Bar>

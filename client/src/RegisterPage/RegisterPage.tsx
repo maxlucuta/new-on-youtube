@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Navigate } from "react-router";
 import styled from "styled-components";
 import { RootContext } from "../context";
+import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
 import img from "./img.png";
 import "./register.css";
@@ -12,8 +13,9 @@ const RegisterPage = () => {
     const [password1, updatePassword1] = useState("");
     const [password2, updatePassword2] = useState("");
     const [userAlreadyExists, updateUserAlreadyExists] = useState(false);
-    const { SERVER_URL, updateUser } = useContext(RootContext);
+    const { SERVER_URL, token, setToken } = useContext(RootContext);
     const navigate = useNavigate();
+    const post = usePost();
 
     const handleEmailChange = (e: any) => {
         updateUsername(e.target.value);
@@ -25,17 +27,19 @@ const RegisterPage = () => {
 
     const handleSubmit = async () => {
         const payload = { username, password: password1, confirmation: password2 };
-        const { message } = (await axios.post(SERVER_URL + "/register", payload)).data;
-        if (message === "already logged in") alert("You are already logged in. Go to /logout to logout");
+        const { message, token } = post("/register", payload) as any;
         if (message === "invalid fields") alert("Please enter a username, password, and matching password confirmation");
         if (message === "username already in use") updateUserAlreadyExists(true);
         if (message === "successfully added and logged in") {
-            updateUser(username);
+            setToken(token);
             navigate("/");
-        } if (message === "unrecognised error") alert("Registration unsuccessful, please try again")
+        } 
+        if (message === "unrecognised error") alert("Registration unsuccessful, please try again")
     };
 
     const validPassword = password1.length !== 0 && password1 === password2;
+
+    if (token !== "") return <Navigate replace to = "/" />
 
     return (
         <div className="signin_background">

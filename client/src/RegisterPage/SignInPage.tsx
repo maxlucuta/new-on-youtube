@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useState, useContext } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, Navigate } from "react-router";
 import styled from "styled-components";
 import { RootContext } from "../context";
+import { tokenToEmail, usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
 import img from "./img.png";
 import "./signin.css";
@@ -12,8 +13,9 @@ const SignInPage = () => {
     const [password, updatePassword] = useState("");
     const [userDoesNotExist, updateUserDoesNotExist] = useState(false);
     const [invalidPassword, updateInvalidPassword] = useState(false);
-    const { SERVER_URL, updateUser } = useContext(RootContext);
+    const { SERVER_URL, setToken, token } = useContext(RootContext);
     const navigate = useNavigate();
+    const post = usePost();
 
     const handleEmailChange = (e: any) => {
         updateUsername(e.target.value);
@@ -25,19 +27,23 @@ const SignInPage = () => {
 
     const handleSubmit = async () => {
         const payload = { username, password: password };
-        const { message } = (await axios.post(SERVER_URL + "/login", payload)).data;
+        const res = await post("/login", payload) as any;
+        const message = res.message;
         console.log(message);
-        if (message === "user already logged in") alert("You are already logged in. Go to /logout to logout");
-        else if (message === "did not provide all fields") alert("Please enter a username and password");
-        else if (message === "username does not exist in db") updateUserDoesNotExist(true);
-        else if (message === "incorrect password") {
+        if (message === "invalid fields") alert("Please enter a username and password");
+        else if (message === "username does not exist in db") {
+            updateInvalidPassword(false);
+            updateUserDoesNotExist(true);
+        } else if (message === "incorrect password") {
             updateInvalidPassword(true);
             updateUserDoesNotExist(false);
         } else if (message === "logged in") {
-            updateUser(username);
+            setToken(res.token);
             navigate("/");
         }
     };
+
+    if (token !== "") return <Navigate replace to = "/" />
 
     return (
         <div className="signin_background">

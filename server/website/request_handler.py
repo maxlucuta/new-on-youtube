@@ -7,8 +7,8 @@ otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
 from .utilities.database import query_yt_videos
-# from werkzeug.exceptions import HTTPException
 import random
+from flask_jwt_extended import jwt_required
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -175,3 +175,14 @@ def popular_videos():
         abort(417)
 
     return {'status_code': 200, 'description': 'Ok.', 'results': results}
+
+@request_blueprint.route("/my_categories", methods=['POST'])
+@jwt_required()
+def my_categories():
+    body = request.get_json()
+    try:
+        echo = body["echo"]
+    except KeyError:
+        abort(400)
+
+    return {'status_code': 200, 'message': echo }

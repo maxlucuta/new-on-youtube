@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { RootContext } from "./context";
@@ -8,15 +8,19 @@ import SearchPage from "./SearchPage/SearchPage";
 import FeedPage from "./FeedPage/FeedPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import SignInPage from "./RegisterPage/SignInPage";
+import { useToken } from "./functions";
+import TimeOut from "./TimeOut/TimeOut";
 
 const App = () => {
-    const [user, updateUser] = useState("");
 
     // conditionally switched to production url in live
     const PRODUCTION = window.location.href.startsWith("https://new-on-youtube.herokuapp.com");
     const SERVER_URL = PRODUCTION
         ? "https://new-on-youtube.herokuapp.com"
         : "http://localhost:5000";
+
+    
+    const {token, setToken} = useToken()
 
     const router = createBrowserRouter([
         {
@@ -39,11 +43,15 @@ const App = () => {
             path: "/SignIn",
             element: <SignInPage />,
         },
+        {
+            path: "/TimeOut",
+            element: <TimeOut />,
+        },
     ]);
 
     return (
         <React.StrictMode>
-            <RootContext.Provider value={{ SERVER_URL, user, updateUser }}>
+            <RootContext.Provider value={{ SERVER_URL, token, setToken }}>
                 <RouterProvider router={router} />
             </RootContext.Provider>
         </React.StrictMode>
