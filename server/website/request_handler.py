@@ -177,9 +177,22 @@ def popular_videos():
     return {'status_code': 200, 'description': 'Ok.', 'results': results}
 
 
-@request_blueprint.route("/user_topics", methods=['POST'])
+@request_blueprint.route("/get_user_topics", methods=['POST'])
 def get_user_topics():
     if not current_user.is_authenticated:
         return {'status_code': 417, 'description': 'Currently no user logged in', 'results': []}
     results = current_user.topics
     return {'status_code': 200, 'description': 'Ok.', 'results': results}
+
+
+@request_blueprint.route("/update_user_topics", methods=['POST'])
+def update_user_topics():
+    # Add check for user logged in and return error if not
+    body = request.get_json()
+    try:
+        topics = body["topics"]
+    except KeyError:
+        abort(400)
+    print(f"New topics are: {topics}")
+    # Update in DB - return 200 if successful. Return failure code if not
+    return {'status_code': 200, 'description': 'Ok.', 'results': ""}
