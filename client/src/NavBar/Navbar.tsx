@@ -1,17 +1,21 @@
 import axios from "axios";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import { RootContext } from "../context";
 
 const NavBar = () => {
     const { user, updateUser, SERVER_URL } = useContext(RootContext);
+    const navigate = useNavigate();
     const signOut = async () => {
         const { message } = (await axios.post(SERVER_URL + "/logout", {})).data;
         console.log(message);
-        if (message === "logged out") updateUser("");
-        else alert("Unable to sign out");
+        if (message === "logged out") {
+            updateUser("");
+            navigate("/");
+        } else alert("Unable to sign out");
     };
 
     return (
