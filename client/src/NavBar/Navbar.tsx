@@ -27,9 +27,16 @@ const NavBar = () => {
             <Link to="/Search">
                 <Item>New Search</Item>
             </Link>
-            <Link to="/Feed">
-                <Item>Feed</Item>
-            </Link>
+            {user && (
+                <Link to="/Feed">
+                    <Item>Feed</Item>
+                </Link>
+            )}
+            {user && (
+                <Link to="/TopicSelection">
+                    <Item>Topic Selection</Item>
+                </Link>
+            )}
             {!user && (
                 <Link to={user ? "/" : "/SignIn"}>
                     <Item>Sign In</Item>

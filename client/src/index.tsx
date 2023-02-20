@@ -9,6 +9,7 @@ import SearchPage from "./SearchPage/SearchPage";
 import FeedPage from "./FeedPage/FeedPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import SignInPage from "./RegisterPage/SignInPage";
+import TopicSelectionPage from "./TopicSelection/TopicSelection";
 
 const App = () => {
     // conditionally switched to production url in live
@@ -38,6 +39,10 @@ const App = () => {
         {
             path: "/Feed",
             element: <FeedPage />,
+        },
+        {
+            path: "/TopicSelection",
+            element: <TopicSelectionPage />,
         },
         {
             path: "/Register",
