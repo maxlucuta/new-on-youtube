@@ -2,12 +2,12 @@ import { createContext, Dispatch, SetStateAction } from "react";
 
 type RootContextType = {
     SERVER_URL: string;
-    updateUser: (n: string) => void;
-    user: string;
+    setToken: (n: string) => void;
+    token: string;
 };
 
 export const RootContext = createContext<RootContextType>({
     SERVER_URL: "",
-    updateUser: (n: string) => {},
-    user: "",
+    setToken: (n: string) => {},
+    token: "",
 });

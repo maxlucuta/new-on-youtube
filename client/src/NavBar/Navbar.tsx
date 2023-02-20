@@ -5,18 +5,17 @@ import { useNavigate } from "react-router";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import { RootContext } from "../context";
+import { tokenToEmail, usePost } from "../functions";
 
 const NavBar = () => {
-    const { user, updateUser, SERVER_URL } = useContext(RootContext);
-    const navigate = useNavigate();
-    const signOut = async () => {
-        const { message } = (await axios.post(SERVER_URL + "/logout", {})).data;
-        console.log(message);
-        if (message === "logged out") {
-            updateUser("");
-            navigate("/");
-        } else alert("Unable to sign out");
-    };
+    const { token, setToken } = useContext(RootContext);
+    const post = usePost();
+    const signOut = async () => { setToken("") };
+    const testJWT = () => {
+        const res = post("/my_categories", {echo: "ecgo"})
+        console.log("Response: ", res, token)
+    }
+
 
     return (
         <Bar>
@@ -31,30 +30,36 @@ const NavBar = () => {
             <Link to="/Search">
                 <Item>New Search</Item>
             </Link>
-            {user && (
-                <Link to="/Feed">
+
+            {token && (
+                <Link to={token ? "/" : "/Feed"}>
                     <Item>Feed</Item>
                 </Link>
             )}
-            {user && (
-                <Link to="/TopicSelection">
+            {token && (
+                <Link to={token ? "/" : "/TopicSelection"}>
                     <Item>Topic Selection</Item>
                 </Link>
             )}
-            {!user && (
-                <Link to={user ? "/" : "/SignIn"}>
+            {!token && (
+                <Link to={token ? "/" : "/SignIn"}>
                     <Item>Sign In</Item>
                 </Link>
             )}
-            {!user && (
-                <Link to={user ? "/" : "/Register"}>
+            {!token && (
+                <Link to={token ? "/" : "/Register"}>
                     <Item>Register</Item>
                 </Link>
             )}
-            {user && <SignedInIcon>Signed in as: {user}</SignedInIcon>}
-            {user && (
+            {token && <SignedInIcon>Signed in as: {tokenToEmail(token)}</SignedInIcon>}
+            {token && (
                 <Item onClick={signOut} style={{ cursor: "pointer" }}>
                     Sign Out
+                </Item>
+            )}
+            {token && (
+                <Item onClick={testJWT} style={{ cursor: "pointer" }}>
+                    Test JWT refresh
                 </Item>
             )}
         </Bar>

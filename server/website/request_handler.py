@@ -7,8 +7,8 @@ otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
 from .utilities.database import query_yt_videos
-from flask_login import current_user
 import random
+from flask_jwt_extended import jwt_required
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -177,15 +177,20 @@ def popular_videos():
     return {'status_code': 200, 'description': 'Ok.', 'results': results}
 
 
-@request_blueprint.route("/get_user_topics", methods=['POST'])
-def get_user_topics():
-    if not current_user.is_authenticated:
-        return {'status_code': 417, 'description': 'Currently no user logged in', 'results': []}
-    results = current_user.topics
-    return {'status_code': 200, 'description': 'Ok.', 'results': results}
+@request_blueprint.route("/my_categories", methods=['POST'])
+@jwt_required()
+def my_categories():
+    body = request.get_json()
+    try:
+        echo = body["echo"]
+    except KeyError:
+        abort(400)
+    # results = current_user.topics
+    return {'status_code': 200, 'message': echo}
 
 
 @request_blueprint.route("/update_user_topics", methods=['POST'])
+@jwt_required()
 def update_user_topics():
     # Add check for user logged in and return error if not
     body = request.get_json()

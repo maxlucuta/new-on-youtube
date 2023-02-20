@@ -1,16 +1,19 @@
 from flask import Blueprint, request
-from flask_login import login_user, current_user, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from .utilities.database import query_users_db, insert_user_into_db
 from .utilities.users import User
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity
+from datetime import timedelta, timezone, datetime
+import json
 
 auth_blueprint = Blueprint('auth_blueprint', __name__)
+
+# add this decorator to any protected routes
+# @jwt_required()
 
 
 @auth_blueprint.route('/register', methods=['POST'])
 def user_register():
-    if current_user.is_authenticated:
-        return {"message": "already logged in"}
 
     username = request.json["username"]
     password = request.json["password"]
@@ -18,11 +21,16 @@ def user_register():
     topics = request.json["topics"]
 
     if not username or not password or password != confirm_password:
-        return {"message": "invalid fields"}
+        return {"status_code": 400, "message": "invalid fields", "token": ""}
 
+    print(username, "attempting to register")
     user = query_users_db(username=username)
     if user:
-        return {"message": "username already in use"}
+        return {
+            "status_code": 400,
+            "message": "username already in use",
+            "token": ""
+        }
 
     if not topics:
         return {"message": "no topics selected"}
@@ -31,43 +39,69 @@ def user_register():
                                         salt_length=8)
     new_user = User(-1, username, hashed_pwd, topics)
     if insert_user_into_db(new_user):
-        added_user = query_users_db(username=username)
-        login_user(added_user, remember=True)
-        return {"message": "successfully added and logged in"}
+        # this verifies the user has been added
+        query_users_db(username=username)
+        token = create_access_token(identity=username)
+        return {
+            "status_code": 400,
+            "message": "successfully added and logged in",
+            "token": token
+        }
 
-    return {"message": "unrecognised error"}
+    return {"status_code": 405, "message": "unrecognised error"}
 
 
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
-    if current_user.is_authenticated:
-        return {"message": "user already logged in"}
 
     username = request.json["username"]
     password = request.json["password"]
 
     if not username or not password:
-        return {"message": "did not provide all fields"}
+        print("bad input!--------------")
+        return {
+            "status_code": 400,
+            "message": "invalid fields",
+            "token": ""
+        }
 
     user = query_users_db(username=username)
     if not user:
-        return {"message": "username does not exist in db"}
+        print("no user!--------------")
+        return {
+            "status_code": 400,
+            "message": "username not found",
+            "token": ""
+        }
 
     password_hash = user.password
     if not check_password_hash(password_hash, password):
-        return {"message": "incorrect password"}
+        print("incorrect pass--------------")
+        return {
+            "status_code": 400,
+            "message": "incorrect password",
+            "token": ""
+        }
 
-    login_user(user, remember=True)
-    return {"message": "logged in"}
+    token = create_access_token(identity=username)
+    print(username, "logged in.")
+    return {"status_code": 200, "message": "logged in", "token": token}
 
 
-@auth_blueprint.route('/logged_in', methods=['POST'])
-def logged_in():
-    user = current_user.username if current_user.is_authenticated else ""
-    return {"user": user}
+@auth_blueprint.after_app_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
 
-
-@auth_blueprint.route('/logout', methods=['POST'])
-def logout():
-    logout_user()
-    return {"message": "logged out"}
+        if target_timestamp > exp_timestamp:
+            token = create_access_token(identity=get_jwt_identity())
+            data = response.get_json()
+            if type(data) is dict:
+                data["token"] = token
+                response.data = json.dumps(data)
+        return response
+    except (RuntimeError, KeyError):
+        # routes that do not require jwt authentication
+        return response
