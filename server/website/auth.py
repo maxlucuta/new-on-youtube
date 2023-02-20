@@ -2,7 +2,7 @@ from flask import Blueprint, request
 from werkzeug.security import check_password_hash, generate_password_hash
 from .utilities.database import query_users_db, insert_user_into_db
 from .utilities.users import User
-from flask_jwt_extended import create_access_token, get_jwt, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity
 from datetime import timedelta, timezone, datetime
 import json
 
@@ -10,6 +10,7 @@ auth_blueprint = Blueprint('auth_blueprint', __name__)
 
 # add this decorator to any protected routes
 # @jwt_required()
+
 
 @auth_blueprint.route('/register', methods=['POST'])
 def user_register():
@@ -24,16 +25,25 @@ def user_register():
     print(username, "attempting to login")
     user = query_users_db(username=username)
     if user:
-        return {"status_code": 400, "message": "username already in use", "token": ""}
+        return {
+            "status_code": 400,
+            "message": "username already in use",
+            "token": ""
+        }
 
     hashed_pwd = generate_password_hash(password, method="pbkdf2:sha256",
                                         salt_length=8)
     new_user = User(-1, username, hashed_pwd,
                     ['placeholder_topics'], [])
     if insert_user_into_db(new_user):
-        added_user = query_users_db(username=username)
+        # this verifies the user has been added
+        query_users_db(username=username)
         token = create_access_token(identity=username)
-        return {"status_code": 400, "message": "successfully added and logged in", "token": token}
+        return {
+            "status_code": 400,
+            "message": "successfully added and logged in",
+            "token": token
+        }
 
     return {"status_code": 405, "message": "unrecognised error"}
 
@@ -46,21 +56,34 @@ def login():
 
     if not username or not password:
         print("bad input!--------------")
-        return {"status_code": 400, "message": "invalid fields", "token": ""}
+        return {
+            "status_code": 400,
+            "message": "invalid fields",
+            "token": ""
+        }
 
     user = query_users_db(username=username)
     if not user:
         print("no user!--------------")
-        return {"status_code": 400, "message": "username not found", "token": ""}
+        return {
+            "status_code": 400,
+            "message": "username not found",
+            "token": ""
+        }
 
     password_hash = user.password
     if not check_password_hash(password_hash, password):
         print("incorrect pass--------------")
-        return {"status_code": 400, "message": "incorrect password", "token": ""}
+        return {
+            "status_code": 400,
+            "message": "incorrect password",
+            "token": ""
+        }
 
-    token = create_access_token(identity = username)
+    token = create_access_token(identity=username)
     print(username, "logged in.")
     return {"status_code": 200, "message": "logged in", "token": token}
+
 
 @auth_blueprint.after_app_request
 def refresh_expiring_jwts(response):
@@ -73,9 +96,9 @@ def refresh_expiring_jwts(response):
             token = create_access_token(identity=get_jwt_identity())
             data = response.get_json()
             if type(data) is dict:
-                data["token"] = token 
+                data["token"] = token
                 response.data = json.dumps(data)
         return response
     except (RuntimeError, KeyError):
-        # routes that do not require jwt authentication
+        # routes that do not require jwt authentication
         return response

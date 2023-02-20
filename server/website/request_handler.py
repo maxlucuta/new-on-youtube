@@ -176,6 +176,7 @@ def popular_videos():
 
     return {'status_code': 200, 'description': 'Ok.', 'results': results}
 
+
 @request_blueprint.route("/my_categories", methods=['POST'])
 @jwt_required()
 def my_categories():
@@ -185,4 +186,4 @@ def my_categories():
     except KeyError:
         abort(400)
 
-    return {'status_code': 200, 'message': echo }
+    return {'status_code': 200, 'message': echo}

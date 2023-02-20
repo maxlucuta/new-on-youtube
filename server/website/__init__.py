@@ -1,16 +1,14 @@
 import os
 from flask import Flask
 from flask_cors import CORS
-from flask_login import LoginManager
 from website.views import views_blueprint
 from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
-from website.utilities.database import query_users_db, establish_connection
+from website.utilities.database import establish_connection
 from website.utilities.subscriber import run_background_task
 from threading import Thread
-from flask_jwt_extended import get_jwt,get_jwt_identity, \
-                               unset_jwt_cookies, jwt_required, JWTManager
-from datetime import timedelta                               
+from flask_jwt_extended import JWTManager
+from datetime import timedelta
 
 
 def create_app():
@@ -20,11 +18,12 @@ def create_app():
         app = Flask(__name__, static_folder='../../client/build')
 
     app.config['CORS_HEADERS'] = 'Content-Type'
-    app.config["JWT_SECRET_KEY"] = "this-ranch-aint-big-enough-for-the-two-of-us"
+    app.config["JWT_SECRET_KEY"] = \
+        "this-ranch-aint-big-enough-for-the-two-of-us"
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
     app.secret_key = "3ce02ed1f5e5d521adaf7ffca7a05703"
 
-    jwt = JWTManager(app)
+    JWTManager(app)
     CORS(app)
 
     app.register_blueprint(views_blueprint)
