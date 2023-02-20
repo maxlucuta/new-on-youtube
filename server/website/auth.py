@@ -15,6 +15,7 @@ def user_register():
     username = request.json["username"]
     password = request.json["password"]
     confirm_password = request.json["confirmation"]
+    topics = request.json["topics"]
 
     if not username or not password or password != confirm_password:
         return {"message": "invalid fields"}
@@ -23,10 +24,12 @@ def user_register():
     if user:
         return {"message": "username already in use"}
 
+    if not topics:
+        return {"message": "no topics selected"}
+
     hashed_pwd = generate_password_hash(password, method="pbkdf2:sha256",
                                         salt_length=8)
-    new_user = User(-1, username, hashed_pwd,
-                    ['placeholder_topics'], [])
+    new_user = User(-1, username, hashed_pwd, topics)
     if insert_user_into_db(new_user):
         added_user = query_users_db(username=username)
         login_user(added_user, remember=True)
