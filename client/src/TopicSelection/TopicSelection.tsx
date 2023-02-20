@@ -4,6 +4,7 @@ import NavBar from "../NavBar/Navbar";
 import axios from "axios";
 import topics from "./tags";
 import { RootContext } from "../context";
+import { usePost } from "../functions";
 
 const TopicSelection = () => {
     const { SERVER_URL } = useContext(RootContext);
@@ -11,12 +12,13 @@ const TopicSelection = () => {
     const [searchValue, updateSearchValue] = useState("");
     const [newTopicSelection, updateNewTopicSelection] = useState([] as string[]);
     const [filtered, updateFiltered] = useState(topics as string[]);
+    const post = usePost();
 
-    const handleLoadSelectedTopics= async () => {
-        const response = (await axios.post(SERVER_URL + "/get_user_topics")).data;
+    const handleLoadSelectedTopics = async () => {
+        const response = await post("/get_user_topics", {}) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else updateSelectedTopics(response.results);
-    };
+    }
 
     const handleSearchChange = (e: any) => {
         updateSearchValue(e.target.value);
@@ -53,7 +55,7 @@ const TopicSelection = () => {
         }
         console.log(newTopicSelection)
         const payload = { topics: newTopicSelection };
-        const response = (await axios.post(SERVER_URL + "/update_user_topics", payload)).data;
+        const response = await post("/update_user_topics", payload) as any;
         if (response.status_code != 200) {
             console.log("Request Error!", response)
             alert("Failed to update topics, please try again");

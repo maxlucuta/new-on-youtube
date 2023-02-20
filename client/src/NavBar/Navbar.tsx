@@ -16,7 +16,6 @@ const NavBar = () => {
         console.log("Response: ", res, token)
     }
 
-
     return (
         <Bar>
             <Link to="/">
@@ -32,12 +31,12 @@ const NavBar = () => {
             </Link>
 
             {token && (
-                <Link to={token ? "/" : "/Feed"}>
+                <Link to={token ? "/Feed" : "/"}>
                     <Item>Feed</Item>
                 </Link>
             )}
             {token && (
-                <Link to={token ? "/" : "/TopicSelection"}>
+                <Link to={token ? "/TopicSelection" : "/"}>
                     <Item>Topic Selection</Item>
                 </Link>
             )}

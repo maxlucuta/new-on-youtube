@@ -188,6 +188,12 @@ def my_categories():
     # results = current_user.topics
     return {'status_code': 200, 'message': echo}
 
+@request_blueprint.route("/get_user_topics", methods=['POST'])
+@jwt_required()
+def get_user_topics():
+    # results = current_user.topics
+    results = ["topic1", "topic2"]
+    return {'status_code': 200, 'description': 'Ok.', 'results': results}
 
 @request_blueprint.route("/update_user_topics", methods=['POST'])
 @jwt_required()

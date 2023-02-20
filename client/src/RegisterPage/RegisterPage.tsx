@@ -47,7 +47,7 @@ const RegisterPage = () => {
     };
 
     const handleSubmit = async () => {
-        const payload = { username: username, password: password1, confirmation: password2 };
+        const payload = { username: username, password: password1, confirmation: password2, topics: selectedTopics};
         const res = await post("/register", payload) as any;
         const message = res.message;
         console.log(message)
