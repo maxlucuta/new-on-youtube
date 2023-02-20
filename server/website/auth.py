@@ -22,7 +22,7 @@ def user_register():
     if not username or not password or password != confirm_password:
         return {"status_code": 400, "message": "invalid fields", "token": ""}
 
-    print(username, "attempting to login")
+    print(username, "attempting to register")
     user = query_users_db(username=username)
     if user:
         return {

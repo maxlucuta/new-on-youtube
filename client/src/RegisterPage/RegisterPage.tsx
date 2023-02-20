@@ -27,13 +27,15 @@ const RegisterPage = () => {
 
     const handleSubmit = async () => {
         const payload = { username, password: password1, confirmation: password2 };
-        const { message, token } = post("/register", payload) as any;
+        const res = await post("/register", payload) as any;
+        const message = res.message;
+        console.log(message)
         if (message === "invalid fields") alert("Please enter a username, password, and matching password confirmation");
         if (message === "username already in use") updateUserAlreadyExists(true);
         if (message === "successfully added and logged in") {
-            setToken(token);
+            setToken(res.token);
             navigate("/");
-        } 
+        }
         if (message === "unrecognised error") alert("Registration unsuccessful, please try again")
     };
 

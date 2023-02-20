@@ -31,7 +31,7 @@ const SignInPage = () => {
         const message = res.message;
         console.log(message);
         if (message === "invalid fields") alert("Please enter a username and password");
-        else if (message === "username does not exist in db") {
+        else if (message === "username not found") {
             updateInvalidPassword(false);
             updateUserDoesNotExist(true);
         } else if (message === "incorrect password") {
@@ -58,7 +58,7 @@ const SignInPage = () => {
                         placeholder="Enter Email"
                         onChange={handleEmailChange}
                     />
-                    {userDoesNotExist ? <div>Username not found, please try again"</div> : <div></div>}
+                    {userDoesNotExist ? <div>Username not found, please try again</div> : <div></div>}
                     <input
                         type="password"
                         name="password"
@@ -72,7 +72,6 @@ const SignInPage = () => {
                         onClick={handleSubmit}>
                         SIGN IN
                     </SubmitButton>
-                    <a href="#">Forgotten Password?</a>
                 </div>
                 <div className="side">
                     <img src={img} alt="" />
