@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { createContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
@@ -12,7 +13,6 @@ import { useToken } from "./functions";
 import TimeOut from "./TimeOut/TimeOut";
 
 const App = () => {
-
     // conditionally switched to production url in live
     const PRODUCTION = window.location.href.startsWith("https://new-on-youtube.herokuapp.com");
     const SERVER_URL = PRODUCTION

@@ -65,7 +65,7 @@ const HomePage = () => {
                             <Number>1</Number>&nbsp;&nbsp;&nbsp;
                             <img src={options} width="75px" />
                         </div>
-                        <PanelTitle>Choose your categories</PanelTitle>
+                        <PanelTitle>Choose your topics</PanelTitle>
                     </Panel>
                     <Panel>
                         <div
@@ -114,7 +114,7 @@ const HomePage = () => {
 
             <Feed results={summaries} />
 
-            
+
         </div>
     );
 };

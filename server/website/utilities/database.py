@@ -207,14 +207,14 @@ def query_users_db(username=None, user_id=None):
 
     if query:
         query = query[0]
-        categories = [x.strip() for x in
-                      query.categories.replace(';', ',').split(",")]
+        topics = [x.strip() for x in
+                  query.categories.replace(';', ',').split(",")]
         channels = [x.strip() for x in
                     query.channels.replace(';', ',').split(",")]
         userobj = User(query.id,
                        query.username,
                        query.password,
-                       categories,
+                       topics,
                        channels)
         return userobj
     return None
@@ -238,10 +238,10 @@ def insert_user_into_db(userobj):
        not userobj.password:
         return False
     try:
-        categories = ','.join(userobj.categories)
+        topics = ','.join(userobj.topics)
         channels = ','.join(userobj.channels)
         values = f""" VALUES ('{userobj.username}',
-                      '{categories}','{channels}',
+                      '{topics}','{channels}',
                       UUID(),'{userobj.password}')"""
         prepend = """INSERT INTO summaries.users
                      (username, categories, channels, id, password)"""

@@ -29,7 +29,7 @@ def user_register():
     hashed_pwd = generate_password_hash(password, method="pbkdf2:sha256",
                                         salt_length=8)
     new_user = User(-1, username, hashed_pwd,
-                    ['placeholder_topic'], [])
+                    ['placeholder_topics'], [])
     if insert_user_into_db(new_user):
         added_user = query_users_db(username=username)
         token = create_access_token(identity=username)
