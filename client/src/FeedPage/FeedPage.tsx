@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
-import testSummaries from "../test/test_summaries.json";
+import Feed from "../Feed/Feed";
+import { tokenToEmail, usePost } from "../functions";
+import { Summary } from "../types";
+import { RootContext } from "../context";
 
 const FeedPage = () => {
+    const { token } = useContext(RootContext);
     const modes = ["Recent", "Popular", "Favourites"] as ["Recent", "Popular", "Favourites"];
     const [mode, updateMode] = useState("Recent" as "Recent" | "Popular" | "Favourites");
+    const [searchResults, updateResults] = useState([] as Summary[]);
+    const post = usePost();
+
+    const handleRequest = async () => {
+        const payload = { username: tokenToEmail(token), amount: 5, sort_by: mode};
+        const response = await post("/user_request", payload) as any;
+        if (response.status_code != 200) console.log("Request Error!", response)
+        else updateResults(response.results);
+    };
+
+    useEffect(() => {
+        handleRequest();
+    }, []);
+
     return (
         <div>
             <NavBar />
@@ -30,13 +48,8 @@ const FeedPage = () => {
                 ))}
             </div>
 
-            <div style={{ width: "60%", margin: "auto" }}>
-                {testSummaries.map(r => (
-                    <Result href={r.url}>
-                        <Img src={r.thumbnail} />
-                        <Description>{r.description}</Description>
-                    </Result>
-                ))}
+            <div>
+                <Feed results={searchResults} />
             </div>
         </div>
     );

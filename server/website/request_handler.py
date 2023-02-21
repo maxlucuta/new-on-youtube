@@ -167,6 +167,51 @@ def request_summary():
     return {'status_code': 200, 'description': 'Ok.', 'results': response}
 
 
+@request_blueprint.route("/user_request", methods=['POST'])
+def user_request_summary():
+    """ Retrieves summarised transcripts for a topic.
+    Args:
+            topic: GET request -> topic extracted through URL
+                       query parameters as string.
+            amount: Included in GET URL query parameters,
+                       denotes number of summaries to be retrieved.
+    Returns:
+            summary: { video : vid_title, channel : channel_name, summary : s }
+                            dict with key : val bring string : string.
+                            Dict is of k * 3 elements where k is number of
+                            videos in amount.
+    Raises:
+            HTTPException 400 / 404 / 408 / 417 / 500
+    """
+
+    body = request.get_json()
+    try:
+        username = body["username"]
+        amount = body["amount"]
+        sort_by = body["sort_by"]
+    except KeyError:
+        abort(400)
+
+    user = query_users_db(username)
+    if not user:
+        return {'status_code': 500, 'description': 'database request failed'}
+    topics = user.topics
+
+    validate_get_request(topics, amount)
+
+    response = []
+    for topic in topics:
+        query_response = (query_yt_videos(topic, int(amount)))
+        response += query_response
+
+    random.shuffle(response)
+    response = response[:int(amount)]
+    if not valid_query_response(response, int(amount)):
+        abort(417)
+
+    return {'status_code': 200, 'description': 'Ok.', 'results': response}
+
+
 @request_blueprint.route("/popular_videos", methods=['GET'])
 def popular_videos():
     results = query_yt_videos("football", 10)
