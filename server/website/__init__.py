@@ -9,6 +9,7 @@ from website.utilities.subscriber import run_background_task
 from threading import Thread
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
+from cassandra.query import dict_factory
 
 
 def create_app():
@@ -32,6 +33,7 @@ def create_app():
 
     global session
     session = establish_connection()
+    session.row_factory = dict_factory
 
     Thread(name="background", target=run_background_task, daemon=True).start()
 

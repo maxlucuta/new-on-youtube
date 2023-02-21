@@ -70,12 +70,7 @@ def query_yt_videos(keyword, k):
         return []
     else:
         if len(query) > 0:
-            result = [{
-                'video_title': x.video_title,
-                'channel_name': x.channel_name,
-                'summary': x.summary,
-                'video_id': x.video_id} for x in query]
-            return result
+            return query
         else:
             publisher.create_task(keyword, str(k))
             return []
@@ -100,7 +95,7 @@ def check_if_video_is_already_in_DB(keyword, video_id):
         f"""select video_id from summaries.video_summaries
          where keyword = '{keyword}';""")
     if query:
-        result = [x.video_id for x in query]
+        result = [x['video_id'] for x in query]
         return result[0] == video_id
     else:
         return False
@@ -208,12 +203,12 @@ def query_users_db(username=None, user_id=None):
     if query:
         query = query[0]
         topics = [x.strip() for x in
-                  query.categories.replace(';', ',').split(",")]
+                  query['categories'].replace(';', ',').split(",")]
         channels = [x.strip() for x in
-                    query.channels.replace(';', ',').split(",")]
-        userobj = User(query.id,
-                       query.username,
-                       query.password,
+                    query['channels'].replace(';', ',').split(",")]
+        userobj = User(query['id'],
+                       query['username'],
+                       query['password'],
                        topics,
                        channels)
         return userobj

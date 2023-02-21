@@ -9,6 +9,7 @@ from flask import Blueprint, request, abort
 from .utilities.database import query_yt_videos
 from .utilities.database import query_users_db
 from .utilities.database import update_user_topics_in_db
+from .utilities.database_query import database_query
 import random
 from flask_jwt_extended import jwt_required
 
@@ -114,15 +115,16 @@ def valid_query_response(topic_summaries, amount):
     """
     for query_response in topic_summaries:
         try:
-            query_response.get('video_title')
-            query_response.get('channel_name')
-            query_response.get('summary')
-            query_response.get('video_id')
+            query_response['video_title']
+            query_response['channel_name']
+            query_response['summary']
+            query_response['video_id']
+            query_response['likes']
+            query_response['published_at']
         except KeyError:
             return False
 
     return True
-    # return len(topic_summaries) == amount
 
 
 @request_blueprint.route("/", methods=['POST'])
@@ -150,9 +152,6 @@ def request_summary():
         amount = body["amount"]
     except KeyError:
         abort(400)
-
-    # topics = request.form.getlist('topics', type=str)
-    # amount = request.form.get('amount')
 
     validate_get_request(topics, amount)
 
@@ -190,7 +189,7 @@ def user_request_summary():
     try:
         username = body["username"]
         amount = body["amount"]
-        # sort_by = body["sort_by"]
+        sort_by = body["sort_by"]
     except KeyError:
         abort(400)
 
@@ -201,13 +200,15 @@ def user_request_summary():
 
     validate_get_request(topics, amount)
 
-    response = []
-    for topic in topics:
-        query_response = (query_yt_videos(topic, int(amount)))
-        response += query_response
+    response = database_query('summaries.video_summaries') \
+    .select(['keyword', 'likes', 'video_title', 'published_at', 'video_id',
+             'summary', 'channel_name']) \
+    .where(['keyword']) \
+    .is_equal_to(topics) \
+    .order_by([sort_by]) \
+    .limit(10) \
+    .execute()
 
-    random.shuffle(response)
-    response = response[:int(amount)]
     if not valid_query_response(response, int(amount)):
         abort(417)
 
