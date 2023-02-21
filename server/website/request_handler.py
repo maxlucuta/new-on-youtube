@@ -177,17 +177,6 @@ def popular_videos():
     return {'status_code': 200, 'description': 'Ok.', 'results': results}
 
 
-@request_blueprint.route("/my_categories", methods=['POST'])
-@jwt_required()
-def my_categories():
-    body = request.get_json()
-    try:
-        echo = body["echo"]
-    except KeyError:
-        abort(400)
-    return {'status_code': 200, 'message': echo}
-
-
 @request_blueprint.route("/get_user_topics", methods=['POST'])
 @jwt_required()
 def get_user_topics():

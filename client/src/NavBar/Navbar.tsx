@@ -11,10 +11,6 @@ const NavBar = () => {
     const { token, setToken } = useContext(RootContext);
     const post = usePost();
     const signOut = async () => { setToken("") };
-    const testJWT = () => {
-        const res = post("/my_categories", {echo: "ecgo"})
-        console.log("Response: ", res, token)
-    }
 
     return (
         <Bar>
@@ -54,11 +50,6 @@ const NavBar = () => {
             {token && (
                 <Item onClick={signOut} style={{ cursor: "pointer" }}>
                     Sign Out
-                </Item>
-            )}
-            {token && (
-                <Item onClick={testJWT} style={{ cursor: "pointer" }}>
-                    Test JWT refresh
                 </Item>
             )}
         </Bar>
