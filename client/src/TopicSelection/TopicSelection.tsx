@@ -17,7 +17,10 @@ const TopicSelection = () => {
         const payload = { username: tokenToEmail(token)};
         const response = await post("/get_user_topics", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
-        else updateSelectedTopics(response.results);
+        else {
+            updateSelectedTopics(response.results);
+            updateNewTopicSelection(response.results);
+        }
     }
 
     useEffect(() => {
