@@ -217,7 +217,7 @@ def check_if_video_is_already_in_DB(keyword, video_id):
     else:
         return False
 
-# To delete after parametising all execute statements
+# To delete after parametising all execute CQL statements
 
 
 def string_cleaner(input_string):
