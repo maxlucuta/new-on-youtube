@@ -6,7 +6,9 @@ that the request contains both topic=x and amount=y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
-from .utilities.database import query_yt_videos, query_users_db, update_user_topics_in_db
+from .utilities.database import query_yt_videos
+from .utilities.database import query_users_db
+from .utilities.database import update_user_topics_in_db
 import random
 from flask_jwt_extended import jwt_required
 
@@ -188,7 +190,7 @@ def user_request_summary():
     try:
         username = body["username"]
         amount = body["amount"]
-        sort_by = body["sort_by"]
+        # sort_by = body["sort_by"]
     except KeyError:
         abort(400)
 
@@ -245,5 +247,5 @@ def update_user_topics():
     except KeyError:
         abort(400)
     if not update_user_topics_in_db(username, topics):
-        return {'status_code': 500, 'description': 'database update request failed'}
+        return {'status_code': 500, 'description': 'database update failed'}
     return {'status_code': 200, 'description': 'Ok.'}
