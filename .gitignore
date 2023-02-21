@@ -5,4 +5,4 @@ __pycache__
 **/node_modules
 *.log
 server/venv
-server/website/utilities/logs
+server/website/utilities/logs/
