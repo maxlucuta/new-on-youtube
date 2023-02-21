@@ -198,7 +198,7 @@ def query_yt_videos(keyword, k):
 
 def check_if_video_is_already_in_DB(keyword, video_id):
     """
-    This function checks if a video is already in our DB so
+    This function checks if a video is already in our db so
     we don't have to summarize it all over again.
 
     Args:
