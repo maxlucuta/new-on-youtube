@@ -9,9 +9,10 @@ from flask import Blueprint, request, abort
 from .utilities.database import query_yt_videos
 from .utilities.database import query_users_db
 from .utilities.database import update_user_topics_in_db
-from .utilities.database_query import database_query
-import random
+from .utilities.database import user_feed_query
+from .utilities.database import add_videos_by_topic_to_db
 from flask_jwt_extended import jwt_required
+import random
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -169,18 +170,16 @@ def request_summary():
 
 
 @request_blueprint.route("/user_request", methods=['POST'])
+@jwt_required()
 def user_request_summary():
-    """ Retrieves summarised transcripts for a topic.
+    """ Retrieves sorted summarised transcripts for a list of topics.
     Args:
-            topic: GET request -> topic extracted through URL
-                       query parameters as string.
-            amount: Included in GET URL query parameters,
-                       denotes number of summaries to be retrieved.
+            json: POST request -> username, topics, and sorted method extracted
+                   from json
     Returns:
-            summary: { video : vid_title, channel : channel_name, summary : s }
-                            dict with key : val bring string : string.
-                            Dict is of k * 3 elements where k is number of
-                            videos in amount.
+            response: List of dicts, one for each returned video. Each of
+                      which contains 'keyword', 'likes', 'video_title',
+                      'published_at', 'video_id', 'summary', 'channel_name'
     Raises:
             HTTPException 400 / 404 / 408 / 417 / 500
     """
@@ -200,19 +199,14 @@ def user_request_summary():
 
     validate_get_request(topics, amount)
 
-    response = database_query('summaries.video_summaries') \
-    .select(['keyword', 'likes', 'video_title', 'published_at', 'video_id',
-             'summary', 'channel_name']) \
-    .where(['keyword']) \
-    .is_equal_to(topics) \
-    .order_by([sort_by]) \
-    .limit(10) \
-    .execute()
+    response = user_feed_query(topics, amount, sort_by)
 
     if not valid_query_response(response, int(amount)):
         abort(417)
 
     return {'status_code': 200, 'description': 'Ok.', 'results': response}
+
+# To be removed - don't think we need this anymore
 
 
 @request_blueprint.route("/popular_videos", methods=['GET'])
@@ -249,4 +243,5 @@ def update_user_topics():
         abort(400)
     if not update_user_topics_in_db(username, topics):
         return {'status_code': 500, 'description': 'database update failed'}
+    add_videos_by_topic_to_db(topics)
     return {'status_code': 200, 'description': 'Ok.'}
