@@ -252,6 +252,18 @@ def insert_user_into_db(userobj):
 
 
 def update_user_topics_in_db(username, topics):
+    """
+    This function performs an update to the topics in the users DB
+    and returns True if the operation was successful - and false otherwise.
+
+    Args:
+        username: User for which topics are to be updated
+        topics: New list of topics which will overwrite the current ones
+
+    Returns:
+        Boolean
+
+    """
     topics = ','.join(topics)
     values = f"""UPDATE summaries.users
                  SET categories = '{topics}'
