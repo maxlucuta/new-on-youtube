@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
-import topics from "./tags";
+import topics from "../TopicTags/topicTagsMasterList";
 import { RootContext } from "../context";
 import { tokenToEmail, usePost } from "../functions";
 

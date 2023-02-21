@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
 import { Summary } from "../types";
-import topics from "./tags";
+import topics from "../TopicTags/topicTagsMasterList";
 import axios from "axios";
 import { RootContext } from "../context";
 import Feed from "../Feed/Feed";

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { RootContext } from "../context";
 import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
-import topics from "./tags";
+import topics from "../TopicTags/topicTagsMasterList";
 import "./register.css";
 
 const RegisterPage = () => {
