@@ -39,8 +39,6 @@ def user_register():
                                         salt_length=8)
     new_user = User(-1, username, hashed_pwd, topics)
     if insert_user_into_db(new_user):
-        # this verifies the user has been added
-        query_users_db(username=username)
         token = create_access_token(identity=username)
         return {
             "status_code": 400,

@@ -1,13 +1,13 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
 import axios from "axios";
 import topics from "./tags";
 import { RootContext } from "../context";
-import { usePost } from "../functions";
+import { tokenToEmail, usePost } from "../functions";
 
 const TopicSelection = () => {
-    const { SERVER_URL } = useContext(RootContext);
+    const { token } = useContext(RootContext);
     const [selectedTopics, updateSelectedTopics] = useState([]);
     const [searchValue, updateSearchValue] = useState("");
     const [newTopicSelection, updateNewTopicSelection] = useState([] as string[]);
@@ -15,10 +15,15 @@ const TopicSelection = () => {
     const post = usePost();
 
     const handleLoadSelectedTopics = async () => {
-        const response = await post("/get_user_topics", {}) as any;
+        const payload = { username: tokenToEmail(token)};
+        const response = await post("/get_user_topics", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else updateSelectedTopics(response.results);
     }
+
+    useEffect(() => {
+        handleLoadSelectedTopics();
+    }, []);
 
     const handleSearchChange = (e: any) => {
         updateSearchValue(e.target.value);
@@ -54,7 +59,7 @@ const TopicSelection = () => {
             return;
         }
         console.log(newTopicSelection)
-        const payload = { topics: newTopicSelection };
+        const payload = { username: tokenToEmail(token), topics: newTopicSelection };
         const response = await post("/update_user_topics", payload) as any;
         if (response.status_code != 200) {
             console.log("Request Error!", response)
@@ -79,12 +84,8 @@ const TopicSelection = () => {
             </div>
 
             <div style={{ width: "60%", margin: "auto" }}>
-                {selectedTopics.map(r => (<Title>{r}</Title>))}
+                {selectedTopics.map(r => (<Description>{r}</Description>))}
             </div>
-
-            <SubmitButton active={true} onClick={handleLoadSelectedTopics}>
-                Load Topics
-            </SubmitButton>
 
             <div style={{ backgroundColor: "#FAD000" }}>
                 <Title>Change Your Topics!</Title>

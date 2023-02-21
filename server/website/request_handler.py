@@ -6,7 +6,7 @@ that the request contains both topic=x and amount=y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
-from .utilities.database import query_yt_videos
+from .utilities.database import query_yt_videos, query_users_db, update_user_topics_in_db
 import random
 from flask_jwt_extended import jwt_required
 
@@ -185,25 +185,31 @@ def my_categories():
         echo = body["echo"]
     except KeyError:
         abort(400)
-    # results = current_user.topics
     return {'status_code': 200, 'message': echo}
+
 
 @request_blueprint.route("/get_user_topics", methods=['POST'])
 @jwt_required()
 def get_user_topics():
-    # results = current_user.topics
-    results = ["topic1", "topic2"]
+    try:
+        username = request.json["username"]
+    except KeyError:
+        abort(400)
+    user = query_users_db(username)
+    if not user:
+        return {'status_code': 500, 'description': 'database request failed'}
+    results = user.topics
     return {'status_code': 200, 'description': 'Ok.', 'results': results}
+
 
 @request_blueprint.route("/update_user_topics", methods=['POST'])
 @jwt_required()
 def update_user_topics():
-    # Add check for user logged in and return error if not
-    body = request.get_json()
     try:
-        topics = body["topics"]
+        username = request.json["username"]
+        topics = request.json["topics"]
     except KeyError:
         abort(400)
-    print(f"New topics are: {topics}")
-    # Update in DB - return 200 if successful. Return failure code if not
-    return {'status_code': 200, 'description': 'Ok.', 'results': ""}
+    if not update_user_topics_in_db(username, topics):
+        return {'status_code': 500, 'description': 'database update request failed'}
+    return {'status_code': 200, 'description': 'Ok.'}

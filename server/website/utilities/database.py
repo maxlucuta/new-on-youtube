@@ -249,3 +249,12 @@ def insert_user_into_db(userobj):
     except Exception:
         return False
     return True
+
+def update_user_topics_in_db(username, topics):
+    topics = ','.join(topics)
+    values = f"""UPDATE summaries.users SET categories = '{topics}' WHERE username = '{username}'"""
+    try:
+        website.session.execute(values)
+    except Exception:
+        return False
+    return True
