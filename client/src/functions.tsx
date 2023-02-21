@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import jwt from 'jwt-decode'
 import { RootContext } from "./context";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { useNavigate } from "react-router";
 
 export const thumbnail = (id: string) => "http://img.youtube.com/vi/" + id + "/hqdefault.jpg";
@@ -39,7 +39,7 @@ export const usePost = () => {
             setToken(response.token ? response.token : token)
             return response
         } catch(error: any) {
-            if (error.response.status !== 401) return alert("Unknown error") 
+            if (error.response.status !== 401) return alert("Unknown error")
             // access denied by server
             console.log(error);
             setToken("")

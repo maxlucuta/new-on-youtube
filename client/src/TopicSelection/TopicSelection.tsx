@@ -1,7 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
-import axios from "axios";
 import topics from "./tags";
 import { RootContext } from "../context";
 import { tokenToEmail, usePost } from "../functions";

@@ -2,7 +2,6 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { RootContext } from "../context";
 import styled from "styled-components";
-import testSummaries from "../test/test_summaries.json";
 import logo from "../assets/logo.png";
 import options from "../assets/options.png";
 import select from "../assets/select.png";
@@ -10,9 +9,7 @@ import read from "../assets/read.png";
 import NavBar from "../NavBar/Navbar";
 import { Link } from "react-router-dom";
 import { Summary } from "../types";
-import Result from "../Result";
 import Feed from "../Feed/Feed";
-import Simple from "./Simple";
 
 const HomePage = () => {
     const [summaries, updateSummaries] = useState([] as Summary[]);

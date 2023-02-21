@@ -1,9 +1,8 @@
-import axios from "axios";
 import { useState, useContext } from "react";
 import { useNavigate, Navigate } from "react-router";
 import styled from "styled-components";
 import { RootContext } from "../context";
-import { tokenToEmail, usePost } from "../functions";
+import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
 import img from "./img.png";
 import "./signin.css";
@@ -13,7 +12,7 @@ const SignInPage = () => {
     const [password, updatePassword] = useState("");
     const [userDoesNotExist, updateUserDoesNotExist] = useState(false);
     const [invalidPassword, updateInvalidPassword] = useState(false);
-    const { SERVER_URL, setToken, token } = useContext(RootContext);
+    const { setToken, token } = useContext(RootContext);
     const navigate = useNavigate();
     const post = usePost();
 

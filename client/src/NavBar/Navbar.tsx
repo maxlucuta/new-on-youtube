@@ -1,7 +1,5 @@
-import axios from "axios";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import { RootContext } from "../context";
@@ -9,7 +7,6 @@ import { tokenToEmail, usePost } from "../functions";
 
 const NavBar = () => {
     const { token, setToken } = useContext(RootContext);
-    const post = usePost();
     const signOut = async () => { setToken("") };
 
     return (

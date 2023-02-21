@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useContext, useState } from "react";
 import { useNavigate, Navigate } from "react-router";
 import styled from "styled-components";
@@ -16,7 +15,7 @@ const RegisterPage = () => {
     const [searchBarValue, updateSearchBarValue] = useState("");
     const [filteredTopicSelection, updateFilteredTopicSelection] = useState(topics as string[]);
     const [selectedTopics, updateSelectedTopics] = useState([] as string[]);
-    const { SERVER_URL, token, setToken } = useContext(RootContext);
+    const { token, setToken } = useContext(RootContext);
     const navigate = useNavigate();
     const post = usePost();
 
