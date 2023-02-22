@@ -68,7 +68,7 @@ const Backing = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    top: 10px;
+    padding-top: 10px;
     background-color: none;
     margin-left: 20%;
 `;
@@ -77,7 +77,7 @@ const Bar = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    top: 10px;
+    padding-top: 10px;
     background-color: none;
     
 `;

@@ -27,20 +27,19 @@ const FeedPage = () => {
     return (
         <div>
             <NavBar />
-            <div style={{ backgroundColor: "#FAD000" }}>
+            <div>
                 <Title>Your Feed</Title>
             </div>
             <div
                 style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
                     width: "max-content",
-                    margin: "auto",
+                    marginLeft: "20%",
                 }}>
                 {modes.map((m, i) => (
                     <>
-                        {i !== 0 ? <Title>|</Title> : <></>}
+                        {i !== 0 ? <div style={{fontSize: "30px", margin: "0 20px 0 20px"}}>|</div>: <></>}
                         <FeedSelector selected={mode === m} onClick={() => updateMode(m)}>
                             {m}
                         </FeedSelector>
@@ -58,19 +57,20 @@ const FeedPage = () => {
 export default FeedPage;
 
 const Title = styled.div`
-    font-size: 60px;
-    font-weight: bold;
-    margin: auto;
-    padding: 50px 0;
-    width: max-content;
+    padding-bottom: 10px;
+    font-size: 50px;
+    font-weight: 600;
+    font-family: 'Rubik', sans-serif;
+    margin-left: 20%;
+    margin-top: 50px;
 `;
 
 const FeedSelector = styled.div<{ selected: boolean }>`
     font-size: 30px;
-    font-weight: bold;
-    font-family: "Monaco", "Courier New", monospace;
-    text-decoration: ${props => (props.selected ? "underline" : "none")};
-    margin: 20px;
+    font-weight: 600;
+    font-family: 'Rubik', sans-serif;
+    color: ${props => (props.selected ? "#e52b87" : "black")};
+    margin: 20px 0 20px 0;
     &:hover {
         color: #fad000;
         cursor: pointer;
@@ -88,7 +88,7 @@ const Result = styled.a`
     margin: 20px 0;
     &:hover {
         cursor: pointer;
-        background-color: red;
+        background-color: #fff1ac;
     }
 `;
 

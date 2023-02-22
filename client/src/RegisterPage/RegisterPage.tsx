@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { RootContext } from "../context";
 import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
+import smoke from "../assets/test_smoke.jpg"
 import topics from "../TopicTags/topicTagsMasterList";
 import "./register.css";
 
@@ -109,8 +110,12 @@ const RegisterPage = () => {
                         </SubmitButton>
                         </div>
                         </RegFrame>
-
-                        <PanelTitle>Selected Topics</PanelTitle>
+                        
+                        {selectedTopics.length == 0 && (
+                        <Text>Select at least one topic to register.</Text>
+                        )}
+                        <Text>Topics selected: {selectedTopics.length}</Text>
+                        
                         <SelectedContainer>
                             {selectedTopics.map(c => (
                                 <SelectedCategory selected={true} onClick={() => handleSelectedTopics(c)}>
@@ -122,7 +127,7 @@ const RegisterPage = () => {
                     </LeftFrame>
                     <RightFrame>
                         <VerticalFrame>
-                            <PanelTitle>Select Topics</PanelTitle>
+                            <Title style={{textAlign: "left"}}>Select the topics that interest you</Title>
                             <SearchBar
                                 placeholder="Search"
                                 onChange={handleSearchBar}
@@ -183,6 +188,14 @@ const Title = styled.div`
     font-family: 'Rubik', sans-serif;
 `;
 
+const Text = styled.div`
+    padding-top: 5px;
+    margin-left: 5px;
+    font-size: 18px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+`;
+
 
 const PageFrame = styled.div`
     display: flex;
@@ -220,7 +233,8 @@ const VerticalFrame = styled.div`
 const RegFrame = styled.div`
     display: flex;
     flex-direction: column; 
-    background-color: #f0f0f1;    
+    background-color: #f0f0f1;
+    background-image: ${smoke};    
     width: 75%;
     border-radius: 3px;
     margin-bottom: 40px;
@@ -287,10 +301,10 @@ const SelectionCategory = styled.button<{ selected: boolean }>`
     font-family: 'Rubik', sans-serif;
     padding: 10px;
     border-style: none;
-    background-color: ${props => (props.selected ? "#2d1871" : "#B0B0B0")};
+    background-color: ${props => (props.selected ? "#2d1871" : "#b0b0b0")};
     border-radius: 2px;
     &:hover {
-        transform: scale(1.1);c
+        transform: scale(1.1);
         cursor: pointer;
     }
 `;
