@@ -12,6 +12,8 @@ views_blueprint = Blueprint('views_blueprint', __name__,
 @views_blueprint.route('/', defaults={'path': ''})
 @views_blueprint.route('/<path:path>')
 def landing_page(path):
+    print(views_blueprint.static_folder +
+                                     '/' + path)
     if path != "" and os.path.exists(views_blueprint.static_folder +
                                      '/' + path):
         return send_from_directory(views_blueprint.static_folder, path)
