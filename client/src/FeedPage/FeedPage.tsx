@@ -8,20 +8,20 @@ import { RootContext } from "../context";
 
 const FeedPage = () => {
     const { token } = useContext(RootContext);
-    const modes = ["Recent", "Popular", "Favourites"] as ["Recent", "Popular", "Favourites"];
-    const [mode, updateMode] = useState("Recent" as "Recent" | "Popular" | "Favourites");
+    const modes = ["Popular", "Recent", "Length", "Random"] as ["Popular", "Recent", "Length", "Random"];
+    const [mode, updateMode] = useState("Popular" as String);
     const [searchResults, updateResults] = useState([] as Summary[]);
     const post = usePost();
 
-    const handleRequest = async () => {
-        const payload = { username: tokenToEmail(token), amount: 5, sort_by: mode};
+    const handleRequest = async (sort_by_mode: String | ((prevState: String) => String)) => {
+        const payload = { username: tokenToEmail(token), amount: 5, sort_by: sort_by_mode};
         const response = await post("/user_request", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else updateResults(response.results);
     };
 
     useEffect(() => {
-        handleRequest();
+        handleRequest(mode);
     }, []);
 
     return (
@@ -34,13 +34,14 @@ const FeedPage = () => {
                 style={{
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "center", // Remember to remove
                     width: "max-content",
                     marginLeft: "20%",
                 }}>
                 {modes.map((m, i) => (
                     <>
                         {i !== 0 ? <div style={{fontSize: "30px", margin: "0 20px 0 20px"}}>|</div>: <></>}
-                        <FeedSelector selected={mode === m} onClick={() => updateMode(m)}>
+                        <FeedSelector selected={mode === m} onClick={() => {updateMode(m); handleRequest(m);}}>
                             {m}
                         </FeedSelector>
                     </>

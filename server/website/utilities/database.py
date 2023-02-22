@@ -33,7 +33,7 @@ def establish_connection():
                         './website/utilities/secure-connect-yapp-db.zip'}
     else:
         cloud_config = {'secure_connect_bundle':
-                        ("/home/david/Imperial/GroupProject/CodeBase/new-on-youtube/server/website/"
+                        ("/workspaces/new-on-youtube/server/website/"
                          "utilities/secure-connect-yapp-db.zip")}
 
     auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM',

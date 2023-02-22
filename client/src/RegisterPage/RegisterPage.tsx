@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { RootContext } from "../context";
 import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
-import smoke from "../assets/test_smoke.jpg"
 import topics from "../TopicTags/topicTagsMasterList";
 import "./register.css";
 
@@ -233,8 +232,7 @@ const VerticalFrame = styled.div`
 const RegFrame = styled.div`
     display: flex;
     flex-direction: column; 
-    background-color: #f0f0f1;
-    background-image: ${smoke};    
+    background-color: #f0f0f1; 
     width: 75%;
     border-radius: 3px;
     margin-bottom: 40px;
