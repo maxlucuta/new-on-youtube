@@ -72,7 +72,7 @@ const FeedSelector = styled.div<{ selected: boolean }>`
     color: ${props => (props.selected ? "#e52b87" : "black")};
     margin: 20px 0 20px 0;
     &:hover {
-        color: #fad000;
-        cursor: pointer;
+        background-color: ${props => (props.selected ? "none" : "#f0f0f1")};;
+        cursor: ${props => (props.selected ? "default" : "pointer")};
     }
 `;
