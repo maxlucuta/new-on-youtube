@@ -2,7 +2,7 @@ import os
 from flask import Blueprint, send_from_directory
 
 views_blueprint = Blueprint('views_blueprint', __name__,
-                            static_folder='../static',
+                            static_folder='./static',
                             static_url_path='/') if \
     os.environ.get('IN_DOCKER_CONTAINER', False) else \
     Blueprint('views_blueprint', __name__, static_folder='../../client/build')
