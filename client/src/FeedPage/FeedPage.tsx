@@ -88,7 +88,7 @@ const Result = styled.a`
     margin: 20px 0;
     &:hover {
         cursor: pointer;
-        background-color: #fff1ac;
+        background-color: red;
     }
 `;
 

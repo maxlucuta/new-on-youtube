@@ -6,7 +6,7 @@
 .register_background {
     position: absolute;
     top: 0;
-    background-color: #fd4e4e;
+    background-color: #f0f0f1;
     height: 100vh;
     width: 100vw;
 }

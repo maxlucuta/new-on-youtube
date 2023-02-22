@@ -1,2 +1,6 @@
 AI,10
 Cycling,5
+knitting,10
+knitting,5
+Khabib,10
+hot air balloons,5
