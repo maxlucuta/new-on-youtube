@@ -1,6 +1,8 @@
 from flask import Blueprint, request
 from werkzeug.security import check_password_hash, generate_password_hash
-from .utilities.database import query_users_db, insert_user_into_db
+from .utilities.database import query_users_db
+from .utilities.database import insert_user_into_db
+from .utilities.database import add_videos_by_topic_to_db
 from .utilities.users import User
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity
 from datetime import timedelta, timezone, datetime
@@ -40,6 +42,7 @@ def user_register():
     new_user = User(-1, username, hashed_pwd, topics)
     if insert_user_into_db(new_user):
         token = create_access_token(identity=username)
+        add_videos_by_topic_to_db(topics)
         return {
             "status_code": 400,
             "message": "successfully added and logged in",

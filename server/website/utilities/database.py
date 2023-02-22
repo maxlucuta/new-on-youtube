@@ -9,10 +9,10 @@ Date: 19. Januar 2023
 import os
 from cassandra.cluster import Cluster, DriverException
 from cassandra.auth import PlainTextAuthProvider
-from uuid import UUID
 from .users import User
 from .publisher import Publisher
 import website
+import random
 
 
 def establish_connection():
@@ -46,6 +46,123 @@ def establish_connection():
     return s
 
 
+def user_feed_query(topics, amount, sort_by):
+    cql = """SELECT keyword, likes, video_title, published_at, video_id,
+             summary, channel_name FROM summaries.video_summaries WHERE
+             keyword IN ("""
+    cql += ','.join(['%s'] * len(topics))
+    cql += ") LIMIT %s"
+    db_amount = min(len(topics) * 20, 250)
+    params = topics + [db_amount]
+    params = tuple(params)
+    response = website.session.execute(cql, params).all()
+
+    if sort_by == 'Popular':
+        response = sorted(response, key=lambda x: x['likes'], reverse=True)
+    elif sort_by == 'Random':
+        random.shuffle(response)
+    elif sort_by == 'Recent':
+        response = sorted(response, key=lambda x: x['published_at'])
+        # Should be implemented with upload date or needs to be corrected
+        # for published_at data
+    elif sort_by == 'Length':
+        # Needs to be added to db
+        pass
+    return response[:amount]
+
+
+def add_videos_by_topic_to_db(topics):
+    publisher = Publisher()
+    for topic in topics:
+        cql = "SELECT * FROM summaries.video_summaries WHERE keyword = %s"
+        response = website.session.execute(cql, (topic,)).all()
+        if len(response) < 5:
+            publisher.create_task(topic, str(5))
+
+
+def query_users_db(username):
+    """
+    This function performs a query on the users DB based on either
+    the username or user_id of a user and returns a User object if
+    the user is present in the DB. Both username and user_id are
+    possible arguments as both should be unique in the DB.
+
+    Args:
+        username (string): The username of user to the return
+
+    Returns:
+        User object
+
+    Raises:
+        HTTPException 500 if no valid search terms were passed as arguments
+        or there are multiple users in the DB with the same username.
+    """
+    if not username:
+        return None
+
+    cql = "SELECT * FROM summaries.users WHERE username = %s"
+    query = website.session.execute(cql, (username,))
+
+    if query:
+        query = query[0]
+        topics = [x.strip() for x in
+                  query['categories'].replace(';', ',').split(",")]
+        channels = [x.strip() for x in
+                    query['channels'].replace(';', ',').split(",")]
+        userobj = User(query['id'],
+                       query['username'],
+                       query['password'],
+                       topics,
+                       channels)
+        return userobj
+    return None
+
+
+def insert_user_into_db(userobj):
+    """
+    This function performs an insertion into the users DB and returns True
+    if the operation was successful - and false otherwise.
+
+    Args:
+        userobj (User object): User object with all user information to
+        insert into DB except for id.
+
+    Returns:
+        Boolean
+
+    """
+    if not type(userobj) is User or \
+       not userobj.username or \
+       not userobj.password:
+        return False
+    try:
+        topics = ','.join(userobj.topics)
+        channels = ','.join(userobj.channels)
+        values = " VALUES (%s,%s,%s, UUID(),%s)"
+        prepend = """INSERT INTO summaries.users (username, categories,
+                     channels, id, password)"""
+        website.session.execute(
+            prepend+values, (userobj.username, topics, channels,
+                             userobj.password))
+    except Exception:
+        return False
+    return True
+
+
+def update_user_topics_in_db(username, topics):
+    topics = ','.join(topics)
+    cql = "UPDATE summaries.users SET categories = %s WHERE username = %s"
+    try:
+        website.session.execute(cql, (topics, username))
+    except Exception:
+        return False
+    return True
+
+
+# Below here we need to parametise the CQL execute statements
+# Additionally, need to remove duplication / redundancy throughout this file
+
+
 def query_yt_videos(keyword, k):
     """
     This function performs a query on the DB and returns a list of
@@ -70,12 +187,7 @@ def query_yt_videos(keyword, k):
         return []
     else:
         if len(query) > 0:
-            result = [{
-                'video_title': x.video_title,
-                'channel_name': x.channel_name,
-                'summary': x.summary,
-                'video_id': x.video_id} for x in query]
-            return result
+            return query
         else:
             publisher.create_task(keyword, str(k))
             return []
@@ -86,7 +198,7 @@ def query_yt_videos(keyword, k):
 
 def check_if_video_is_already_in_DB(keyword, video_id):
     """
-    This function checks if a video is already in our DB so
+    This function checks if a video is already in our db so
     we don't have to summarize it all over again.
 
     Args:
@@ -100,10 +212,12 @@ def check_if_video_is_already_in_DB(keyword, video_id):
         f"""select video_id from summaries.video_summaries
          where keyword = '{keyword}';""")
     if query:
-        result = [x.video_id for x in query]
+        result = [x['video_id'] for x in query]
         return result[0] == video_id
     else:
         return False
+
+# To delete after parametising all execute CQL statements
 
 
 def string_cleaner(input_string):
@@ -170,106 +284,5 @@ def insert_into_DB(video_dict):
         print("Insertion Failed ! ----------- ")
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")
-        return False
-    return True
-
-
-def query_users_db(username=None, user_id=None):
-    """
-    This function performs a query on the users DB based on either
-    the username or user_id of a user and returns a User object if
-    the user is present in the DB. Both username and user_id are
-    possible arguments as both should be unique in the DB.
-
-    Args:
-        username (string): The username of user to the return
-
-    Returns:
-        User object
-
-    Raises:
-        HTTPException 500 if no valid search terms were passed as arguments
-        or there are multiple users in the DB with the same username.
-    """
-    if not username and not user_id:
-        return None
-
-    if username:
-        query = website.session.execute(f"""select * from summaries.users
-                                    where username = '{username}'""").all()
-    else:
-        try:
-            UUID(str(user_id))
-        except ValueError:
-            return None
-        query = website.session.execute(f"""select * from summaries.users where
-                                 id = {user_id} allow filtering""").all()
-
-    if query:
-        query = query[0]
-        topics = [x.strip() for x in
-                  query.categories.replace(';', ',').split(",")]
-        channels = [x.strip() for x in
-                    query.channels.replace(';', ',').split(",")]
-        userobj = User(query.id,
-                       query.username,
-                       query.password,
-                       topics,
-                       channels)
-        return userobj
-    return None
-
-
-def insert_user_into_db(userobj):
-    """
-    This function performs an insertion into the users DB and returns True
-    if the operation was successful - and false otherwise.
-
-    Args:
-        userobj (User object): User object with all user information to
-        insert into DB except for id.
-
-    Returns:
-        Boolean
-
-    """
-    if not type(userobj) is User or \
-       not userobj.username or \
-       not userobj.password:
-        return False
-    try:
-        topics = ','.join(userobj.topics)
-        channels = ','.join(userobj.channels)
-        values = f""" VALUES ('{userobj.username}',
-                      '{topics}','{channels}',
-                      UUID(),'{userobj.password}')"""
-        prepend = """INSERT INTO summaries.users
-                     (username, categories, channels, id, password)"""
-        website.session.execute(prepend+values)
-    except Exception:
-        return False
-    return True
-
-
-def update_user_topics_in_db(username, topics):
-    """
-    This function performs an update to the topics in the users DB
-    and returns True if the operation was successful - and false otherwise.
-
-    Args:
-        username: User for which topics are to be updated
-        topics: New list of topics which will overwrite the current ones
-
-    Returns:
-        Boolean
-
-    """
-    topics = ','.join(topics)
-    values = f"""UPDATE summaries.users
-                 SET categories = '{topics}'
-                 WHERE username = '{username}'"""
-    try:
-        website.session.execute(values)
-    except Exception:
         return False
     return True

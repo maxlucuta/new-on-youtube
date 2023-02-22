@@ -9,8 +9,10 @@ from flask import Blueprint, request, abort
 from .utilities.database import query_yt_videos
 from .utilities.database import query_users_db
 from .utilities.database import update_user_topics_in_db
-import random
+from .utilities.database import user_feed_query
+from .utilities.database import add_videos_by_topic_to_db
 from flask_jwt_extended import jwt_required
+import random
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -114,15 +116,16 @@ def valid_query_response(topic_summaries, amount):
     """
     for query_response in topic_summaries:
         try:
-            query_response.get('video_title')
-            query_response.get('channel_name')
-            query_response.get('summary')
-            query_response.get('video_id')
+            query_response['video_title']
+            query_response['channel_name']
+            query_response['summary']
+            query_response['video_id']
+            query_response['likes']
+            query_response['published_at']
         except KeyError:
             return False
 
     return True
-    # return len(topic_summaries) == amount
 
 
 @request_blueprint.route("/", methods=['POST'])
@@ -151,9 +154,6 @@ def request_summary():
     except KeyError:
         abort(400)
 
-    # topics = request.form.getlist('topics', type=str)
-    # amount = request.form.get('amount')
-
     validate_get_request(topics, amount)
 
     response = []
@@ -170,18 +170,16 @@ def request_summary():
 
 
 @request_blueprint.route("/user_request", methods=['POST'])
+@jwt_required()
 def user_request_summary():
-    """ Retrieves summarised transcripts for a topic.
+    """ Retrieves sorted summarised transcripts for a list of topics.
     Args:
-            topic: GET request -> topic extracted through URL
-                       query parameters as string.
-            amount: Included in GET URL query parameters,
-                       denotes number of summaries to be retrieved.
+            json: POST request -> username, topics, and sorted method extracted
+                   from json
     Returns:
-            summary: { video : vid_title, channel : channel_name, summary : s }
-                            dict with key : val bring string : string.
-                            Dict is of k * 3 elements where k is number of
-                            videos in amount.
+            response: List of dicts, one for each returned video. Each of
+                      which contains 'keyword', 'likes', 'video_title',
+                      'published_at', 'video_id', 'summary', 'channel_name'
     Raises:
             HTTPException 400 / 404 / 408 / 417 / 500
     """
@@ -190,7 +188,7 @@ def user_request_summary():
     try:
         username = body["username"]
         amount = body["amount"]
-        # sort_by = body["sort_by"]
+        sort_by = body["sort_by"]
     except KeyError:
         abort(400)
 
@@ -201,17 +199,14 @@ def user_request_summary():
 
     validate_get_request(topics, amount)
 
-    response = []
-    for topic in topics:
-        query_response = (query_yt_videos(topic, int(amount)))
-        response += query_response
+    response = user_feed_query(topics, amount, sort_by)
 
-    random.shuffle(response)
-    response = response[:int(amount)]
     if not valid_query_response(response, int(amount)):
         abort(417)
 
     return {'status_code': 200, 'description': 'Ok.', 'results': response}
+
+# To be removed - don't think we need this anymore
 
 
 @request_blueprint.route("/popular_videos", methods=['GET'])
@@ -248,4 +243,5 @@ def update_user_topics():
         abort(400)
     if not update_user_topics_in_db(username, topics):
         return {'status_code': 500, 'description': 'database update failed'}
+    add_videos_by_topic_to_db(topics)
     return {'status_code': 200, 'description': 'Ok.'}
