@@ -34,13 +34,12 @@ const FeedPage = () => {
                 style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center", // Remember to remove
                     width: "max-content",
                     marginLeft: "20%",
                 }}>
                 {modes.map((m, i) => (
                     <>
-                        {i !== 0 ? <Title>|</Title> : <></>}
+                        {i !== 0 ? <div style={{fontSize: "30px", margin: "0 20px 0 20px"}}>|</div>: <></>}
                         <FeedSelector selected={mode === m} onClick={() => {updateMode(m); handleRequest(m);}}>
                             {m}
                         </FeedSelector>
