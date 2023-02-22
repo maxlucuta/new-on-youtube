@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, send_from_directory
 
-# changed static folder path
+
 views_blueprint = Blueprint('views_blueprint', __name__,
                             static_folder='../static',
                             static_url_path='/') if \
