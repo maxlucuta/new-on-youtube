@@ -1,0 +1,4 @@
+knitting,10
+Khabib,10
+F1,5
+cars,5

@@ -20,7 +20,7 @@ const SearchPage = () => {
     const handleSearchChange = (e: any) => {
         updateSearchValue(e.target.value);
         if (e.target.value.length !== 0) {
-            updateFiltered(topics.filter(c => c.startsWith(e.target.value)));
+            updateFiltered(topics.filter(c => c.toLowerCase().includes(e.target.value.toLowerCase())));
         } else {
             updateFiltered(topics);
         }
@@ -43,7 +43,7 @@ const SearchPage = () => {
 
     const handleNewEntryEnter = (e: any) => {
         if (e.key != "Enter") return;
-        if (filtered.length !== 0) return;
+        if (filtered.length != 0) return;
         if (true) {
             updateSelection(selection.concat([searchValue]));
             e.target.value = "";
@@ -55,59 +55,106 @@ const SearchPage = () => {
     return (
         <div>
             <NavBar />
-            <div style={{ backgroundColor: "#FAD000" }}>
-                <Title>Select Your Topics!</Title>
+            <div style={{
+                display: "flex",
+                alignItems: "center",
+                width: "max-content",
+                marginLeft: "20%"
+            }}>
+                <Title>Find Videos</Title>
+                <NewSearchButton 
+                    style={{display: displaySelector ? "none" : "block"}}
+                    onClick={() => {
+                        updateDisplaySelector(!displaySelector);
+                        updateSelection([]);
+                        updateSearchResults([]);
+                    }}>
+                    New Search
+                </NewSearchButton>
             </div>
-            <SelectorToggle onClick={() => updateDisplaySelector(!displaySelector)}>
-                {displaySelector ? "hide" : "show"} topic selection
-            </SelectorToggle>
-            <TwoPanel style={{ display: displaySelector ? "flex" : "none" }}>
+            
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "max-content",
+                    marginLeft: "20%",
+                }}>
+                <LeftPanel style={{border: "none"}}>
+                </LeftPanel>
+                <RightPanel style={{border: "none"}}>
+
+                </RightPanel>
+
+            </div>
+            <div
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginLeft: "20%",
+                    marginRight: "25%"
+                }}>
+
+                {/* -- DROPDOWN SELECT - NEEDS MORE WORK
+                <select >
+                    {topics.map(e => (
+                        <DropdownSelect 
+                            key={e} 
+                            value={e}
+                            onClick={() => handleSelection(e)}>
+                                {e}
+                        </DropdownSelect>
+                    ))}
+                </select>
+                */}
+            </div>
+            <TwoPanel style={{ display: displaySelector ? "flex" : "none" , marginBottom: "20px"}}>
                 <LeftPanel>
-                    <PanelTitle>Available Topics</PanelTitle>
-                    <SearchBar
-                        placeholder="Search"
-                        onChange={handleSearchChange}
-                        onKeyDown={handleNewEntryEnter}
-                    />
-                    <CategoryContainer>
-                        {searchValue.length !== 0 && (
-                            <Category
-                                selected={selection.includes(searchValue)}
-                                onClick={() => handleSelection(searchValue)}>
-                                Add Custom Topic: {searchValue}
-                            </Category>
-                        )}
-                        {filtered.map(c => (
-                            <Category
-                                selected={selection.includes(c)}
-                                onClick={() => handleSelection(c)}>
-                                {c}
-                            </Category>
-                        ))}
-                    </CategoryContainer>
+                    <div style={{display: "flex", flexDirection: "column", maxHeight: "50vh"}}>
+                        <CategoryContainer style={{justifyContent: "right", paddingRight: "30px", borderRight: "0.5px solid black"}}>
+                            <SearchBar
+                                placeholder="Filter and select topics"
+                                onChange={handleSearchChange}
+                                onKeyDown={handleNewEntryEnter}
+                            />
+                            {searchValue.length !== 0 && (
+                                <Category
+                                    selected={selection.includes(searchValue)}
+                                    onClick={() => handleSelection(searchValue)}>
+                                    Add Custom Topic: {searchValue}
+                                </Category>
+                            )}
+                            {filtered.map(c => (
+                                <Category
+                                    selected={selection.includes(c)}
+                                    onClick={() => handleSelection(c)}>
+                                    {c}
+                                </Category>
+                            ))}
+                        </CategoryContainer>
+                        <div style={{display: "flex", width: "100%", justifyContent: "center"}}>
+                        <SearchButton
+                            onClick={() => {
+                                handleSubmission();
+                                updateDisplaySelector(!displaySelector);
+                            }}>
+                            Search videos
+                        </SearchButton>
+                        </div>
+                    </div>
                 </LeftPanel>
                 <RightPanel>
-                    <PanelTitle>Selected Topics</PanelTitle>
-                    <CategoryContainer>
+                    <CategoryContainer style={{justifyContent: "center"}}>
                         {selection.map(c => (
-                            <Category selected={true} onClick={() => handleSelection(c)}>
+                            <SelectedCategory selected={true} onClick={() => handleSelection(c)}>
                                 {c}
-                            </Category>
+                            </SelectedCategory>
                         ))}
                     </CategoryContainer>
                 </RightPanel>
             </TwoPanel>
-            <SearchButton
-                style={{ display: displaySelector ? "block" : "none" }}
-                onClick={handleSubmission}>
-                Search!
-            </SearchButton>
             {searchCompleted ? (
-                <Feed results={searchResults} />
-            ) : (
-                <Container>
-                    <Description>Select topics and click search!</Description>
-                </Container>
+                <Feed results={searchResults} />) : (<Container></Container>
             )}
         </div>
     );
@@ -116,11 +163,11 @@ const SearchPage = () => {
 export default SearchPage;
 
 const Title = styled.div`
-    font-size: 60px;
-    font-weight: bold;
-    margin: auto;
-    padding: 50px 0;
-    width: max-content;
+    padding-bottom: 10px;
+    font-size: 50px;
+    font-weight: 600;
+    font-family: 'Rubik', sans-serif;
+    margin-top: 50px;
 `;
 
 const TwoPanel = styled.div`
@@ -134,13 +181,11 @@ const TwoPanel = styled.div`
 const LeftPanel = styled.div`
     text-align: center;
     width: 50%;
-    border-right: 2px solid black;
 `;
 
 const RightPanel = styled.div`
     text-align: center;
     width: 50%;
-    border-left: 2px solid black;
 `;
 
 const SearchBar = styled.input`
@@ -163,24 +208,40 @@ const CategoryContainer = styled.div`
     display: flex;
     width: 100%;
     flex-wrap: wrap;
-    justify-content: center;
     overflow: scroll;
     max-height: 80%;
 `;
 
 const Category = styled.button<{ selected: boolean }>`
-    margin: 10px;
-    font-size: 30px;
+    margin: 5px;
+    color: ${props => (props.selected ? "white" : "black")};
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
     padding: 10px;
     border-style: none;
-    background-color: ${props => (props.selected ? "orange" : "#fad000")};
-    border-radius: 5px;
+    background-color: ${props => (props.selected ? "#2d1871" : "#b0b0b0")};
+    border-radius: 2px;
     &:hover {
         transform: scale(1.1);
         cursor: pointer;
     }
 `;
 
+const SelectedCategory = styled.button<{ selected: boolean }>`
+    margin: 5px;
+    color: "black"  ;
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+    padding: 10px;
+    border-style: none;
+    background-color: none;
+    border-radius: 2px;
+    &:hover {
+        cursor: pointer;
+    }
+`;
 const SelectorToggle = styled.div`
     color: grey;
     margin: 20px auto;
@@ -192,17 +253,38 @@ const SelectorToggle = styled.div`
 `;
 
 const SearchButton = styled.div`
-    width: 300px;
-    margin: 50px auto;
-    font-size: 40px;
+    width: 50%;
+    margin-top: 40px;
+    font-size: 20px;
     text-align: center;
     background-color: black;
     color: white;
     border-style: none;
     border-radius: 5px;
     padding: 10px;
+    font-size: 20px;
+    font-weight: regular;
+    font-family: 'Rubik', sans-serif;
     &:hover {
-        color: #fad000;
+        cursor: pointer;
+        transform: scale(1.1);
+    }
+`;
+
+const NewSearchButton = styled.div`
+    width: 200px;
+    margin: 40px 0 0 40px;
+    font-size: 20px;
+    text-align: center;
+    background-color: #f0f0f1;
+    color: black;
+    border-style: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+    &:hover {
         cursor: pointer;
         transform: scale(1.1);
     }

@@ -1,17 +1,19 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-.signin_background{
+
+.signin_background {
     position: absolute;
     top: 0;
     background-color: #fd4e4e;
     height: 100vh;
     width: 100vw;
 }
+
 /* Container */
-.container{
+.container {
     display: flex;
     height: 500px;
     width: 800px;
@@ -22,19 +24,21 @@
 }
 
 /* Login Form */
-.form{
+.form {
     display: flex;
     flex-direction: column;
     width: 50%;
     align-items: center;
     background-color: whitesmoke;
 }
-.form h2{
+
+.form h2 {
     font-size: 3rem;
     font-family: Impact, Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     margin: 40px;
 }
-.box{
+
+.box {
     padding: 12px;
     width: 65%;
     margin: 15px;
@@ -42,7 +46,8 @@
     outline: none;
     border-radius: 20px;
 }
-#submit{
+
+#submit {
     padding: 12px 30px;
     width: 40%;
     margin-top: 40px;
@@ -53,29 +58,32 @@
     outline: none;
     border-radius: 20px;
 }
-#submit:hover{
+
+#submit:hover {
     cursor: pointer;
     background-color: #750000;
 }
-.form a{
+
+.form a {
     text-decoration: none;
     color: black;
     margin-top: 20px;
 }
-.form a:hover{
+
+.form a:hover {
     color: #fd4e4e;
 }
 
 /* Right Side */
-.side{
+.side {
     display: flex;
     justify-content: center;
     width: 50%;
     align-items: center;
     background-color: whitesmoke;
 }
-.side img{
+
+.side img {
     width: 380px;
     height: 450px;
 }
-

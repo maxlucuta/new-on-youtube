@@ -23,22 +23,25 @@ const Container = styled.a`
     color: black;
     align-items: center;
     padding: 10px;
-    background-color: #e1e1e1;
+    background-color: none;
     border-radius: 10px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
     margin: 20px 0;
     &:hover {
         cursor: pointer;
-        background-color: #fff1ac;
+        background-color: #e1e1e1;
     }
 `;
 
 const Img = styled.img`
     border-radius: 10px;
-    width: 15%;
+    width: 50%;
 `;
 
 const Description = styled.div`
-    text-align: center;
+    margin: 5px 30px 5px 30px;
+    text-align: left;
     width: 85%;
-    font-size: 25px;
+    font-size: 20px;
 `;

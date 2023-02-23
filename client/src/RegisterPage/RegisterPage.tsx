@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { useNavigate, Navigate } from "react-router";
+import { Form } from "react-router-dom";
 import styled from "styled-components";
 import { RootContext } from "../context";
 import { usePost } from "../functions";
@@ -65,89 +66,94 @@ const RegisterPage = () => {
     if (token !== "") return <Navigate replace to = "/" />
 
     return (
-        <div className="signin_background">
-            <NavBar />
-            <div className="container">
-                <div className="form">
-                    <h2>REGISTER</h2>
-                    <input
-                        type="email"
-                        name="email"
-                        className="box"
-                        placeholder="Enter Email"
-                        onChange={handleEmailChange}
-                    />
-                    {userAlreadyExists
-                        ? username.length > 0 && <div>That username is already in use, please try a different username</div>
-                        : <div></div>}
-                    <input
-                        type="password"
-                        name="password"
-                        className="box"
-                        placeholder="Enter Password"
-                        onChange={e => handlePasswordChange(e, 0)}
-                    />
-                    <input
-                        type="password"
-                        name="confirm password"
-                        className="box"
-                        placeholder="Confirm Password"
-                        onChange={e => handlePasswordChange(e, 1)}
-                    />
-                    {!validPassword
-                        ? password2.length > 0 && <div>Passwords do not match</div>
-                        : password2.length > 0 && <div>Valid password!</div>}
-                    </div>
-                </div>
-            <div>
-
-
-            <div style={{ backgroundColor: "#FAD000" }}>
-                <Title>Select Your Topics!</Title>
-            </div>
-            <TwoPanel>
-                <LeftPanel>
-                    <PanelTitle>Available Topics</PanelTitle>
-                    <SearchBar
-                        placeholder="Search"
-                        onChange={handleSearchBar}
-                    />
-                    <CategoryContainer>
-                        {searchBarValue.length !== 0 && (
-                            <Category
-                                selected={selectedTopics.includes(searchBarValue)}
-                                onClick={() => handleSelectedTopics(searchBarValue)}>
-                                Add Custom Topic: {searchBarValue}
-                            </Category>
+        <div>
+            <div style={{backgroundColor: "#f0f0f1", height: "100vh"}}>
+                <NavBar />
+                <PageFrame>
+                    <LeftFrame>
+                        <RegFrame>
+                        <div style={{textAlign: "center"}}>
+                        <Title>Create an account</Title>
+                        <RegForm>
+                            <FormInput
+                                type="email"
+                                name="email"
+                                placeholder="Enter Email"
+                                onChange={handleEmailChange}
+                            />
+                            {userAlreadyExists
+                                ? username.length > 0 && <div>That username is already in use, please try a different username</div>
+                                : <div></div>}
+                            <FormInput
+                                type="password"
+                                name="password"
+                                placeholder="Enter Password"
+                                onChange={e => handlePasswordChange(e, 0)}
+                            />
+                            <FormInput
+                                type="password"
+                                name="confirm password"
+                                placeholder="Confirm Password"
+                                onChange={e => handlePasswordChange(e, 1)}
+                            />
+                            {!validPassword
+                                ? password2.length > 0 && <div>Passwords do not match</div>
+                                : password2.length > 0 && <div>Valid password!</div>}
+                        </RegForm>
+                        
+                      
+                        <SubmitButton
+                            active={validPassword && username.length > 0 && selectedTopics.length > 0}
+                            onClick={handleSubmit}>
+                            REGISTER
+                        </SubmitButton>
+                        </div>
+                        </RegFrame>
+                        
+                        {selectedTopics.length == 0 && (
+                        <Text>Select at least one topic to register.</Text>
                         )}
-                        {filteredTopicSelection.map(c => (
-                            <Category
-                                selected={selectedTopics.includes(c)}
-                                onClick={() => handleSelectedTopics(c)}>
-                                {c}
-                            </Category>
-                        ))}
-                    </CategoryContainer>
-                </LeftPanel>
-                <RightPanel>
-                    <PanelTitle>Selected Topics</PanelTitle>
-                    <CategoryContainer>
-                        {selectedTopics.map(c => (
-                            <Category selected={true} onClick={() => handleSelectedTopics(c)}>
-                                {c}
-                            </Category>
-                        ))}
-                    </CategoryContainer>
-                </RightPanel>
-            </TwoPanel>
-        </div>
-
-        <SubmitButton
-            active={validPassword && username.length > 0 && selectedTopics.length > 0}
-            onClick={handleSubmit}>
-            REGISTER
-        </SubmitButton>
-
+                        <Text>Topics selected: {selectedTopics.length}</Text>
+                        
+                        <SelectedContainer>
+                            {selectedTopics.map(c => (
+                                <SelectedCategory selected={true} onClick={() => handleSelectedTopics(c)}>
+                                    {c}
+                                </SelectedCategory>
+                            ))}
+                        </SelectedContainer>
+                        
+                    </LeftFrame>
+                    <RightFrame>
+                        <VerticalFrame>
+                            <Title style={{textAlign: "left"}}>Select the topics that interest you</Title>
+                            <SearchBar
+                                placeholder="Search"
+                                onChange={handleSearchBar}
+                            />
+                            <SelectionContainer>
+                                {searchBarValue.length !== 0 && (
+                                    <SelectionCategory
+                                        selected={selectedTopics.includes(searchBarValue)}
+                                        onClick={() => handleSelectedTopics(searchBarValue)}>
+                                        Add Custom Topic: {searchBarValue}
+                                    </SelectionCategory>
+                                )}
+                                {filteredTopicSelection.map(c => (
+                                    <SelectionCategory
+                                        selected={selectedTopics.includes(c)}
+                                        onClick={() => handleSelectedTopics(c)}>
+                                        {c}
+                                    </SelectionCategory>
+                                ))}
+                            </SelectionContainer>
+                        </VerticalFrame>
+                        <VerticalFrame>
+                            
+                        </VerticalFrame>
+                    </RightFrame> 
+                </PageFrame>
+            </div>
         </div>
 
     );
@@ -157,49 +163,98 @@ export default RegisterPage;
 
 const SubmitButton = styled.button<{ active: boolean }>`
     padding: 12px 30px;
-    width: 40%;
-    margin-top: 40px;
+    width: 65%;
+    margin: 40px;
     background-color: black;
     opacity: ${props => (props.active ? "1" : "0.2")};
     color: white;
     font-weight: bold;
     border: none;
     outline: none;
-    border-radius: 20px;
+    border-radius: 5px;
     &:hover {
         cursor: ${props => (props.active ? "pointer" : "not-allowed")};
-        background-color: ${props => (props.active ? "#750000" : "black")};
+        background-color: ${props => (props.active ? "#e52b87" : "black")};
     }
 `;
 
 const Title = styled.div`
-    font-size: 40px;
-    font-weight: bold;
-    margin: auto;
-    padding: 35px 0;
-    width: max-content;
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 15px;
+    font-size: 25px;
+    font-weight: 500;
+    font-family: 'Rubik', sans-serif;
 `;
 
-const TwoPanel = styled.div`
+const Text = styled.div`
+    padding-top: 5px;
+    margin-left: 5px;
+    font-size: 18px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+`;
+
+
+const PageFrame = styled.div`
     display: flex;
     justify-content: center;
     width: 80%;
-    max-height: 50vh;
-    margin: 50px auto 0 auto;
+    max-height: 100vh;
+    padding-top: 75px;
+    padding-left: 10%;
+    padding-right: 10%;
+    margin: 0 auto 0 auto;
 `;
 
-const LeftPanel = styled.div`
-    text-align: center;
-    width: 50%;
-    border-right: 2px solid black;
+const LeftFrame = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 45%;
+    height: 100vh;
 `;
 
-const RightPanel = styled.div`
-    text-align: center;
-    width: 50%;
-    border-left: 2px solid black;
+const RightFrame = styled.div`
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    width: 55%;
+    height: 100vh;
 `;
 
+
+const VerticalFrame = styled.div`
+    text-align: left;
+    width: 100%;
+`;
+
+const RegFrame = styled.div`
+    display: flex;
+    flex-direction: column; 
+    background-color: #f0f0f1; 
+    width: 75%;
+    border-radius: 3px;
+    margin-bottom: 40px;
+    filter: drop-shadow(0 0.3rem 0.25rem grey);
+`;
+const RegForm = styled.form`
+    background-color: none;
+    border-radius: 10px;
+`;
+
+const FormInput = styled.input`
+    padding: 12px;
+    width: 65%;
+    margin: 15px;
+    border: 1px solid black;
+    outline: none;
+    border-radius: 5px;
+    background-color: #f0f0f1;
+    font-size: 15px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+`;
 const SearchBar = styled.input`
     margin: 10px;
     width: 250px;
@@ -213,27 +268,56 @@ const SearchBar = styled.input`
 
 const PanelTitle = styled.div`
     font-size: 30px;
-    font-weight: bold;
+    font-weight: 500;
+    font-family: 'Rubik', sans-serif;
 `;
 
-const CategoryContainer = styled.div`
+const SelectionContainer = styled.div`
     display: flex;
     width: 100%;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: left;
     overflow: scroll;
-    max-height: 80%;
+    max-height: 70vh;
 `;
 
-const Category = styled.button<{ selected: boolean }>`
-    margin: 10px;
-    font-size: 30px;
+const SelectedContainer = styled.div`
+    display: flex;
+    width: 75%;
+    flex-wrap: wrap;
+    justify-content: left;
+    overflow: scroll;
+    max-height: 30vh;
+`;
+
+
+const SelectionCategory = styled.button<{ selected: boolean }>`
+    margin: 5px;
+    color: ${props => (props.selected ? "white" : "black")};
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
     padding: 10px;
     border-style: none;
-    background-color: ${props => (props.selected ? "orange" : "#fad000")};
-    border-radius: 5px;
+    background-color: ${props => (props.selected ? "#2d1871" : "#b0b0b0")};
+    border-radius: 2px;
     &:hover {
         transform: scale(1.1);
+        cursor: pointer;
+    }
+`;
+
+const SelectedCategory = styled.button<{ selected: boolean }>`
+    margin: 5px;
+    color: "black"  ;
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+    padding: 10px;
+    border-style: none;
+    background-color: none;
+    border-radius: 2px;
+    &:hover {
         cursor: pointer;
     }
 `;
