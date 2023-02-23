@@ -95,7 +95,7 @@ const SearchPage = () => {
                     marginRight: "25%"
                 }}>
 
-                {/* -- DROPDOWN SELECT - NEEDS MORE WORK
+                {/* -- DROPDOWN SELECT - NEEDS MORE WORK --
                 <select >
                     {topics.map(e => (
                         <DropdownSelect 
