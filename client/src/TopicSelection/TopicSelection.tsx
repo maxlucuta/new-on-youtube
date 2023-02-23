@@ -72,7 +72,7 @@ const TopicSelection = () => {
     return (
         <div>
             <NavBar />
-            <div style={{ backgroundColor: "#FAD000" }}>
+            <div style={{ marginLeft: "20%" }}>
                 <Title>Your Selected Topics</Title>
             </div>
             <div
@@ -85,16 +85,13 @@ const TopicSelection = () => {
                 }}>
             </div>
 
-            <div style={{ width: "60%", margin: "auto" }}>
-                {selectedTopics.map(r => (<Description>{r}</Description>))}
-            </div>
-
-            <div style={{ backgroundColor: "#FAD000" }}>
-                <Title>Change Your Topics!</Title>
+            <div style={{ display: "flex", width: "60%", margin: "auto", justifyContent: "left" }}>
+                <Description style={{marginRight: "10px", fontWeight: "500"}}>Topics in your feed:</Description>
+                {selectedTopics.map(r => (<Description>{r}&nbsp;|&nbsp;</Description>))}
             </div>
             <TwoPanel>
                 <LeftPanel>
-                    <PanelTitle>Available Topics</PanelTitle>
+                    <PanelTitle>Available</PanelTitle>
                     <SearchBar
                         placeholder="Search"
                         onChange={handleSearchChange}
@@ -118,7 +115,7 @@ const TopicSelection = () => {
                     </CategoryContainer>
                 </LeftPanel>
                 <RightPanel>
-                    <PanelTitle>Selected Topics</PanelTitle>
+                    <PanelTitle>Selected</PanelTitle>
                     <CategoryContainer>
                         {newTopicSelection.map(c => (
                             <Category selected={true} onClick={() => handleSelection(c)}>
@@ -140,66 +137,18 @@ const TopicSelection = () => {
 export default TopicSelection;
 
 const Title = styled.div`
-    font-size: 60px;
-    font-weight: bold;
-    margin: auto;
-    padding: 50px 0;
-    width: max-content;
-`;
-
-const FeedSelector = styled.div<{ selected: boolean }>`
-    font-size: 30px;
-    font-weight: bold;
-    font-family: "Monaco", "Courier New", monospace;
-    text-decoration: ${props => (props.selected ? "underline" : "none")};
-    margin: 20px;
-    &:hover {
-        color: #fad000;
-        cursor: pointer;
-    }
-`;
-
-const Result = styled.a`
-    display: flex;
-    text-decoration: none;
-    color: black;
-    align-items: center;
-    padding: 10px;
-    background-color: #e1e1e1;
-    border-radius: 10px;
-    margin: 20px 0;
-    &:hover {
-        cursor: pointer;
-        background-color: #fff1ac;
-    }
-`;
-
-const Img = styled.img`
-    border-radius: 10px;
-    width: 15%;
+    padding-bottom: 10px;
+    font-size: 50px;
+    font-weight: 600;
+    font-family: 'Rubik', sans-serif;
+    margin-top: 50px;
 `;
 
 const Description = styled.div`
-    text-align: center;
-    width: 85%;
-    font-size: 25px;
-`;
-
-const SubmitButton = styled.button<{ active: boolean }>`
-    padding: 12px 30px;
-    width: 40%;
-    margin-top: 40px;
-    background-color: black;
-    opacity: ${props => (props.active ? "1" : "0.2")};
-    color: white;
-    font-weight: bold;
-    border: none;
-    outline: none;
-    border-radius: 20px;
-    &:hover {
-        cursor: ${props => (props.active ? "pointer" : "not-allowed")};
-        background-color: ${props => (props.active ? "#750000" : "black")};
-    }
+    text-align: left;
+    font-size: 18px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
 `;
 
 const TwoPanel = styled.div`
@@ -235,7 +184,10 @@ const SearchBar = styled.input`
 
 const PanelTitle = styled.div`
     font-size: 30px;
-    font-weight: bold;
+    font-weight: 500;
+    font-weight: regular;
+    font-family: 'Rubik', sans-serif;
+    margin-bottom: 20px;
 `;
 
 const CategoryContainer = styled.div`
@@ -248,12 +200,15 @@ const CategoryContainer = styled.div`
 `;
 
 const Category = styled.button<{ selected: boolean }>`
-    margin: 10px;
-    font-size: 30px;
+    margin: 5px;
+    color: ${props => (props.selected ? "white" : "black")};
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
     padding: 10px;
     border-style: none;
-    background-color: ${props => (props.selected ? "orange" : "#fad000")};
-    border-radius: 5px;
+    background-color: ${props => (props.selected ? "#2d1871" : "#b0b0b0")};
+    border-radius: 2px;
     &:hover {
         transform: scale(1.1);
         cursor: pointer;
@@ -263,15 +218,17 @@ const Category = styled.button<{ selected: boolean }>`
 const SearchButton = styled.div`
     width: 300px;
     margin: 50px auto;
-    font-size: 40px;
+    font-size: 30px;
     text-align: center;
     background-color: black;
     color: white;
     border-style: none;
     border-radius: 5px;
     padding: 10px;
+    font-size: 20px;
+    font-weight: regular;
+    font-family: 'Rubik', sans-serif;
     &:hover {
-        color: #fad000;
         cursor: pointer;
         transform: scale(1.1);
     }
