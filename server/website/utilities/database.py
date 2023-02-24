@@ -47,6 +47,7 @@ def establish_connection():
 
 
 def user_feed_query(topics, amount, sort_by):
+    # Needs to be updated to have sorting in the db query rather than in python
     cql = """SELECT keyword, likes, video_title, published_at, video_id,
              summary, channel_name FROM summaries.video_summaries WHERE
              keyword IN ("""
@@ -57,17 +58,23 @@ def user_feed_query(topics, amount, sort_by):
     params = tuple(params)
     response = website.session.execute(cql, params).all()
 
-    if sort_by == 'Popular':
-        response = sorted(response, key=lambda x: x['likes'], reverse=True)
-    elif sort_by == 'Random':
-        random.shuffle(response)
-    elif sort_by == 'Recent':
-        response = sorted(response, key=lambda x: x['published_at'])
-        # Should be implemented with upload date or needs to be corrected
-        # for published_at data
-    elif sort_by == 'Length':
-        # Needs to be added to db
+    if sort_by == 'Recommended':
+        # Needs to be implemented in checkpoint 4
+        # Separate db query based on recommendation scores
         pass
+    elif sort_by == 'Popular':
+        # Should be separate db query sorted by views NOT likes
+        response = sorted(response, key=lambda x: x['likes'], reverse=True)
+    elif sort_by == 'Recent':
+        # Should be implemented with upload date or needs to be corrected
+        # for published_at data. Can we sort in the db query?
+        response = sorted(response, key=lambda x: x['published_at'])
+    elif sort_by == 'Random':
+        # Should be separate db query where we pull a random set of
+        # videos with this topics maybe we somehow take a random
+        # subset of the video IDs? E.g. random number generator on
+        # backend and then we select video IDs based on this
+        random.shuffle(response)
     return response[:amount]
 
 
