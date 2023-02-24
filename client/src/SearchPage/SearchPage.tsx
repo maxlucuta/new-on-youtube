@@ -35,7 +35,7 @@ const SearchPage = () => {
     };
 
     const handleSubmission = async () => {
-        const payload = { topics: selection, amount: 10 };
+        const payload = { topics: selection, amount: 5 };
         const response = (await axios.post(SERVER_URL + "/request", payload)).data;
         if (response.status_code != 200) console.log("Request Error!", response)
         else updateSearchResults(response.results);
