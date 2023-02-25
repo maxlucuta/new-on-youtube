@@ -9,6 +9,7 @@ RUN npm run build
 FROM nginx:1.23-alpine
 RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d
+RUN systemctl start nginx.service
 
 FROM python:3.8-slim as run
 ENV IN_DOCKER_CONTAINER Yes
