@@ -32,11 +32,11 @@ def create_app():
     app.register_blueprint(request_blueprint)
     app.register_blueprint(auth_blueprint)
 
+    # fixes the "404 not found" error on page refresh or non-index get request ----
     def not_found_handler(e):
-        print("app caught error")
         return send_from_directory(app.static_folder, 'index.html'), 404
-
     app.register_error_handler(404, not_found_handler)
+    # ------------------------------------------------------------------------------
 
     global session
     session = establish_connection()
