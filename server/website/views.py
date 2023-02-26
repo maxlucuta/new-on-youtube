@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, send_from_directory, render_template, send_file
+from flask import Blueprint, send_from_directory
 
 
 views_blueprint = Blueprint('views_blueprint', __name__,
