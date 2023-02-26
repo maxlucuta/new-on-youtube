@@ -12,6 +12,7 @@ from datetime import timedelta
 from cassandra.query import dict_factory
 
 
+
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         app = Flask(__name__, static_folder='../static', static_url_path='/')
@@ -30,6 +31,12 @@ def create_app():
     app.register_blueprint(views_blueprint)
     app.register_blueprint(request_blueprint)
     app.register_blueprint(auth_blueprint)
+
+    def not_found_handler(e):
+        print("app caught error")
+        return send_from_directory(app.static_folder, 'index.html'), 404
+
+    app.register_error_handler(404, not_found_handler)
 
     global session
     session = establish_connection()

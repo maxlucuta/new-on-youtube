@@ -19,5 +19,6 @@ def landing_page(path):
         return send_from_directory(views_blueprint.static_folder, 'index.html')
 
 @views_blueprint.errorhandler(404)
+print("view caught error")
 def not_found(e):
-    return app.send_static_file('index.html')
+    return views_blueprint.send_static_file('index.html')
