@@ -1,6 +1,6 @@
 from google.cloud import pubsub_v1 as pubsub
 from .youtube import get_most_popular_video_transcripts_by_topic
-from .database import insert_into_DB
+from .database import insert_video
 from .logs.message_logger import Logger
 from os import environ
 
@@ -51,7 +51,7 @@ class Subscriber:
 
         for data in processed_task:
             print('subscriber running insert into db', flush=True)
-            insert_into_DB(data)
+            insert_video(data)
 
         print(f"{topic} processed!", flush=True)
         message.ack()

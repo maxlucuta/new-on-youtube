@@ -7,12 +7,12 @@ Date: 19. Januar 2023
 
 """
 import os
+import random
 from cassandra.cluster import Cluster, DriverException
 from cassandra.auth import PlainTextAuthProvider
+import website
 from .users import User
 from .publisher import Publisher
-import website
-import random
 
 
 def establish_connection():
@@ -45,7 +45,7 @@ def establish_connection():
     return cluster.connect()
 
 
-def query_users_db(username):
+def query_users(username):
     """
     This function performs a query on the users DB based on either
     the username or user_id of a user and returns a User object if
@@ -83,7 +83,7 @@ def query_users_db(username):
     return None
 
 
-def insert_user_into_db(userobj):
+def insert_user(userobj):
     """
     This function performs an insertion into the users DB and returns True
     if the operation was successful - and false otherwise.
@@ -114,7 +114,7 @@ def insert_user_into_db(userobj):
     return True
 
 
-def update_user_topics_in_db(username, topics):
+def set_user_topics(username, topics):
     topics = ','.join(topics)
     cql = "UPDATE summaries.users SET categories = %s WHERE username = %s"
     try:
@@ -124,13 +124,33 @@ def update_user_topics_in_db(username, topics):
     return True
 
 
-def add_videos_by_topic_to_db(topics):
+def add_videos_to_queue(topics):
     publisher = Publisher()
     for topic in topics:
         cql = "SELECT * FROM summaries.video_summaries WHERE keyword = %s"
         response = website.session.execute(cql, (topic,)).all()
         if len(response) < 5:
             publisher.create_task(topic, str(5))
+
+
+def db_contains_video(keyword, video_id):
+    """
+    This function checks if a video is already in our db so
+    we don't have to summarize it all over again.
+
+    Args:
+        keyword (str): The keyword used to search the video.
+        video_id (str): The unique video ID of the video from YT API
+    Return:
+        bool: True if video is in DB - False otherwise
+    """
+    cql = """SELECT video_id FROM summaries.video_summaries
+            WHERE keyword = %s"""
+    response = website.session.execute(cql, (keyword,)).all()
+    for video in response:
+        if video['video_id'] == video_id:
+            return True
+    return False
 
 
 def query_videos(topics, amount, sort_by):
@@ -149,9 +169,10 @@ def query_videos(topics, amount, sort_by):
         [dict]
 
     """
+    amount = int(amount)
     cql = """SELECT keyword, likes, video_title, published_at, video_id,
-             summary, views FROM summaries.video_summaries WHERE
-             keyword IN ("""
+             summary, views, channel_name FROM summaries.video_summaries
+             WHERE keyword IN ("""
     cql += ','.join(['%s'] * len(topics))
     cql += ")"
     params = tuple(topics)
@@ -173,56 +194,11 @@ def query_videos(topics, amount, sort_by):
     elif sort_by == 'Random':
         random.shuffle(response)
     if len(response) < amount:
-        add_videos_by_topic_to_db(topics)
+        add_videos_to_queue(topics)
     return response[:amount]
 
 
-
-# Below here we need to parametise the CQL execute statements
-# Additionally, need to remove duplication / redundancy throughout this file
-
-
-
-def check_if_video_is_already_in_DB(keyword, video_id):
-    """
-    This function checks if a video is already in our db so
-    we don't have to summarize it all over again.
-
-    Args:
-        keyword (str): The keyword used to search the video.
-        video_id (str): The unique video ID of the video from YT API
-        session (cassandra.cluster.Cluster): The connection object to the DB
-    Return:
-        bool: True if video is in DB - False otherwise
-    """
-    query = website.session.execute(
-        f"""select video_id from summaries.video_summaries
-         where keyword = '{keyword}';""")
-    if query:
-        result = [x['video_id'] for x in query]
-        return result[0] == video_id
-    else:
-        return False
-
-# To delete after parametising all execute CQL statements
-
-
-def string_cleaner(input_string):
-    """
-    This is a helper function which removes
-    quotation marks from a string in order to avoid
-    failure of DB insertion attempts.
-
-    Args:
-        input_string (str): The string to be cleaned.
-
-    Returns:
-        str: The cleaned string.
-    """
-    return input_string.replace("'", "").replace('"', '')
-
-
-def insert_into_DB(video_dict):
+def insert_video(video_dict):
     """
     This function performs an insertion into the DB and returns True
     if the operation was successful - and false otherwise.
@@ -233,41 +209,38 @@ def insert_into_DB(video_dict):
                            'summary'} and the correspoding values must
                            all be of type string.
 
-        session (cassandra.cluster.Cluster): The connection object to the DB
-
     Returns:
         Boolean
 
     """
-    vid_tags = ','.join(video_dict["video_tags"])
-    vid_tags = string_cleaner(vid_tags)
-    summary = string_cleaner(video_dict["summary"])
-    keyword = string_cleaner(video_dict["keyword"])
-    video_name = string_cleaner(video_dict["video_name"])
-    channel_name = string_cleaner(video_dict["channel_name"])
+    keyword = video_dict["keyword"]
+    views = video_dict["views"]
+    likes = video_dict["likes"]
+    video_name = video_dict["video_name"]
+    channel_name = video_dict["channel_name"]
     video_id = video_dict["video_id"]
+    published_at = video_dict["published_at"]
+    summary = video_dict["summary"]
+    vid_tags = ','.join(video_dict["video_tags"])
 
-    values = f""" VALUES ('{keyword}',
-                          {video_dict["views"]},
-                          {video_dict["likes"]},
-                          '{video_name}',
-                          '{channel_name}',
-                          '{video_id}',
-                          '{video_dict["published_at"]}',
-                          '{summary}',
-                          '{vid_tags}')"""
+    params = [keyword, views, likes, video_name, channel_name, video_id,
+              published_at, summary, vid_tags]
 
-    prepend = """INSERT INTO summaries.video_summaries (keyword,
+    cql = """INSERT INTO summaries.video_summaries (keyword,
                  views, likes, video_title, channel_name, video_id,
-                 published_at, summary, video_tags)"""
+                 published_at, summary, video_tags) VALUES ("""
+    cql += ','.join(['%s'] * len(params))
+    cql += ")"
+
+    params = tuple()
 
     try:
-        website.session.execute(prepend+values)
+        website.session.execute(cql, params)
         print("Insertion successful --------- ")
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")
-    except Exception:
-        print(Exception)
+    except DriverException as exception:
+        print(str(exception))
         print("Insertion Failed ! ----------- ")
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")

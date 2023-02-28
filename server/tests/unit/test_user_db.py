@@ -14,7 +14,7 @@ def test_no_user_in_db():
     Raises:
         Assertion error.
     """
-    assert (db.query_users_db(username='ThisCouldNotBeAValidUserName') is None)
+    assert (db.query_users(username='ThisCouldNotBeAValidUserName') is None)
 
 
 def test_user_query_return_type():
@@ -29,7 +29,7 @@ def test_user_query_return_type():
     Raises:
         Assertion error.
     """
-    assert (isinstance(db.query_users_db(username='devuser4'), User))
+    assert (isinstance(db.query_users(username='devuser4'), User))
     return
 
 
@@ -45,6 +45,6 @@ def test_invalid_insert_into_users_db():
     Raises:
         Assertion error.
     """
-    assert (not db.insert_user_into_db('NotAUserObject'))
-    assert (not db.insert_user_into_db(User(1, None, None)))
+    assert (not db.insert_user('NotAUserObject'))
+    assert (not db.insert_user(User(1, None, None)))
     return

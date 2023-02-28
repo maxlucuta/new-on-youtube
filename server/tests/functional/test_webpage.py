@@ -166,9 +166,9 @@ def test_post_method_6(test_client):
     summaries = response['results']
 
     for summary in summaries:
-        title = summary.get('video_title')
-        channel = summary.get('channel_name')
-        text = summary.get('summary')
+        title = summary['video_title']
+        channel = summary['channel_name']
+        text = summary['summary']
         assert title and channel and text
 
     assert len(summaries) == 2

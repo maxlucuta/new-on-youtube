@@ -1,8 +1,8 @@
 from flask import Blueprint, request
 from werkzeug.security import check_password_hash, generate_password_hash
-from .utilities.database import query_users_db
-from .utilities.database import insert_user_into_db
-from .utilities.database import add_videos_by_topic_to_db
+from .utilities.database import query_users
+from .utilities.database import insert_user
+from .utilities.database import add_videos_to_queue
 from .utilities.users import User
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity
 from datetime import timedelta, timezone, datetime
@@ -26,7 +26,7 @@ def user_register():
         return {"status_code": 400, "message": "invalid fields", "token": ""}
 
     print(username, "attempting to register")
-    user = query_users_db(username=username)
+    user = query_users(username=username)
     if user:
         return {
             "status_code": 400,
@@ -40,9 +40,9 @@ def user_register():
     hashed_pwd = generate_password_hash(password, method="pbkdf2:sha256",
                                         salt_length=8)
     new_user = User(-1, username, hashed_pwd, topics)
-    if insert_user_into_db(new_user):
+    if insert_user(new_user):
         token = create_access_token(identity=username)
-        add_videos_by_topic_to_db(topics)
+        add_videos_to_queue(topics)
         return {
             "status_code": 400,
             "message": "successfully added and logged in",
@@ -66,7 +66,7 @@ def login():
             "token": ""
         }
 
-    user = query_users_db(username=username)
+    user = query_users(username=username)
     if not user:
         print("no user!--------------")
         return {

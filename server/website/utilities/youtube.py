@@ -12,7 +12,7 @@ from youtubesearchpython import (
     VideosSearch,
 )
 from abc import abstractmethod
-from .database import check_if_video_is_already_in_DB as in_db
+from .database import db_contains_video as in_db
 import youtube_transcript_api
 import time
 import requests
