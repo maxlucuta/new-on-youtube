@@ -101,7 +101,7 @@ def insert_user(userobj):
        not userobj.password:
         return False
     try:
-        topics = ','.join(clean_topics(userobj.topics))
+        topics = ','.join(userobj.topics)
         channels = ','.join(userobj.channels)
         values = " VALUES (%s,%s,%s, UUID(),%s)"
         prepend = """INSERT INTO summaries.users (username, categories,
@@ -126,7 +126,7 @@ def set_user_topics(username, topics):
     Returns:
         Boolean representing success of DB update operation
     """
-    topics = ','.join(clean_topics(topics))
+    topics = ','.join(topics)
     cql = "UPDATE summaries.users SET categories = %s WHERE username = %s"
     try:
         website.session.execute(cql, (topics, username))
@@ -171,6 +171,7 @@ def db_contains_video(keyword, video_id):
     """
     cql = """SELECT video_id FROM summaries.video_summaries
             WHERE keyword = %s"""
+    keyword = clean_topics([keyword])[0]
     response = website.session.execute(cql, (keyword,)).all()
     for video in response:
         if video['video_id'] == video_id:
