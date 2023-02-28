@@ -117,7 +117,7 @@ def valid_query_response(topic_summaries, amount):
     for query_response in topic_summaries:
         try:
             query_response['video_title']
-            query_response['channel_name']
+            query_response['views']
             query_response['summary']
             query_response['video_id']
             query_response['likes']

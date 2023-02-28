@@ -47,6 +47,28 @@ def establish_connection():
 
 
 def user_feed_query(topics, amount, sort_by):
+    cql = """SELECT keyword, likes, video_title, published_at, video_id,
+             summary, views FROM summaries.video_summaries WHERE
+             keyword IN ("""
+    cql += ','.join(['%s'] * len(topics))
+    cql += ")"
+    params = tuple(topics)
+    response = website.session.execute(cql, params).all()
+    print(response[:amount])
+    if sort_by == 'Recommended':
+        # TO BE IMPLEMENTED
+        pass
+    elif sort_by == 'Popular':
+        response = sorted(response, key=lambda x: x['views'], reverse=True)
+    elif sort_by == 'Recent':
+        # TO BE IMPLEMENTED
+        pass
+    elif sort_by == 'Random':
+        random.shuffle(response)
+    return response[:amount]
+
+
+def user_feed_query_old(topics, amount, sort_by):
     # Needs to be updated to have sorting in the db query rather than in python
     cql = """SELECT keyword, likes, video_title, published_at, video_id,
              summary, channel_name FROM summaries.video_summaries WHERE
