@@ -42,71 +42,7 @@ def establish_connection():
                                            "TZ_JcoCYZpRyD0SSZsS.Zt02jvzUmLU9F0"
                                            "+iA+6HYd0mY5wd61D8vQv8q+_-eKGU"))
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
-    s = cluster.connect()
-    return s
-
-
-def user_feed_query(topics, amount, sort_by):
-    cql = """SELECT keyword, likes, video_title, published_at, video_id,
-             summary, views FROM summaries.video_summaries WHERE
-             keyword IN ("""
-    cql += ','.join(['%s'] * len(topics))
-    cql += ")"
-    params = tuple(topics)
-    response = website.session.execute(cql, params).all()
-    print(response[:amount])
-    if sort_by == 'Recommended':
-        # TO BE IMPLEMENTED
-        pass
-    elif sort_by == 'Popular':
-        response = sorted(response, key=lambda x: x['views'], reverse=True)
-    elif sort_by == 'Recent':
-        # TO BE IMPLEMENTED
-        pass
-    elif sort_by == 'Random':
-        random.shuffle(response)
-    return response[:amount]
-
-
-def user_feed_query_old(topics, amount, sort_by):
-    # Needs to be updated to have sorting in the db query rather than in python
-    cql = """SELECT keyword, likes, video_title, published_at, video_id,
-             summary, channel_name FROM summaries.video_summaries WHERE
-             keyword IN ("""
-    cql += ','.join(['%s'] * len(topics))
-    cql += ") LIMIT %s"
-    db_amount = min(len(topics) * 20, 250)
-    params = topics + [db_amount]
-    params = tuple(params)
-    response = website.session.execute(cql, params).all()
-
-    if sort_by == 'Recommended':
-        # Needs to be implemented in checkpoint 4
-        # Separate db query based on recommendation scores
-        pass
-    elif sort_by == 'Popular':
-        # Should be separate db query sorted by views NOT likes
-        response = sorted(response, key=lambda x: x['likes'], reverse=True)
-    elif sort_by == 'Recent':
-        # Should be implemented with upload date or needs to be corrected
-        # for published_at data. Can we sort in the db query?
-        response = sorted(response, key=lambda x: x['published_at'])
-    elif sort_by == 'Random':
-        # Should be separate db query where we pull a random set of
-        # videos with this topics maybe we somehow take a random
-        # subset of the video IDs? E.g. random number generator on
-        # backend and then we select video IDs based on this
-        random.shuffle(response)
-    return response[:amount]
-
-
-def add_videos_by_topic_to_db(topics):
-    publisher = Publisher()
-    for topic in topics:
-        cql = "SELECT * FROM summaries.video_summaries WHERE keyword = %s"
-        response = website.session.execute(cql, (topic,)).all()
-        if len(response) < 5:
-            publisher.create_task(topic, str(5))
+    return cluster.connect()
 
 
 def query_users_db(username):
@@ -188,41 +124,63 @@ def update_user_topics_in_db(username, topics):
     return True
 
 
-# Below here we need to parametise the CQL execute statements
-# Additionally, need to remove duplication / redundancy throughout this file
+def add_videos_by_topic_to_db(topics):
+    publisher = Publisher()
+    for topic in topics:
+        cql = "SELECT * FROM summaries.video_summaries WHERE keyword = %s"
+        response = website.session.execute(cql, (topic,)).all()
+        if len(response) < 5:
+            publisher.create_task(topic, str(5))
 
 
-def query_yt_videos(keyword, k):
+def query_videos(topics, amount, sort_by):
     """
     This function performs a query on the DB and returns a list of
-    dictionaries (video_title, channel_name, summary) - each belonging
-    to one of the top k-ranked YT videos.
+    dictionaries (keyword, likes, video_title, published_at, video_id,
+    summary, views) - each belonging to one of the top 'amount' ranked
+    YT videos which sorted by 'sort_by'
 
     Args:
-        keyword (string): The keyword which is used to tag the videos
-        k (int): The first k ranked videos.
-        session (cassandra.cluster.Cluster): The connection object to the DB
+        topics [string]: The topics of which to return
+        amount int: The number of videos to return
+        sort_by str: The method with which to sort the result
 
     Returns:
         [dict]
 
     """
-    publisher = Publisher()
+    cql = """SELECT keyword, likes, video_title, published_at, video_id,
+             summary, views FROM summaries.video_summaries WHERE
+             keyword IN ("""
+    cql += ','.join(['%s'] * len(topics))
+    cql += ")"
+    params = tuple(topics)
+
     try:
-        query = website.session.execute(
-            f"""select * from summaries.video_summaries where
-                keyword = '{keyword}' limit {k}""").all()
-    except DriverException:
+        response = website.session.execute(cql, params).all()
+    except DriverException as exception:
+        print("Exception when querying DB: " + str(exception))
         return []
-    else:
-        if len(query) > 0:
-            return query
-        else:
-            publisher.create_task(keyword, str(k))
-            return []
-            # the below exception should probably be
-            # handled in the try-except statement
-            # return [{"ERROR": "Query failed"}]
+
+    if sort_by == 'Recommended':
+        # TO BE IMPLEMENTED
+        pass
+    elif sort_by == 'Popular':
+        response = sorted(response, key=lambda x: x['views'], reverse=True)
+    elif sort_by == 'Recent':
+        # TO BE IMPLEMENTED
+        pass
+    elif sort_by == 'Random':
+        random.shuffle(response)
+    if len(response) < amount:
+        add_videos_by_topic_to_db(topics)
+    return response[:amount]
+
+
+
+# Below here we need to parametise the CQL execute statements
+# Additionally, need to remove duplication / redundancy throughout this file
+
 
 
 def check_if_video_is_already_in_DB(keyword, video_id):

@@ -6,13 +6,11 @@ that the request contains both topic=x and amount=y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
-from .utilities.database import query_yt_videos
 from .utilities.database import query_users_db
 from .utilities.database import update_user_topics_in_db
-from .utilities.database import user_feed_query
+from .utilities.database import query_videos
 from .utilities.database import add_videos_by_topic_to_db
 from flask_jwt_extended import jwt_required
-import random
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -156,13 +154,8 @@ def request_summary():
 
     validate_get_request(topics, amount)
 
-    response = []
-    for topic in topics:
-        query_response = (query_yt_videos(topic, int(amount)))
-        response += query_response
+    response = query_videos(topics, amount, "Random")
 
-    random.shuffle(response)
-    response = response[:int(amount)]
     if not valid_query_response(response, int(amount)):
         abort(417)
 
@@ -199,24 +192,12 @@ def user_request_summary():
 
     validate_get_request(topics, amount)
 
-    response = user_feed_query(topics, amount, sort_by)
+    response = query_videos(topics, amount, sort_by)
 
     if not valid_query_response(response, int(amount)):
         abort(417)
 
     return {'status_code': 200, 'description': 'Ok.', 'results': response}
-
-# To be removed - don't think we need this anymore
-
-
-@request_blueprint.route("/popular_videos", methods=['GET'])
-def popular_videos():
-    results = query_yt_videos("football", 10)
-
-    if not valid_query_response(results, len(results)):
-        abort(417)
-
-    return {'status_code': 200, 'description': 'Ok.', 'results': results}
 
 
 @request_blueprint.route("/get_user_topics", methods=['POST'])
