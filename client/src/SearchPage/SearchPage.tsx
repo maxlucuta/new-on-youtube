@@ -62,7 +62,7 @@ const SearchPage = () => {
                 marginLeft: "20%"
             }}>
                 <Title>Find Videos</Title>
-                <NewSearchButton 
+                <NewSearchButton
                     style={{display: displaySelector ? "none" : "block"}}
                     onClick={() => {
                         updateDisplaySelector(!displaySelector);
@@ -71,8 +71,15 @@ const SearchPage = () => {
                     }}>
                     New Search
                 </NewSearchButton>
+                <RefreshButton
+                    style={{display: displaySelector ? "none" : "block"}}
+                    onClick={() => {
+                        handleSubmission();
+                    }}>
+                    Refresh
+                </RefreshButton>
             </div>
-            
+
             <div
                 style={{
                     display: "flex",
@@ -95,18 +102,6 @@ const SearchPage = () => {
                     marginRight: "25%"
                 }}>
 
-                {/* -- DROPDOWN SELECT - NEEDS MORE WORK --
-                <select >
-                    {topics.map(e => (
-                        <DropdownSelect 
-                            key={e} 
-                            value={e}
-                            onClick={() => handleSelection(e)}>
-                                {e}
-                        </DropdownSelect>
-                    ))}
-                </select>
-                */}
             </div>
             <TwoPanel style={{ display: displaySelector ? "flex" : "none" , marginBottom: "20px"}}>
                 <LeftPanel>
@@ -304,4 +299,23 @@ const Description = styled.div`
     width: 85%;
     font-size: 25px;
     margin: auto;
+`;
+
+const RefreshButton = styled.div`
+    width: 100px;
+    margin: 40px 0 0 40px;
+    font-size: 20px;
+    text-align: center;
+    background-color: #f0f0f1;
+    color: black;
+    border-style: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+    }
 `;
