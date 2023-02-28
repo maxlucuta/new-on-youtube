@@ -1,17 +1,14 @@
 from flask import Blueprint, request
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity
+from datetime import timedelta, timezone, datetime
+import json
 from .utilities.database import query_users
 from .utilities.database import insert_user
 from .utilities.database import add_videos_to_queue
 from .utilities.users import User
-from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity
-from datetime import timedelta, timezone, datetime
-import json
 
 auth_blueprint = Blueprint('auth_blueprint', __name__)
-
-# add this decorator to any protected routes
-# @jwt_required()
 
 
 @auth_blueprint.route('/register', methods=['POST'])

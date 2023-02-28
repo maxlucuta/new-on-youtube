@@ -6,11 +6,11 @@ that the request contains both topic=x and amount=y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
+from flask_jwt_extended import jwt_required
 from .utilities.database import query_users
 from .utilities.database import set_user_topics
 from .utilities.database import query_videos
 from .utilities.database import add_videos_to_queue
-from flask_jwt_extended import jwt_required
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 

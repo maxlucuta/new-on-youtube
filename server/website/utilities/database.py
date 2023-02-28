@@ -101,7 +101,7 @@ def insert_user(userobj):
        not userobj.password:
         return False
     try:
-        topics = ','.join(userobj.topics)
+        topics = ','.join(clean_topics(userobj.topics))
         channels = ','.join(userobj.channels)
         values = " VALUES (%s,%s,%s, UUID(),%s)"
         prepend = """INSERT INTO summaries.users (username, categories,
@@ -109,22 +109,47 @@ def insert_user(userobj):
         website.session.execute(
             prepend+values, (userobj.username, topics, channels,
                              userobj.password))
-    except Exception:
+    except DriverException as exception:
+        print("DriverException: " + str(exception))
         return False
     return True
 
 
 def set_user_topics(username, topics):
-    topics = ','.join(topics)
+    """
+    This function updates a users set of topics in the DB
+
+    Args:
+        userobj (User object): User object of the user to update
+        topics [string]: List to topics to be updated in DB
+
+    Returns:
+        Boolean representing success of DB update operation
+    """
+    topics = ','.join(clean_topics(topics))
     cql = "UPDATE summaries.users SET categories = %s WHERE username = %s"
     try:
         website.session.execute(cql, (topics, username))
-    except Exception:
+    except DriverException as exception:
+        print("DriverException: " + str(exception))
         return False
     return True
 
 
 def add_videos_to_queue(topics):
+    """
+    This function adds a topic to the pubsub queue if there are
+    to few videos in the DB for that topic
+
+    Args:
+        topics [string]: List to topics to check. Each topic is checked
+        individually to ensure enough videos are present with that
+        keyword in the DB
+
+    Returns:
+        void
+    """
+    topics = clean_topics(topics)
     publisher = Publisher()
     for topic in topics:
         cql = "SELECT * FROM summaries.video_summaries WHERE keyword = %s"
@@ -170,6 +195,7 @@ def query_videos(topics, amount, sort_by):
 
     """
     amount = int(amount)
+    topics = clean_topics(topics)
     cql = """SELECT keyword, likes, video_title, published_at, video_id,
              summary, views, channel_name FROM summaries.video_summaries
              WHERE keyword IN ("""
@@ -213,7 +239,8 @@ def insert_video(video_dict):
         Boolean
 
     """
-    keyword = video_dict["keyword"]
+
+    keyword = clean_topics([video_dict["keyword"]])[0]
     views = video_dict["views"]
     likes = video_dict["likes"]
     video_name = video_dict["video_name"]
@@ -246,3 +273,7 @@ def insert_video(video_dict):
               " | Channel : " + channel_name + "\n")
         return False
     return True
+
+
+def clean_topics(topics):
+    return [topic.lower().replace(" ", "_") for topic in topics]
