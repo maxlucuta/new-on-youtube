@@ -46,7 +46,7 @@ const FeedPage = () => {
                     </>
                 ))}
                 <RefreshButton
-                    style={{display: "flex"}}
+                    style={{display: "flex", margin: "0 20px 0 20px"}}
                     onClick={() => {
                         handleRequest(mode);
                     }}>
