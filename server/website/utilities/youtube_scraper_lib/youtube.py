@@ -7,6 +7,7 @@ from .cleaners.metadata_cleaner import MetaDataCleaner
 from .cleaners.transcript_cleaner import TranscriptCleaner
 from .cleaners.data_cleaner import DataCleaner as dc
 from ..gpt3 import summarize_yt_script_with_gpt3
+from ..database import db_contains_video
 
 
 class YouTubeScraperFactory:
@@ -55,7 +56,7 @@ class YouTubeScraperFactory:
         while len(self.result) < self.amount:
             metadata = next(response)
             video_id = metadata["video_id"]
-            if video_id not in self.videos and dc.occupied_fields(metadata, 8):
+            if self._check_metadata_status(metadata):
                 video_id = metadata["video_id"]
                 transcript = self.transcript_scraper.execute(video_id)
                 raw = transcript["transcript"]
@@ -78,6 +79,27 @@ class YouTubeScraperFactory:
             except (RateLimitError, ServiceUnavailableError,
                     InvalidRequestError):
                 continue
+
+    def _check_metadata_status(self, metadata: dict[str, str]) -> bool:
+        """Performs necessary checks on retrieved metadata before
+           comitting to transcript scraping.
+
+        Args:
+            metadata (dict[str, str]): scraped metadata
+
+        Returns:
+            bool: False if the video has been previously scraped,
+            exists already in the DB, or has missing fields. True
+            otherwise.
+        """
+
+        video_id = metadata["video_id"]
+        topic = metadata["keyword"]
+        if video_id in self.videos or not dc.occupied_fields(metadata, 8):
+            return False
+        if db_contains_video(topic, video_id):
+            return False
+        return True
 
     def _check_transcript_status(self, response: str) -> bool:
         """Checks if a recieved transcript is valid, and if not,
