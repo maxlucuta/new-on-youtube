@@ -18,11 +18,10 @@ class MetaDataCleaner(DataCleaner):
             ValueError: if data not parsed into constructor
         """
 
+        data['views'] = self.format_number(data['views'])
+        data['likes'] = self.format_number(data['likes'])
+        data['published_at'] = self.format_date(data['published_at'])
         self.data = data
-        for key in self.data:
-            key['views'] = self.format_number(key['views'])
-            key['likes'] = self.format_number(key['likes'])
-            key['published_at'] = self.format_date(key['published_at'])
 
     def format_number(self, number: str) -> int:
         """Transforms a raw number into an int.
@@ -49,4 +48,6 @@ class MetaDataCleaner(DataCleaner):
         """
 
         formatted_date = dateparser.parse(date)
+        if not formatted_date:
+            return None
         return formatted_date.strftime("%Y-%m-%d")

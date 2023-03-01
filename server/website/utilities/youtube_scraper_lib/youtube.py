@@ -41,7 +41,6 @@ class YouTubeScraperFactory:
         """
 
         self._scrape()
-        self.metadata_cleaner.full_clean(self.result)
         self.transcript_cleaner.full_clean(self.result)
         self._summarise_transcripts()
         self._remove_failed_summaries()
@@ -56,7 +55,7 @@ class YouTubeScraperFactory:
         response = self.metadata_scraper.execute()
         while len(self.result) < self.amount:
             metadata = next(response)
-            video_id = metadata["video_id"]
+            self.metadata_cleaner.full_clean(metadata)
             if self._check_metadata_status(metadata):
                 video_id = metadata["video_id"]
                 transcript = self.transcript_scraper.execute(video_id)
