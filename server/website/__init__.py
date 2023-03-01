@@ -16,6 +16,7 @@ from website.utilities.recommender import Recommender
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         app = Flask(__name__, static_folder='../static', static_url_path='/')
+        Thread(name="background", target=run_background_task, daemon=True).start()
     else:
         app = Flask(__name__, static_folder='../../client/build')
 
@@ -43,7 +44,5 @@ def create_app():
     global recommender
     recommender = Recommender()
     recommender.train_model()
-
-    Thread(name="background", target=run_background_task, daemon=True).start()
 
     return app
