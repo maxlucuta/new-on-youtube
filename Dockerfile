@@ -6,7 +6,7 @@ COPY ./client ./
 RUN npm install --save-dev @types/styled-components-react-native
 RUN npm run build
 
-FROM python:3.8-slim as run
+FROM python:3.10-slim as run
 ENV IN_DOCKER_CONTAINER Yes
 COPY ./server/requirements.txt .
 RUN python -m pip install --upgrade pip
