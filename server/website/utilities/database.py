@@ -250,10 +250,18 @@ def get_recommended_videos(username, amount):
 
     try:
         response = website.session.execute(cql, params).all()
+        response_unique = []
+        added_video_ids = set()
+        for video in response:
+            if video['video_id'] not in added_video_ids:
+                added_video_ids.add(video['video_id'])
+                response_unique.append(video)
+
     except DriverException as exception:
         print("Exception when querying DB: " + str(exception))
         return []
-    return response
+    random.shuffle(response_unique)
+    return response_unique
 
 
 def query_videos(topics, amount, sort_by):

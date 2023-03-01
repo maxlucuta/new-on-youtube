@@ -78,7 +78,7 @@ const RegisterPage = () => {
                             <FormInput
                                 type="email"
                                 name="email"
-                                placeholder="Enter Email"
+                                placeholder="Enter Username"
                                 onChange={handleEmailChange}
                             />
                             {userAlreadyExists

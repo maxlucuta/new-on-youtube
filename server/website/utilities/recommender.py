@@ -1,6 +1,5 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
-import random
 from sklearn.metrics.pairwise import sigmoid_kernel
 import website
 
@@ -199,7 +198,6 @@ class Recommender:
 
         flattened_results = [item for sublist in results for item in sublist]
         if shuffle:
-            random.shuffle(flattened_results)
             flattened_results = list(set(flattened_results))
 
         return flattened_results
