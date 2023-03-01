@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import { useNavigate, Navigate } from "react-router";
-import { Form } from "react-router-dom";
 import styled from "styled-components";
 import { RootContext } from "../context";
 import { usePost } from "../functions";
@@ -22,6 +21,7 @@ const RegisterPage = () => {
 
     const handleEmailChange = (e: any) => {
         updateUsername(e.target.value);
+        updateUserAlreadyExists(false)
     };
 
     const handlePasswordChange = (e: any, idx: number) => {
@@ -100,8 +100,8 @@ const RegisterPage = () => {
                                 ? password2.length > 0 && <div>Passwords do not match</div>
                                 : password2.length > 0 && <div>Valid password!</div>}
                         </RegForm>
-                        
-                      
+
+
                         <SubmitButton
                             active={validPassword && username.length > 0 && selectedTopics.length > 0}
                             onClick={handleSubmit}>
@@ -109,12 +109,12 @@ const RegisterPage = () => {
                         </SubmitButton>
                         </div>
                         </RegFrame>
-                        
+
                         {selectedTopics.length == 0 && (
                         <Text>Select at least one topic to register.</Text>
                         )}
                         <Text>Topics selected: {selectedTopics.length}</Text>
-                        
+
                         <SelectedContainer>
                             {selectedTopics.map(c => (
                                 <SelectedCategory selected={true} onClick={() => handleSelectedTopics(c)}>
@@ -122,7 +122,7 @@ const RegisterPage = () => {
                                 </SelectedCategory>
                             ))}
                         </SelectedContainer>
-                        
+
                     </LeftFrame>
                     <RightFrame>
                         <VerticalFrame>
@@ -149,9 +149,9 @@ const RegisterPage = () => {
                             </SelectionContainer>
                         </VerticalFrame>
                         <VerticalFrame>
-                            
+
                         </VerticalFrame>
-                    </RightFrame> 
+                    </RightFrame>
                 </PageFrame>
             </div>
         </div>
@@ -231,8 +231,8 @@ const VerticalFrame = styled.div`
 
 const RegFrame = styled.div`
     display: flex;
-    flex-direction: column; 
-    background-color: #f0f0f1; 
+    flex-direction: column;
+    background-color: #f0f0f1;
     width: 75%;
     border-radius: 3px;
     margin-bottom: 40px;
