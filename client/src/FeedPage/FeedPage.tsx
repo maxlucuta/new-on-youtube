@@ -14,7 +14,7 @@ const FeedPage = () => {
     const post = usePost();
 
     const handleRequest = async (sort_by_mode: String | ((prevState: String) => String)) => {
-        const payload = { username: tokenToEmail(token), amount: 5, sort_by: sort_by_mode};
+        const payload = { username: tokenToEmail(token), amount: 20, sort_by: sort_by_mode};
         const response = await post("/user_request", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else updateResults(response.results);

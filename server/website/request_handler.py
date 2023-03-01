@@ -6,13 +6,11 @@ that the request contains both topic=x and amount=y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
-from .utilities.database import query_yt_videos
-from .utilities.database import query_users_db
-from .utilities.database import update_user_topics_in_db
-from .utilities.database import user_feed_query
-from .utilities.database import add_videos_by_topic_to_db
 from flask_jwt_extended import jwt_required
-import random
+from .utilities.database import query_users
+from .utilities.database import set_user_topics
+from .utilities.database import query_videos
+from .utilities.database import add_videos_to_queue
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -82,7 +80,7 @@ def server_error(e):
     }
 
 
-def validate_get_request(topics, amount):
+def valid_video_request(topics, amount):
     """Checks if the POST request params are valid.
     Args:
             topic: string denoting topic to query.
@@ -95,16 +93,12 @@ def validate_get_request(topics, amount):
     if not topics or not amount:
         abort(400)
 
-    valid_topics = True
-    # for topic in topics:
-    #     valid_topics &= bool(re.match(r'[a-zA-Z\s]+$', topic))
-
-    if not valid_topics or not str(amount).isdigit() \
-            or 0 >= int(amount) or int(amount) > 20:
+    if not str(amount).isdigit() or \
+            0 >= int(amount) or int(amount) > 20:
         abort(400)
 
 
-def valid_query_response(topic_summaries, amount):
+def valid_video_response(response, amount):
     """Checks if the POST response satisfies the request.
     Args:
             topic_summaries: [{dict}] containing query response.
@@ -114,24 +108,18 @@ def valid_query_response(topic_summaries, amount):
             True if response is valid.
             False if response is incomplete.
     """
-    for query_response in topic_summaries:
-        try:
-            query_response['video_title']
-            query_response['channel_name']
-            query_response['summary']
-            query_response['video_id']
-            query_response['likes']
-            query_response['published_at']
-        except KeyError:
+    keys = ['video_title', 'views', 'summary', 'likes',
+            'published_at', 'channel_name']
+    for result in response:
+        if not all(x in result for x in keys):
             return False
-
-    return True
+    return len(response) <= amount
 
 
 @request_blueprint.route("/", methods=['POST'])
 @request_blueprint.route("/home", methods=['POST'])
 @request_blueprint.route("/request", methods=['POST'])
-def request_summary():
+def request_videos():
     """ Retrieves summarised transcripts for a topic.
     Args:
             topic: GET request -> topic extracted through URL
@@ -154,16 +142,11 @@ def request_summary():
     except KeyError:
         abort(400)
 
-    validate_get_request(topics, amount)
+    valid_video_request(topics, amount)
 
-    response = []
-    for topic in topics:
-        query_response = (query_yt_videos(topic, int(amount)))
-        response += query_response
+    response = query_videos(topics, amount, "Random")
 
-    random.shuffle(response)
-    response = response[:int(amount)]
-    if not valid_query_response(response, int(amount)):
+    if not valid_video_response(response, int(amount)):
         abort(417)
 
     return {'status_code': 200, 'description': 'Ok.', 'results': response}
@@ -171,7 +154,7 @@ def request_summary():
 
 @request_blueprint.route("/user_request", methods=['POST'])
 @jwt_required()
-def user_request_summary():
+def request_user_videos():
     """ Retrieves sorted summarised transcripts for a list of topics.
     Args:
             json: POST request -> username, topics, and sorted method extracted
@@ -192,31 +175,19 @@ def user_request_summary():
     except KeyError:
         abort(400)
 
-    user = query_users_db(username)
+    user = query_users(username)
     if not user:
         return {'status_code': 500, 'description': 'database request failed'}
     topics = user.topics
 
-    validate_get_request(topics, amount)
+    valid_video_request(topics, amount)
 
-    response = user_feed_query(topics, amount, sort_by)
+    response = query_videos(topics, amount, sort_by)
 
-    if not valid_query_response(response, int(amount)):
+    if not valid_video_response(response, int(amount)):
         abort(417)
 
     return {'status_code': 200, 'description': 'Ok.', 'results': response}
-
-# To be removed - don't think we need this anymore
-
-
-@request_blueprint.route("/popular_videos", methods=['GET'])
-def popular_videos():
-    results = query_yt_videos("football", 10)
-
-    if not valid_query_response(results, len(results)):
-        abort(417)
-
-    return {'status_code': 200, 'description': 'Ok.', 'results': results}
 
 
 @request_blueprint.route("/get_user_topics", methods=['POST'])
@@ -226,7 +197,7 @@ def get_user_topics():
         username = request.json["username"]
     except KeyError:
         abort(400)
-    user = query_users_db(username)
+    user = query_users(username)
     if not user:
         return {'status_code': 500, 'description': 'database request failed'}
     results = user.topics
@@ -241,7 +212,7 @@ def update_user_topics():
         topics = request.json["topics"]
     except KeyError:
         abort(400)
-    if not update_user_topics_in_db(username, topics):
+    if not set_user_topics(username, topics):
         return {'status_code': 500, 'description': 'database update failed'}
-    add_videos_by_topic_to_db(topics)
+    add_videos_to_queue(topics)
     return {'status_code': 200, 'description': 'Ok.'}

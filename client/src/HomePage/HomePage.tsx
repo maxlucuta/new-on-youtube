@@ -17,20 +17,6 @@ import Feed from "../Feed/Feed";
 const backgroundGrey = '#f0f0f1';
 
 const HomePage = () => {
-    const [summaries, updateSummaries] = useState([] as Summary[]);
-    const [mode, updateMode] = useState("Feed" as "Feed" | "Popular");
-
-    const { SERVER_URL } = useContext(RootContext);
-
-    const getPopularVideos = async () => {
-        const response = await (await axios.get(SERVER_URL + "/popular_videos")).data;
-        if (response.status_code != 200) alert(SERVER_URL)
-        else updateSummaries(response.results);
-    };
-
-    useEffect(() => {
-        getPopularVideos();
-    }, []);
 
     return (
         <div>
@@ -55,16 +41,16 @@ const HomePage = () => {
                         <Text>Harness the power of GPT-3 and use detailed video summaries</Text>
                         <Text>to find what interests you, faster.</Text>
                         <br></br>
-                        <Text>No promotions. No marketing. Just content.</Text> 
+                        <Text>No promotions. No marketing. Just content.</Text>
                         <Link to="/Register">
                             <Start>Register Now</Start>
                         </Link>
                     </div>
-                
+
 
                     <div style={{ margin: "20px" , width: "500px"}}>
                         <div><LaptopImage src={laptop}/></div>
-                    </div> 
+                    </div>
                 </div>
             </div>
 
@@ -74,13 +60,13 @@ const HomePage = () => {
                     <div style={{ display: "flex"}}>
                         <Panel>
                             <PanelIcon src={choiceIcon}/>
-                            <PanelTitle>Choose your topics</PanelTitle>       
-                            <Text>Choose something from our comprehensive library of topics or customise your own.</Text> 
+                            <PanelTitle>Choose your topics</PanelTitle>
+                            <Text>Choose something from our comprehensive library of topics or customise your own.</Text>
                         </Panel>
 
                         <Panel>
                             <PanelIcon src={nlpIcon}/>
-                            <PanelTitle>Generate Summaries</PanelTitle>       
+                            <PanelTitle>Generate Summaries</PanelTitle>
                             <Text>We process the transcripts of your videos to give you a clear written summary of the full video, in plain English.</Text>
                         </Panel>
                     </div>
