@@ -4,7 +4,7 @@ import { RootContext } from "./context";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
-export const thumbnail = (id: string) => "http://img.youtube.com/vi/" + id + "/hqdefault.jpg";
+export const thumbnail = (id: string) => "https://img.youtube.com/vi/" + id + "/hqdefault.jpg";
 export const url = (id: string) => "https://www.youtube.com/watch?v=" + id;
 
 export const useToken = () => {
