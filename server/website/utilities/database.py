@@ -346,6 +346,8 @@ def insert_video(video_dict):
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n")
         return False
+
+    website.recommender.train_model()
     return True
 
 
