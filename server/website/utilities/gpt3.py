@@ -1,6 +1,6 @@
 """
 This file contains the function that sends a transcript from a
-YT video to the gpt3 API and returns a summary of the transcript.
+YT video to the gpt3 API and returns a summary of transcript.
 
 Key Facts:
     - The language model used in openai's backend is davinci-003.
