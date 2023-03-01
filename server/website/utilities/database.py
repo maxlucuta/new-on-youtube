@@ -248,10 +248,10 @@ def query_videos(topics, amount, sort_by, username=None):
 
     if sort_by == 'Recommended':
         # TO BE IMPLEMENTED - call recommender function here
-        pass
-    elif sort_by == 'Popular':
+        print(website.recommender.recommend_videos_for_user(username, amount))
+    elif sort_by == 'Most viewed':
         response = sorted(response, key=lambda x: x['views'], reverse=True)
-    elif sort_by == 'Recent':
+    elif sort_by == 'Most liked':
         # TO BE IMPLEMENTED
         pass
     elif sort_by == 'Random':
@@ -294,7 +294,7 @@ def insert_video(video_dict):
                  views, likes, video_title, channel_name, video_id,
                  published_at, summary, video_tags) VALUES ("""
     cql += ','.join(['%s'] * len(params))
-    cql += ")"
+    cql += ");"
 
     params = tuple()
 

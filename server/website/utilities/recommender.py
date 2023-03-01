@@ -6,35 +6,7 @@ from cassandra.auth import PlainTextAuthProvider
 from sklearn.feature_extraction.text import TfidfVectorizer
 import random
 from sklearn.metrics.pairwise import sigmoid_kernel
-
-"""
-
-def establish_connection():
-
-    if os.environ.get('IN_DOCKER_CONTAINER', False):
-        cloud_config = {'secure_connect_bundle':
-                        './website/utilities/secure-connect-yapp-db.zip'}
-    else:
-        cloud_config = {'secure_connect_bundle':
-                        ("/workspaces/new-on-youtube/server/website/"
-                         "utilities/secure-connect-yapp-db.zip")}
-
-    auth_provider = PlainTextAuthProvider('CiiWFpFfaQtfJtfOGBnpvazM',
-                                          ("9oCeGIhPBE,.owYt.cp2mZ7S20Ge2_"
-                                           "bLyL9oCRlqfZ5bcIR-Bz2mMd3tcA05PXx_"
-                                           "TZ_JcoCYZpRyD0SSZsS.Zt02jvzUmLU9F0"
-                                           "+iA+6HYd0mY5wd61D8vQv8q+_-eKGU"))
-    cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
-    s = cluster.connect()
-    return s
-
-
-global session
-session = establish_connection()
-"""
-
-
-from website import session
+import website
 
 
 class QueryFailedException(Exception):
@@ -54,26 +26,24 @@ class Recommender:
 
     def _query_all_videos(self):
         """
-        This function performs a query on the DB and returns a list of  
+        This function performs a query on the DB and returns a list of
         dictionaries (video_title, video_id, summary, video_tags from summaries.video_summaries)
 
         Returns:
             [dict]
 
         """
-        query = session.execute(
+        query = website.session.execute(
             "select video_title, video_id, summary, video_tags from summaries.video_summaries").all()
-        if query:
-            result = [{'video_title': x.video_title, 'ID': x.video_id,
-                       'summary': x.summary, "video_tags": x.video_tags} for x in query]
-            return result
-        else:
+        if not query:
             raise QueryFailedException(
                 "Could not retrieve all videos from database.")
+        return query
+
 
     def _clean_data(self, dicts):
         """
-        Helper function that cleans the data and joins video_tags, video_title, 
+        Helper function that cleans the data and joins video_tags, video_title,
         and summary into one string.
 
         Args:
@@ -116,8 +86,8 @@ class Recommender:
 
     def train_model(self):
         """
-        Core function which runs the entire pipeline 
-        from fetching the data, cleaning it and then 
+        Core function which runs the entire pipeline
+        from fetching the data, cleaning it and then
         calculating the required matrices.
 
         Args:
@@ -143,7 +113,7 @@ class Recommender:
             None
         """
         self.indices = pd.Series(
-            self.video_df.index, index=self.video_df["ID"])
+            self.video_df.index, index=self.video_df["video_id"])
 
     def give_recommendation(self, vid_id, k, title=False):
         """
@@ -152,7 +122,7 @@ class Recommender:
         Args:
             - vid_id (string): The ID of the video for which we want to generate recommendations
             - k (int): The top k most similar videos compared to the video with vid_ID.
-            - title (bool): If true then video titles are returned instead of video IDs. 
+            - title (bool): If true then video titles are returned instead of video IDs.
         """
         idx = self.indices[vid_id]
         # get pairwise similarity scores
@@ -166,9 +136,9 @@ class Recommender:
         if title:
             return list(self.video_df["video_title"].iloc[vid_idx])
         else:
-            return list(self.video_df["ID"].iloc[vid_idx])
+            return list(self.video_df["video_id"].iloc[vid_idx])
 
-    def recommend_videos_for_user(self, username, shuffle=True):
+    def recommend_videos_for_user(self, username, amount, shuffle=True):
         """
         Main function which lets the trained model generate predictions for a specific user.
 
@@ -179,7 +149,7 @@ class Recommender:
             list[str]: The video IDs of the recommended videos.
         """
 
-        query = session.execute(
+        query = website.session.execute(
             f"select three_watched from summaries.users where username='{username}';").all()
 
         if not query:
@@ -187,8 +157,13 @@ class Recommender:
                 f"Could not retrieve three_watched field for user {username}.")
 
         results = []
-        three_watched = [x.three_watched for x in query][0].split(";") #:
-        amounts = [6, 4, 2]
+        three_watched = query[0]['three_watched'].split(":")
+        amount_weighting = [0.6, 0.25, 0.15]
+        amount_1 = int(amount * amount_weighting[0])
+        amount_2 = int(amount * amount_weighting[1])
+        amount_3 = amount - amount_1 - amount_2
+        amounts = [amount_1, amount_2, amount_3]
+
 
         for vid_id, k in zip(three_watched, amounts):
             results.append(self.give_recommendation(vid_id, k, title=False))
@@ -198,27 +173,4 @@ class Recommender:
             random.shuffle(flattened_results)
 
         return flattened_results
-
-
-if __name__ == "__main__":
-
-    rec = Recommender()
-    rec.train_model()
-    print("-------------- Test Recommendations ------------------")
-    print("\n For a gaming video: ")
-    print(rec.give_recommendation("L5kff6EUKwI", 10, True))
-
-    print("\n For a football video: ")
-    print(rec.give_recommendation("KmZ3x_7D1wE", 10, True))
-
-    print("\n For a reality tv video: ")
-    print(rec.give_recommendation("5Bx0w0K8_BE", 10, True))
-
-    print("\n For a economic news video: ")
-    print(rec.give_recommendation("-M_3yJPgGxU", 10, True))
-
-    print("\n Test recommendations for a specific user: ")
-    print(rec.recommend_videos_for_user("ata122"))
-
-    print("\n \n")
 

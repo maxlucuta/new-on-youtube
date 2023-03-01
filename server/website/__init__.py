@@ -10,7 +10,7 @@ from threading import Thread
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from cassandra.query import dict_factory
-from website.utilities import Recommender
+from website.utilities.recommender import Recommender
 
 
 def create_app():
@@ -42,7 +42,8 @@ def create_app():
 
     Thread(name="background", target=run_background_task, daemon=True).start()
 
+    global recommender
     recommender = Recommender()
-
+    recommender.train_model()
 
     return app
