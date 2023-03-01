@@ -4,22 +4,13 @@ import numpy as np
 from cassandra.cluster import Cluster, DriverException
 from cassandra.auth import PlainTextAuthProvider
 from sklearn.feature_extraction.text import TfidfVectorizer
+import random
 from sklearn.metrics.pairwise import sigmoid_kernel
 
+"""
 
 def establish_connection():
-    """
-    This function initializes the connection to the DB using
-    the credentials supplied below.
 
-    Args:
-        None
-
-    Returns:
-        Return a instance of the Cluster class - which is an
-        abstraction for the connection to the DB.
-
-    """
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         cloud_config = {'secure_connect_bundle':
                         './website/utilities/secure-connect-yapp-db.zip'}
@@ -40,6 +31,14 @@ def establish_connection():
 
 global session
 session = establish_connection()
+"""
+
+
+from website import session
+
+
+class QueryFailedException(Exception):
+    pass
 
 
 class Recommender:
@@ -69,7 +68,8 @@ class Recommender:
                        'summary': x.summary, "video_tags": x.video_tags} for x in query]
             return result
         else:
-            return [{"ERROR": "Query failed"}]
+            raise QueryFailedException(
+                "Could not retrieve all videos from database.")
 
     def _clean_data(self, dicts):
         """
@@ -164,12 +164,44 @@ class Recommender:
         # get vid idxs
         vid_idx = [i[0] for i in sig_scores]
         if title:
-            return self.video_df["video_title"].iloc[vid_idx]
+            return list(self.video_df["video_title"].iloc[vid_idx])
         else:
-            return self.video_df["ID"].iloc[vid_idx]
+            return list(self.video_df["ID"].iloc[vid_idx])
+
+    def recommend_videos_for_user(self, username, shuffle=True):
+        """
+        Main function which lets the trained model generate predictions for a specific user.
+
+        Args:
+            - username (string): The username of the user for whom we want to generate recommendations for.
+            - shuffle (bool): If True (default) then the results are returned in random order.
+        Returns:
+            list[str]: The video IDs of the recommended videos.
+        """
+
+        query = session.execute(
+            f"select three_watched from summaries.users where username='{username}';").all()
+
+        if not query:
+            raise QueryFailedException(
+                f"Could not retrieve three_watched field for user {username}.")
+
+        results = []
+        three_watched = [x.three_watched for x in query][0].split(";") #:
+        amounts = [6, 4, 2]
+
+        for vid_id, k in zip(three_watched, amounts):
+            results.append(self.give_recommendation(vid_id, k, title=False))
+
+        flattened_results = [item for sublist in results for item in sublist]
+        if shuffle:
+            random.shuffle(flattened_results)
+
+        return flattened_results
 
 
 if __name__ == "__main__":
+
     rec = Recommender()
     rec.train_model()
     print("-------------- Test Recommendations ------------------")
@@ -184,3 +216,9 @@ if __name__ == "__main__":
 
     print("\n For a economic news video: ")
     print(rec.give_recommendation("-M_3yJPgGxU", 10, True))
+
+    print("\n Test recommendations for a specific user: ")
+    print(rec.recommend_videos_for_user("ata122"))
+
+    print("\n \n")
+
