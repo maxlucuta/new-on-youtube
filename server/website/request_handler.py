@@ -2,7 +2,7 @@
 
 Implementation routes front-end POST requests to /request,
 it is the front-end developers responsibility to ensure
-that the request contains both topic=x and amount=y,
+that the request contains both topic = x and amount = y,
 otherwise an error code will be returned.
 """
 from flask import Blueprint, request, abort
