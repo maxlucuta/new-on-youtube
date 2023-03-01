@@ -6,10 +6,11 @@ from youtubesearchpython import (
 )
 import requests
 
+
 class MetaDataScraper(YouTubeScraper):
     """Main class for YouTube metadata scraping."""
 
-    def __init__(self, topic: str, params: list, proxy: dict[str, str]=None):
+    def __init__(self, topic: str, params: list, proxy: dict[str, str] = None):
         """Constructs a MetaDataScraper object.
 
         Args:
@@ -42,7 +43,8 @@ class MetaDataScraper(YouTubeScraper):
         """
 
         try:
-            response = requests.get(url, headers={'User-Agent': ''}, timeout=50)
+            response = requests.get(
+                url, headers={'User-Agent': ''}, timeout=50)
             likes = response.text[:response.text.find(' likes"')]
             return likes[likes.rfind('"') + 1:]
         except TimeoutError:
@@ -60,12 +62,13 @@ class MetaDataScraper(YouTubeScraper):
         """
 
         try:
-            response = requests.get(url, headers={'User-Agent': ''}, timeout=50)
+            response = requests.get(
+                url, headers={'User-Agent': ''}, timeout=50)
             views = response.text[:response.text.find(' views"')]
             return views[views.rfind('"') + 1:]
         except TimeoutError:
             return ""
-    
+
     @staticmethod
     def get_keywords(url: str) -> list[str]:
         """Retrieves all associated tags for a video.
@@ -81,7 +84,7 @@ class MetaDataScraper(YouTubeScraper):
             return Video.get(url)["keywords"]
         except (TypeError, ValueError):
             return None
-        
+
     def rotate_proxy(self, proxy: dict[str, str]):
         """Rotates current proxy in case of IP block.
 
@@ -91,7 +94,8 @@ class MetaDataScraper(YouTubeScraper):
 
         self.proxy = proxy
 
-    def execute(self, language: str='en', region: str='GB', limit: int=20):
+    def execute(self, language: str = 'en', region: str = 'GB',
+                limit: int = 20):
         """Executes a live search for the given topic.
 
         Args:
@@ -104,7 +108,7 @@ class MetaDataScraper(YouTubeScraper):
         """
 
         query = CustomSearch(self.topic, VideoDurationFilter.short,
-                language=language, region=region, limit=limit)
+                             language=language, region=region, limit=limit)
         while True:
             result = query.result()['result']
             for response in result:
@@ -127,7 +131,6 @@ class MetaDataScraper(YouTubeScraper):
                 final[key] = value
         return final
 
-
     def _get_metadata(self, result: dict[str, str]) -> dict[str, str]:
         """Helper method to extract metadata from raw query response
 
@@ -137,14 +140,14 @@ class MetaDataScraper(YouTubeScraper):
         Returns:
             dict[str, str]: all relevant metadata
         """
-        
-        metadata = {"keyword" : self.topic,
-                "video_id" : result['id'],
-                "channel_name" : result['channel']['name'],
-                "video_name" : result['title'],
-                "published_at" : result['publishedTime'],
-                "views" : self.get_views(result['link']),
-                "likes" : self.get_likes(result['link']),
-                "video_tags" : self.get_keywords(result['link'])
-                }
+
+        metadata = {"keyword": self.topic,
+                    "video_id": result['id'],
+                    "channel_name": result['channel']['name'],
+                    "video_name": result['title'],
+                    "published_at": result['publishedTime'],
+                    "views": self.get_views(result['link']),
+                    "likes": self.get_likes(result['link']),
+                    "video_tags": self.get_keywords(result['link'])
+                    }
         return metadata

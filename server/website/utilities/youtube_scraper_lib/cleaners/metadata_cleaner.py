@@ -1,6 +1,7 @@
 from .data_cleaner import DataCleaner
 import dateparser
 
+
 class MetaDataCleaner(DataCleaner):
     """Main class for raw metadata cleaning."""
 
@@ -35,7 +36,7 @@ class MetaDataCleaner(DataCleaner):
 
         cleaned = "".join([i for i in number if i.isdigit()])
         return int(cleaned) if cleaned else 0
-    
+
     def format_date(self, date: str) -> str:
         """Transforms a string representation if a date in the form:
            'x year/month/day ago' into 'yy-mm-dd'.
@@ -46,6 +47,6 @@ class MetaDataCleaner(DataCleaner):
         Returns:
             str: formatted date
         """
-        
+
         formatted_date = dateparser.parse(date)
         return formatted_date.strftime("%Y-%m-%d")

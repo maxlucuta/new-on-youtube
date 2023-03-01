@@ -4,6 +4,7 @@ from youtubesearchpython import (
     VideosSearch,
 )
 
+
 class YouTubeScraper:
     """Abstract class for YouTube scraping."""
 
@@ -16,12 +17,12 @@ class YouTubeScraper:
         """Abstract implementation of execute method."""
 
         raise NotImplementedError()
-    
+
     def rotate_proxy(self, *args, **kwargs):
         """Abstract implementation of proxy rotation method."""
 
         raise NotImplementedError()
-    
+
     @staticmethod
     def get_popular_topics(amount: int) -> dict[str, str]:
         """Gets the most popular videos based on a topic.
@@ -51,12 +52,3 @@ class YouTubeScraper:
         topics = suggestions.get(topic)['result']
         del topics[0]
         return topics
-    
-
-
-    
-
-    
-    
-
-    

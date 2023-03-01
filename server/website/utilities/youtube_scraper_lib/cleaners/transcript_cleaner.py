@@ -1,13 +1,13 @@
 from .data_cleaner import DataCleaner
 
+
 class TranscriptCleaner(DataCleaner):
     """Main class for cleaning raw transcripts scraped from YouTube."""
 
     def __init__(self):
         """Constructs a TranscriptCleaner object."""
-        
+
         self.data = None
-    
 
     def full_clean(self, data: list[dict]):
         """Applies all formatting methods to original raw data parsed

@@ -1,12 +1,13 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 from .youtube_scraper import YouTubeScraper
-import youtube_transcript_api, time
+import youtube_transcript_api
+import time
 
 
 class TranscriptScraper(YouTubeScraper):
     """Main class for scraping YouTube transcripts."""
-    
-    def __init__(self, proxy: dict=None):
+
+    def __init__(self, proxy: dict = None):
         """Constructs a YouTubeTranscriptScraper object.
 
         Args:
@@ -15,7 +16,7 @@ class TranscriptScraper(YouTubeScraper):
         """
 
         self.proxy = proxy
-    
+
     def rotate_proxy(self, proxy: dict):
         """Changes current proxy for scraping in the case
            YouTube has blocked the current IP.
@@ -38,8 +39,8 @@ class TranscriptScraper(YouTubeScraper):
             {transcript : response}, where the response is
             either a raw transcript, or an error code.
         """
-    
-        response = {"transcript" : None}
+
+        response = {"transcript": None}
         try:
             transcript = YouTubeTranscriptApi.get_transcript(
                 video_id, languages=['en', 'en-GB'], proxies=self.proxy)
@@ -51,7 +52,7 @@ class TranscriptScraper(YouTubeScraper):
         except youtube_transcript_api.YouTubeRequestFailed:
             response["transcript"] = "blocked"
         return response
-    
+
     def insert(self, transcript: dict[str, str], data: dict):
         """Inserts transcript data into an existing dict.
 
@@ -63,7 +64,8 @@ class TranscriptScraper(YouTubeScraper):
         data.update(transcript)
 
     @staticmethod
-    def summarise(transcript: str, summariser: callable, limiter: int=0) -> str:
+    def summarise(transcript: str, summariser: callable,
+                  limiter: int = 0) -> str:
         """Generates a summary of a YouTube transcript using a given callable
            summarisation method and returns it.
 
@@ -82,4 +84,3 @@ class TranscriptScraper(YouTubeScraper):
         summary = summary.strip(" :-")
         time.sleep(limiter)
         return summary
-

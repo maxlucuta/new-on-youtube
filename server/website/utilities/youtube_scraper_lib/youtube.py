@@ -13,8 +13,9 @@ from ..database import db_contains_video
 class YouTubeScraperFactory:
     """Project specific factory class that abstracts library class methods
        for project specific YouTube scraping."""
-    
-    def __init__(self, metadata_scraper: object, transcript_scraper: object, amount: int):
+
+    def __init__(self, metadata_scraper: object, transcript_scraper:
+                 object, amount: int):
         """Contructs YouTubeScraperFactory object.
 
         Args:
@@ -32,7 +33,7 @@ class YouTubeScraperFactory:
         self.result = []
 
     def execute(self) -> list[dict[str, any]]:
-        """Returns 
+        """Returns the executed query in suitable format.
 
         Returns:
             list[dict[str, any]]: full response for a scraping query
@@ -61,7 +62,7 @@ class YouTubeScraperFactory:
                 transcript = self.transcript_scraper.execute(video_id)
                 raw = transcript["transcript"]
                 if not self._check_transcript_status(raw):
-                    continue    
+                    continue
                 metadata.update(transcript)
                 self.result.append(metadata)
                 self.videos.add(video_id)
@@ -116,13 +117,13 @@ class YouTubeScraperFactory:
         if not response or response == "404":
             return False
         if response == "blocked":
-            proxy = {"https" : "localhost"}
+            proxy = {"https": "localhost"}
             self.metadata_scraper.rotate_proxy(proxy)
             self.transcript_scraper.rotate_proxy(proxy)
             return False
         return True
-    
-    def _remove_failed_summaries(self): 
+
+    def _remove_failed_summaries(self):
         """Removes entries in self.result that do not have a valid
            summary, which could occur if the GPTAPI throws an error.
         """
@@ -133,10 +134,11 @@ class YouTubeScraperFactory:
                 del data['transcript']
                 response.append(data)
         self.result = response
-        
 
-def get_most_popular_video_transcripts_by_topic(topic: str, amount: int) -> list[dict[str, any]]:
-    """Uses YouTubeScraperFactory class to generate metadata and summaries 
+
+def get_most_popular_video_transcripts_by_topic(
+        topic: str, amount: int) -> list[dict[str, any]]:
+    """Uses YouTubeScraperFactory class to generate metadata and summaries
        for a number of YouTube videos for a given topic, abstracts the class
        for a cleaner API.
 
@@ -157,11 +159,8 @@ def get_most_popular_video_transcripts_by_topic(topic: str, amount: int) -> list
               "views",
               "likes",
               "video_tags"]
-    
+
     meta_scraper = MetaDataScraper(topic, params)
     transcript_scraper = TranscriptScraper()
     interface = YouTubeScraperFactory(meta_scraper, transcript_scraper, amount)
     return interface.execute()
-
-
-        

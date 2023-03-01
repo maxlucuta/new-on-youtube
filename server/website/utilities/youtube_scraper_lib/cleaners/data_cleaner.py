@@ -1,6 +1,6 @@
 class DataCleaner:
     """Abstract class for DataCleaner."""
-    
+
     def __init__(self, *args, **kwargs):
         """Abstract implementation of constructor."""
 
@@ -10,12 +10,12 @@ class DataCleaner:
         """Abstract implementation of number formatting method."""
 
         raise NotImplementedError()
-    
+
     def format_string(self, *args, **kwargs):
         """Abstract implementation of string formatting method."""
 
         raise NotImplementedError()
-    
+
     def format_date(self, *args, **kwargs):
         """Abstract implementation of date formatting method."""
 
@@ -25,7 +25,7 @@ class DataCleaner:
         """Abstract implementation of data cleaning method."""
 
         raise NotImplementedError()
-    
+
     @staticmethod
     def occupied_fields(data: dict, expected: int):
         """Checks if the given data has the expected number of fields,
@@ -38,11 +38,8 @@ class DataCleaner:
         Returns:
             bool: true if all above passes, false otherwise
         """
-        
+
         for key in data:
             if not data[key]:
                 return False
         return len(data) == expected
-    
-
-    
