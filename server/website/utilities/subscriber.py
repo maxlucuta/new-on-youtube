@@ -1,11 +1,10 @@
 from google.cloud import pubsub_v1 as pubsub
-from .youtube import get_most_popular_video_transcripts_by_topic
+from .youtube_scraper_lib.youtube import get_most_popular_video_transcripts_by_topic
 from .database import insert_video
 from .logs.message_logger import Logger
 from os import environ
 
 SUBSCRIBER_PATH = "projects/new-on-youtube-375417/subscriptions/gpt-tasks-sub"
-
 
 class Subscriber:
     def __init__(self, topic=SUBSCRIBER_PATH):
