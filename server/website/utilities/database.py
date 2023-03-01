@@ -172,8 +172,8 @@ def add_watched_video(username, video_id):
     except DriverException as exception:
         print("DriverException: " + str(exception))
         return False
-    print(
-        f"Updated most recent watched videos for {username}: {watched_videos.split(':')}")
+    print(f"Updated most recent watched videos for {username}: "
+          f"{watched_videos.split(':')}")
     return True
 
 
@@ -241,7 +241,6 @@ def get_recommended_videos(username, amount):
         username, amount)
     if not recommended_video_ids:
         return []
-    print(f"Recommended video_ids: {recommended_video_ids}")
     cql = """SELECT keyword, likes, video_title, published_at, video_id,
              summary, views, channel_name FROM summaries.video_summaries
              WHERE video_id IN ("""
