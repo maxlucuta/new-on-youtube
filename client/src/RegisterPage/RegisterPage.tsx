@@ -61,7 +61,9 @@ const RegisterPage = () => {
         if (message === "unrecognised error") alert("Registration unsuccessful, please try again")
     };
 
-    const validPassword = password1.length !== 0 && password1 === password2;
+    const validPassword = password1.length > 7 && password1 === password2;
+    const longEnoughPassword = password1.length > 7;
+    const passwordsMatch = password1 === password2;
 
     if (token !== "") return <Navigate replace to = "/" />
 
@@ -96,9 +98,8 @@ const RegisterPage = () => {
                                 placeholder="Confirm Password"
                                 onChange={e => handlePasswordChange(e, 1)}
                             />
-                            {!validPassword
-                                ? password2.length > 0 && <div>Passwords do not match</div>
-                                : password2.length > 0 && <div>Valid password!</div>}
+                            {!longEnoughPassword ? <div>Password must be at least 8 characters</div> : <div></div>}
+                            {longEnoughPassword && !passwordsMatch ? <div>Passwords do not match</div> : <div></div>}
                         </RegForm>
 
 
