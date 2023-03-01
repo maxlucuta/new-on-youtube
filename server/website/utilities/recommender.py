@@ -170,7 +170,11 @@ class Recommender:
                 f"Could not retrieve three_watched field for user {username}.")
 
         results = []
-        watched_videos = query[0]['three_watched'].split(":")
+        three_watched = query[0]['three_watched']
+        if not three_watched or three_watched == "::":
+            print("No watched videos to use in recommender")
+            return []
+        watched_videos = three_watched.split(":")
         watched_videos = [x for x in watched_videos if x]
         print(f"Video IDs used in recommender: {watched_videos}")
 
