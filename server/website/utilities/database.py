@@ -12,7 +12,7 @@ from cassandra.cluster import Cluster, DriverException
 from cassandra.auth import PlainTextAuthProvider
 import website
 from .users import User
-from .publisher import Publisher
+from .pubsub.publisher import Publisher
 
 
 def establish_connection():

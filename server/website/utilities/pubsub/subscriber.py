@@ -1,33 +1,42 @@
-from google.cloud import pubsub_v1 as pubsub
-from .youtube_scraper_lib.youtube import (
+from os import environ
+from google.cloud import pubsub_v1
+from ..youtube_scraper_lib.youtube import (
     get_most_popular_video_transcripts_by_topic
 )
-from .database import insert_video
+from ..database import insert_video
 from .logs.message_logger import Logger
-from os import environ
 
 SUBSCRIBER_PATH = "projects/new-on-youtube-375417/subscriptions/gpt-tasks-sub"
 
 
 class Subscriber:
-    def __init__(self, topic=SUBSCRIBER_PATH):
+    """Subscriber class for Google PubSub."""
+
+    def __init__(self, topic: str = SUBSCRIBER_PATH):
+        """Constructs a Subscriber object.
+
+        Args:
+            topic (str, optional): path to Google PubSub topic
+        """
+
         self.subscriber = self.subscriber_connect()
         self.logger = Logger("subscriber")
         self.topic = topic
 
-    def subscriber_connect(self):
+    def subscriber_connect(self) -> object:
         """Connects to Google PubSub Subscriber Client
 
         Returns:
             Subscriber: Obj, connection to substriber client
             and an instance of the subscriber session.
         """
+
         environ["GOOGLE_APPLICATION_CREDENTIALS"] = \
-            "./website/utilities/pubsub_privatekey.json"
-        subscriber = pubsub.SubscriberClient()
+            "./website/utilities/pubsub/pubsub_privatekey.json"
+        subscriber = pubsub_v1.SubscriberClient()
         return subscriber
 
-    def callback(self, message):
+    def callback(self, message: object):
         """Processes pulled message from Subscriber queue and calls
         database methods to insert into DB.
 
@@ -64,12 +73,10 @@ class Subscriber:
         current thread is terminated.
         """
 
-        flow_control = pubsub.types.FlowControl(max_messages=1)
-
+        flow_control = pubsub_v1.types.FlowControl(max_messages=1)
         streaming_pull_future = self.subscriber.subscribe(
             self.topic,
             callback=self.callback, flow_control=flow_control)
-
         with self.subscriber:
             try:
                 streaming_pull_future.result()

@@ -5,7 +5,7 @@ from website.views import views_blueprint
 from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
 from website.utilities.database import establish_connection
-from website.utilities.subscriber import run_background_task
+from website.utilities.pubsub.subscriber import run_background_task
 from threading import Thread
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
