@@ -284,7 +284,7 @@ def insert_video(video_dict):
     channel_name = video_dict["channel_name"]
     video_id = video_dict["video_id"]
     published_at = video_dict["published_at"]
-    summary = video_dict["summary"]
+    summary = clean_summary(video_dict["summary"])
     vid_tags = ','.join(video_dict["video_tags"])
 
     params = [keyword, views, likes, video_name, channel_name, video_id,
@@ -314,3 +314,9 @@ def insert_video(video_dict):
 
 def clean_topics(topics):
     return [topic.lower().replace(" ", "_") for topic in topics]
+
+
+def clean_summary(summary):
+    if summary[:15] == "This transcript":
+        summary = "This video" + summary[15:]
+    return summary
