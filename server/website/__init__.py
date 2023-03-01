@@ -40,10 +40,10 @@ def create_app():
     session = establish_connection()
     session.row_factory = dict_factory
 
-    Thread(name="background", target=run_background_task, daemon=True).start()
-
     global recommender
     recommender = Recommender()
     recommender.train_model()
+
+    Thread(name="background", target=run_background_task, daemon=True).start()
 
     return app

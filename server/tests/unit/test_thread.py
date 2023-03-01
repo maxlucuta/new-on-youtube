@@ -8,6 +8,7 @@ def test_background_thread():
        when the app is.
     """
     app = create_app()
+
     if app:
         background_thread_present = False
 

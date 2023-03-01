@@ -8,8 +8,8 @@ import { RootContext } from "../context";
 
 const FeedPage = () => {
     const { token } = useContext(RootContext);
-    const modes = ["Recommended", "Popular", "Recent", "Random"] as ["Recommended", "Popular", "Recent", "Random"];
-    const [mode, updateMode] = useState("Recommended" as String);
+    const modes = ["Most viewed", "Recommended", "Most liked", "Random"] as ["Most viewed", "Recommended", "Most liked", "Random"];
+    const [mode, updateMode] = useState("Most viewed" as String);
     const [searchResults, updateResults] = useState([] as Summary[]);
     const post = usePost();
 
@@ -45,6 +45,13 @@ const FeedPage = () => {
                         </FeedSelector>
                     </>
                 ))}
+                <RefreshButton
+                    style={{display: "flex", margin: "0 20px 0 20px"}}
+                    onClick={() => {
+                        handleRequest(mode);
+                    }}>
+                    Refresh
+                </RefreshButton>
             </div>
 
             <div>
@@ -74,5 +81,24 @@ const FeedSelector = styled.div<{ selected: boolean }>`
     &:hover {
         background-color: ${props => (props.selected ? "none" : "#f0f0f1")};;
         cursor: ${props => (props.selected ? "default" : "pointer")};
+    }
+`;
+
+const RefreshButton = styled.div`
+    width: 100px;
+    margin: 40px 0 0 40px;
+    font-size: 20px;
+    text-align: center;
+    background-color: #f0f0f1;
+    color: black;
+    border-style: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
     }
 `;
