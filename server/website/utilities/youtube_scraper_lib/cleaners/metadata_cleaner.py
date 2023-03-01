@@ -49,4 +49,6 @@ class MetaDataCleaner(DataCleaner):
         """
 
         formatted_date = dateparser.parse(date)
+        if not formatted_date:
+            return None
         return formatted_date.strftime("%Y-%m-%d")
