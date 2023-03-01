@@ -40,7 +40,6 @@ class Recommender:
                 "Could not retrieve all videos from database.")
         return query
 
-
     def _clean_data(self, dicts):
         """
         Helper function that cleans the data and joins video_tags, video_title,
@@ -101,6 +100,7 @@ class Recommender:
         self._reverse_mapper()
         self._calc_sparse_matrix()
         self._calc_sigmoid_scores()
+        print("Recommender model trained")
 
     def _reverse_mapper(self):
         """
@@ -125,9 +125,13 @@ class Recommender:
             - title (bool): If true then video titles are returned instead of video IDs.
         """
         idx = self.indices[vid_id]
+        if idx.size == 2:
+            idx = idx[1]
+
         # get pairwise similarity scores
         sig_scores = list(enumerate(self.sigmoid_scores[idx]))
         # sort
+        # print(sig_scores)
         sig_scores = sorted(sig_scores, key=lambda x: x[1], reverse=True)
         # get top 10 most similar videos
         sig_scores = sig_scores[1:k]
@@ -158,12 +162,23 @@ class Recommender:
 
         results = []
         three_watched = query[0]['three_watched'].split(":")
-        amount_weighting = [0.6, 0.25, 0.15]
-        amount_1 = int(amount * amount_weighting[0])
-        amount_2 = int(amount * amount_weighting[1])
-        amount_3 = amount - amount_1 - amount_2
-        amounts = [amount_1, amount_2, amount_3]
+        three_watched = [x for x in three_watched if x]
 
+        if len(three_watched) == 3:
+            amount_weighting = [0.6, 0.25, 0.15]
+            amount_1 = int(amount * amount_weighting[0])
+            amount_2 = int(amount * amount_weighting[1])
+            amount_3 = amount - amount_1 - amount_2
+            amounts = [amount_1, amount_2, amount_3]
+        elif len(three_watched) == 2:
+            amount_weighting = [0.7, 0.3]
+            amount_1 = int(amount * amount_weighting[0])
+            amount_2 = amount - amount_1
+            amounts = [amount_1, amount_2]
+        elif len(three_watched) == 1:
+            amounts = [amount]
+        else:
+            return None
 
         for vid_id, k in zip(three_watched, amounts):
             results.append(self.give_recommendation(vid_id, k, title=False))
@@ -173,4 +188,3 @@ class Recommender:
             random.shuffle(flattened_results)
 
         return flattened_results
-

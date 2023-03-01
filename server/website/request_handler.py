@@ -10,6 +10,7 @@ from flask_jwt_extended import jwt_required
 from .utilities.database import query_users
 from .utilities.database import set_user_topics
 from .utilities.database import query_videos
+from .utilities.database import get_recommended_videos
 from .utilities.database import add_videos_to_queue
 from .utilities.database import add_watched_video
 
@@ -179,11 +180,13 @@ def request_user_videos():
     user = query_users(username)
     if not user:
         return {'status_code': 500, 'description': 'database request failed'}
-    topics = user.topics
 
-    valid_video_request(topics, amount)
-
-    response = query_videos(topics, amount, sort_by, user.username)
+    if sort_by == "Recommended":
+        response = get_recommended_videos(username, amount)
+    else:
+        topics = user.topics
+        valid_video_request(topics, amount)
+        response = query_videos(topics, amount, sort_by)
 
     if not valid_video_response(response, int(amount)):
         abort(417)

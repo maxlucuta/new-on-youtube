@@ -160,6 +160,9 @@ def add_watched_video(username, video_id):
 
     """
     watched_videos = query_users(username).watched_videos
+    if video_id in watched_videos:
+        return True
+
     watched_videos = [video_id] + watched_videos[:2]
     watched_videos = ':'.join(watched_videos)
 
@@ -169,6 +172,8 @@ def add_watched_video(username, video_id):
     except DriverException as exception:
         print("DriverException: " + str(exception))
         return False
+    print(
+        f"Updated most recent watched videos for {username}: {watched_videos.split(':')}")
     return True
 
 
@@ -215,7 +220,44 @@ def db_contains_video(keyword, video_id):
     return False
 
 
-def query_videos(topics, amount, sort_by, username=None):
+def get_recommended_videos(username, amount):
+    """
+    This function performs a query on the DB and returns a list of
+    dictionaries (keyword, likes, video_title, published_at, video_id,
+    summary, views) - each belonging to one of the top 'amount' ranked
+    YT videos which sorted by 'sort_by'
+
+    Args:
+        topics [string]: The topics of which to return
+        amount int: The number of videos to return
+        sort_by str: The method with which to sort the result
+
+    Returns:
+        [dict]
+
+    """
+    amount = int(amount)
+    recommended_video_ids = website.recommender.recommend_videos_for_user(
+        username, amount)
+    if not recommended_video_ids:
+        return []
+    print(f"Recommended video_ids: {recommended_video_ids}")
+    cql = """SELECT keyword, likes, video_title, published_at, video_id,
+             summary, views, channel_name FROM summaries.video_summaries
+             WHERE video_id IN ("""
+    cql += ','.join(['%s'] * len(recommended_video_ids))
+    cql += ") ALLOW FILTERING;"
+    params = tuple(recommended_video_ids)
+
+    try:
+        response = website.session.execute(cql, params).all()
+    except DriverException as exception:
+        print("Exception when querying DB: " + str(exception))
+        return []
+    return response
+
+
+def query_videos(topics, amount, sort_by):
     """
     This function performs a query on the DB and returns a list of
     dictionaries (keyword, likes, video_title, published_at, video_id,
@@ -246,15 +288,11 @@ def query_videos(topics, amount, sort_by, username=None):
         print("Exception when querying DB: " + str(exception))
         return []
 
-    if sort_by == 'Recommended':
-        # TO BE IMPLEMENTED - call recommender function here
-        print(website.recommender.recommend_videos_for_user(username, amount))
-    elif sort_by == 'Most viewed':
+    if sort_by == 'Most viewed':
         response = sorted(response, key=lambda x: x['views'], reverse=True)
     elif sort_by == 'Most liked':
-        # TO BE IMPLEMENTED
-        pass
-    elif sort_by == 'Random':
+        response = sorted(response, key=lambda x: x['likes'], reverse=True)
+    else:
         random.shuffle(response)
     if len(response) < amount:
         add_videos_to_queue(topics)

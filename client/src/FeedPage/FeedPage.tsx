@@ -8,8 +8,8 @@ import { RootContext } from "../context";
 
 const FeedPage = () => {
     const { token } = useContext(RootContext);
-    const modes = ["Recommended", "Popular", "Recent", "Random"] as ["Recommended", "Popular", "Recent", "Random"];
-    const [mode, updateMode] = useState("Recommended" as String);
+    const modes = ["Most viewed", "Recommended", "Most liked", "Random"] as ["Most viewed", "Recommended", "Most liked", "Random"];
+    const [mode, updateMode] = useState("Most viewed" as String);
     const [searchResults, updateResults] = useState([] as Summary[]);
     const post = usePost();
 
