@@ -333,7 +333,7 @@ def insert_video(video_dict):
     cql += ','.join(['%s'] * len(params))
     cql += ");"
 
-    params = tuple()
+    params = tuple(params)
 
     try:
         website.session.execute(cql, params)
