@@ -74,10 +74,16 @@ def query_users(username):
                   query['categories'].replace(';', ',').split(",")]
         channels = [x.strip() for x in
                     query['channels'].replace(';', ',').split(",")]
+        watched_videos = query['three_watched']
+        if watched_videos:
+            watched_videos = query['three_watched'].split(":")
+        else:
+            watched_videos = ["", "", ""]
         userobj = User(query['id'],
                        query['username'],
                        query['password'],
                        topics,
+                       watched_videos,
                        channels)
         return userobj
     return None
@@ -103,12 +109,13 @@ def insert_user(userobj):
     try:
         topics = ','.join(userobj.topics)
         channels = ','.join(userobj.channels)
-        values = " VALUES (%s,%s,%s, UUID(),%s)"
+        watched_videos = ":".join(userobj.watched_videos)
+        values = " VALUES (%s,%s,%s, UUID(),%s, %s)"
         prepend = """INSERT INTO summaries.users (username, categories,
-                     channels, id, password)"""
+                     channels, id, password, three_watched)"""
         website.session.execute(
             prepend+values, (userobj.username, topics, channels,
-                             userobj.password))
+                             userobj.password, watched_videos))
     except DriverException as exception:
         print("DriverException: " + str(exception))
         return False
@@ -130,6 +137,35 @@ def set_user_topics(username, topics):
     cql = "UPDATE summaries.users SET categories = %s WHERE username = %s"
     try:
         website.session.execute(cql, (topics, username))
+    except DriverException as exception:
+        print("DriverException: " + str(exception))
+        return False
+    return True
+
+
+def add_watched_video(username, video_id):
+    """
+    This function performs an update on the users DB and returns True
+    if the operation was successful - and false otherwise. In the
+    colon separated list of three most watched videos (most recent
+    towards front of string) it pops off the oldest video and adds the
+    new video_id to the front of the string.
+
+    Args:
+        username string: user to update
+        video_id string: new video id to add as most recent video watched
+
+    Returns:
+        Boolean representing success of update operation
+
+    """
+    watched_videos = query_users(username).watched_videos
+    watched_videos = [video_id] + watched_videos[:2]
+    watched_videos = ':'.join(watched_videos)
+
+    cql = "UPDATE summaries.users SET three_watched = %s WHERE username = %s"
+    try:
+        website.session.execute(cql, (watched_videos, username))
     except DriverException as exception:
         print("DriverException: " + str(exception))
         return False
@@ -179,7 +215,7 @@ def db_contains_video(keyword, video_id):
     return False
 
 
-def query_videos(topics, amount, sort_by):
+def query_videos(topics, amount, sort_by, username=None):
     """
     This function performs a query on the DB and returns a list of
     dictionaries (keyword, likes, video_title, published_at, video_id,
@@ -211,7 +247,7 @@ def query_videos(topics, amount, sort_by):
         return []
 
     if sort_by == 'Recommended':
-        # TO BE IMPLEMENTED
+        # TO BE IMPLEMENTED - call recommender function here
         pass
     elif sort_by == 'Popular':
         response = sorted(response, key=lambda x: x['views'], reverse=True)

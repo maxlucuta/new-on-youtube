@@ -11,6 +11,7 @@ from .utilities.database import query_users
 from .utilities.database import set_user_topics
 from .utilities.database import query_videos
 from .utilities.database import add_videos_to_queue
+from .utilities.database import add_watched_video
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -182,7 +183,7 @@ def request_user_videos():
 
     valid_video_request(topics, amount)
 
-    response = query_videos(topics, amount, sort_by)
+    response = query_videos(topics, amount, sort_by, user.username)
 
     if not valid_video_response(response, int(amount)):
         abort(417)
@@ -215,4 +216,17 @@ def update_user_topics():
     if not set_user_topics(username, topics):
         return {'status_code': 500, 'description': 'database update failed'}
     add_videos_to_queue(topics)
+    return {'status_code': 200, 'description': 'Ok.'}
+
+
+@request_blueprint.route("/update_user_watched_videos", methods=['POST'])
+@jwt_required()
+def update_user_watched_videos():
+    try:
+        username = request.json["username"]
+        video_id = request.json["video_id"]
+    except KeyError:
+        abort(400)
+    if not add_watched_video(username, video_id):
+        return {'status_code': 500, 'description': 'database update failed'}
     return {'status_code': 200, 'description': 'Ok.'}

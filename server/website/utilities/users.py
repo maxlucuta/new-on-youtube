@@ -8,11 +8,12 @@ class User(UserMixin):
     """
 
     def __init__(self, user_id, username, password,
-                 topics=[], channels=[]):
+                 topics=[], watched_videos=["", "", ""], channels=[]):
+        self.authenticated = False
         self.id = user_id
         self.username = username
         self.password = password
-        self.authenticated = False
+        self.watched_videos = watched_videos
         self.topics = topics
         self.channels = channels
 
