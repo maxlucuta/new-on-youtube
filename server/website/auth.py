@@ -32,7 +32,9 @@ def user_register():
         }
 
     if not topics:
-        return {"message": "no topics selected"}
+        return {"status_code": 400,
+                "message": "no topics selected",
+                "token": ""}
 
     hashed_pwd = generate_password_hash(password, method="pbkdf2:sha256",
                                         salt_length=8)
@@ -41,7 +43,7 @@ def user_register():
         token = create_access_token(identity=username)
         add_videos_to_queue(topics)
         return {
-            "status_code": 400,
+            "status_code": 200,
             "message": "successfully added and logged in",
             "token": token
         }
