@@ -55,7 +55,8 @@ const FeedPage = () => {
                     Refresh
                 </RefreshButton>
             </div>
-            {noResults ? <div style={{textAlign: "center"}}>Please watch at least one video to receive recommendations</div> : <div></div>}
+            {noResults ? mode === "Recommended" && <div style={{textAlign: "center"}}>Please watch at least one video to receive recommendations</div> : <div></div>}
+            {noResults ? mode !== "Recommended" && <div style={{textAlign: "center"}}>Generating videos, please wait a few minutes</div> : <div></div>}
             <div>
                 <Feed results={searchResults} />
             </div>

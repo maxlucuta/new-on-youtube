@@ -300,7 +300,8 @@ def query_videos(topics, amount, sort_by):
     elif sort_by == 'Liked':
         response = sorted(response, key=lambda x: x['likes'], reverse=True)
     elif sort_by == 'Recent':
-        response = sorted(response, key=lambda x: x['published_at'], reverse=True)
+        response = sorted(
+            response, key=lambda x: x['published_at'], reverse=True)
     else:
         random.shuffle(response)
     if len(response) < amount:
