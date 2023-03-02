@@ -87,7 +87,12 @@ const TopicSelection = () => {
 
             <div style={{ display: "flex", width: "60%", margin: "auto", justifyContent: "left" }}>
                 <Description style={{marginRight: "10px", fontWeight: "500"}}>Topics in your feed:</Description>
-                {selectedTopics.map(r => (<Description>{r}&nbsp;|&nbsp;</Description>))}
+                {selectedTopics.map((r, i) => (
+                    <>
+                    {i !== 0 ? <div style={{fontSize: "20px", margin: "0 10px 0 10px"}}>|</div>: <></>}
+                    <Description>{r}</Description>
+                    </>
+                ))}
             </div>
             <TwoPanel>
                 <LeftPanel>

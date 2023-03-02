@@ -295,10 +295,12 @@ def query_videos(topics, amount, sort_by):
         print("Exception when querying DB: " + str(exception))
         return []
 
-    if sort_by == 'Most viewed':
+    if sort_by == 'Popular':
         response = sorted(response, key=lambda x: x['views'], reverse=True)
-    elif sort_by == 'Most liked':
+    elif sort_by == 'Liked':
         response = sorted(response, key=lambda x: x['likes'], reverse=True)
+    elif sort_by == 'Recent':
+        response = sorted(response, key=lambda x: x['published_at'], reverse=True)
     else:
         random.shuffle(response)
     if len(response) < amount:

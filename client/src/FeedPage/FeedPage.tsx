@@ -8,8 +8,8 @@ import { RootContext } from "../context";
 
 const FeedPage = () => {
     const { token } = useContext(RootContext);
-    const modes = ["Most viewed", "Recommended", "Most liked", "Random"] as ["Most viewed", "Recommended", "Most liked", "Random"];
-    const [mode, updateMode] = useState("Most viewed" as String);
+    const modes = ["Recommended", "Popular", "Liked", "Recent", "Random"] as ["Recommended", "Popular", "Liked", "Recent", "Random"];
+    const [mode, updateMode] = useState("Recommended" as String);
     const [searchResults, updateResults] = useState([] as Summary[]);
     const post = usePost();
 
@@ -23,6 +23,8 @@ const FeedPage = () => {
     useEffect(() => {
         handleRequest(mode);
     }, []);
+
+    const noResults = searchResults.length === 0;
 
     return (
         <div>
@@ -53,7 +55,7 @@ const FeedPage = () => {
                     Refresh
                 </RefreshButton>
             </div>
-
+            {noResults ? <div style={{textAlign: "center"}}>Please watch at least one video to receive recommendations</div> : <div></div>}
             <div>
                 <Feed results={searchResults} />
             </div>
