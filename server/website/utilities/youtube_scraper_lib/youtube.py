@@ -7,7 +7,7 @@ from .cleaners.metadata_cleaner import MetaDataCleaner
 from .cleaners.transcript_cleaner import TranscriptCleaner
 from .cleaners.data_cleaner import DataCleaner as dc
 from ..gpt3 import summarize_yt_script_with_gpt3
-from ..database import db_contains_video
+#from ..database import db_contains_video
 
 
 class YouTubeScraperFactory:
@@ -97,8 +97,8 @@ class YouTubeScraperFactory:
         topic = metadata["keyword"]
         if video_id in self.videos or not dc.occupied_fields(metadata, 8):
             return False
-        if db_contains_video(topic, video_id):
-            return False
+        #if db_contains_video(topic, video_id):
+         #   return False
         return True
 
     def _check_transcript_status(self, response: str) -> bool:
