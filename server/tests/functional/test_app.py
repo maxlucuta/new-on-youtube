@@ -18,10 +18,22 @@ def test_client():
     return
 
 
-def test_home_page(test_client):
+def test_can_access_landing_page(test_client):
     """ Tests if homepage is working.
     """
     response = test_client.get('/')
     assert response.status_code == 200
     return
 
+
+def test_cannot_access_user_only_end_point_when_logged_out(test_client):
+    test_query = json.dumps({'username': "devuser4"})
+
+    response = test_client.post(
+        "/get_user_topics", data=test_query, headers=headers)
+    response = json.loads(response.data)
+
+    msg = response['msg']
+
+    assert msg == 'Missing Authorization Header'
+    return

@@ -44,7 +44,7 @@ def test_user_registration_with_no_password_returns_error(test_client):
     return
 
 
-def test_user_registration_with_none_matching_passwords_returns_error(test_client):
+def test_user_reg_with_none_matching_passwords_returns_error(test_client):
     test_query = json.dumps({'username': "validusername_fdhjalfdhjaslfjdsalfd",
                              'password': "invalidpassword",
                              'confirmation': "invalidpassword_different",
@@ -106,7 +106,7 @@ def test_user_login_with_no_password_returns_error(test_client):
 
 
 def test_user_login_with_invalid_username_returns_error(test_client):
-    test_query = json.dumps({'username': "invalidusername_fdhjalfdhjaslfjdsalfd",
+    test_query = json.dumps({'username': "invalidusername_fdhjalfdhjaslfjlfd",
                              'password': "validpassword"})
     response = test_client.post("/login", data=test_query, headers=headers)
     response = json.loads(response.data)
@@ -116,7 +116,7 @@ def test_user_login_with_invalid_username_returns_error(test_client):
     return
 
 
-def test_user_login_with_incorrect_password_returns_error(test_client):
+def test_user_login_with_incorrect_pwd_returns_error(test_client):
     test_query = json.dumps({'username': "devuser4",
                              'password': "incorrectpassword"})
     response = test_client.post("/login", data=test_query, headers=headers)
@@ -137,8 +137,3 @@ def test_user_login_with_valid_credentials_logs_user_in(test_client):
     assert response['message'] == 'logged in'
     assert response['token']
     return
-
-
-
-
-

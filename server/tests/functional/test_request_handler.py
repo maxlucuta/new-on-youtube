@@ -131,6 +131,7 @@ def test_valid_request_can_return_one_video_with_required_fields(test_client):
     assert len(summaries) == 1
     return
 
+
 def test_valid_request_returns_requested_number_of_videos(test_client):
     """Tests POST request response is valid.
     Args:
@@ -195,12 +196,13 @@ def test_request_route_topic_is_not_case_sensitive(test_client):
 def test_request_user_topics_with_valid_username(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
-                        'Accept': mimetype,
-                        'Authorization': 'Bearer {}'.format(access_token)}
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
 
     test_query = json.dumps({'username': "devuser4"})
 
-    response = test_client.post("/get_user_topics", data=test_query, headers=headers_logged_in)
+    response = test_client.post(
+        "/get_user_topics", data=test_query, headers=headers_logged_in)
     response = json.loads(response.data)
 
     status_code = response['status_code']
@@ -211,16 +213,16 @@ def test_request_user_topics_with_valid_username(test_client):
     return
 
 
-
 def test_request_user_topics_with_invalid_username(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
-                        'Accept': mimetype,
-                        'Authorization': 'Bearer {}'.format(access_token)}
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
 
     test_query = json.dumps({'username': "invalidusername_fdahkfndoivena"})
 
-    response = test_client.post("/get_user_topics", data=test_query, headers=headers_logged_in)
+    response = test_client.post(
+        "/get_user_topics", data=test_query, headers=headers_logged_in)
     response = json.loads(response.data)
 
     status_code = response['status_code']
@@ -234,13 +236,14 @@ def test_request_user_topics_with_invalid_username(test_client):
 def test_user_request_with_missing_amount_returns_error(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
-                        'Accept': mimetype,
-                        'Authorization': 'Bearer {}'.format(access_token)}
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
 
     test_query = json.dumps({'username': "invalidusername_fdhjlafjndladfs",
                              'sort_by': "Random"})
 
-    response = test_client.post("/user_request", data=test_query, headers=headers_logged_in)
+    response = test_client.post(
+        "/user_request", data=test_query, headers=headers_logged_in)
     response = json.loads(response.data)
 
     status_code = response['status_code']
@@ -251,18 +254,18 @@ def test_user_request_with_missing_amount_returns_error(test_client):
     return
 
 
-
 def test_user_request_with_invalid_username_returns_error(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
-                        'Accept': mimetype,
-                        'Authorization': 'Bearer {}'.format(access_token)}
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
 
     test_query = json.dumps({'username': "invalidusername_fdhjlafjndladfs",
                              'amount': 10,
                              'sort_by': "Random"})
 
-    response = test_client.post("/user_request", data=test_query, headers=headers_logged_in)
+    response = test_client.post(
+        "/user_request", data=test_query, headers=headers_logged_in)
     response = json.loads(response.data)
 
     status_code = response['status_code']
@@ -276,14 +279,15 @@ def test_user_request_with_invalid_username_returns_error(test_client):
 def test_user_request_with_no_amount_returns_error(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
-                        'Accept': mimetype,
-                        'Authorization': 'Bearer {}'.format(access_token)}
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
 
     test_query = json.dumps({'username': "devuser4",
                              'amount': 0,
                              'sort_by': "Random"})
 
-    response = test_client.post("/user_request", data=test_query, headers=headers_logged_in)
+    response = test_client.post(
+        "/user_request", data=test_query, headers=headers_logged_in)
     response = json.loads(response.data)
 
     status_code = response['status_code']
@@ -297,14 +301,15 @@ def test_user_request_with_no_amount_returns_error(test_client):
 def test_valid_user_request_returns_requested_number_of_videos(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
-                        'Accept': mimetype,
-                        'Authorization': 'Bearer {}'.format(access_token)}
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
 
     test_query = json.dumps({'username': "devuser4",
                              'amount': 5,
                              'sort_by': "Random"})
 
-    response = test_client.post("/user_request", data=test_query, headers=headers_logged_in)
+    response = test_client.post(
+        "/user_request", data=test_query, headers=headers_logged_in)
     response = json.loads(response.data)
 
     assert response['status_code'] == 200
@@ -336,14 +341,15 @@ def test_valid_user_request_returns_requested_number_of_videos(test_client):
 def test_valid_user_request_returns_requested_recommended_videos(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
-                        'Accept': mimetype,
-                        'Authorization': 'Bearer {}'.format(access_token)}
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
 
     test_query = json.dumps({'username': "devuser4",
                              'amount': 5,
                              'sort_by': "Recommended"})
 
-    response = test_client.post("/user_request", data=test_query, headers=headers_logged_in)
+    response = test_client.post(
+        "/user_request", data=test_query, headers=headers_logged_in)
     response = json.loads(response.data)
 
     assert response['status_code'] == 200
@@ -369,4 +375,170 @@ def test_valid_user_request_returns_requested_recommended_videos(test_client):
         assert keyword
 
     assert len(summaries) > 0
+    return
+
+
+def test_get_user_topics_without_username_returns_error(test_client):
+    access_token = create_access_token('testuser')
+    headers_logged_in = {'Content-Type': mimetype,
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
+
+    test_query = json.dumps({'amount': 5,
+                             'sort_by': "Recommended"})
+
+    response = test_client.post(
+        "/get_user_topics", data=test_query, headers=headers_logged_in)
+    response = json.loads(response.data)
+
+    status_code = response['status_code']
+    description = response['description']
+
+    assert status_code and status_code == 400
+    assert description and description == 'Missing payload fields'
+    return
+
+
+def test_get_user_topics_with_invalid_username_returns_error(test_client):
+    access_token = create_access_token('testuser')
+    headers_logged_in = {'Content-Type': mimetype,
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
+
+    test_query = json.dumps({'username': "invaliduser_dfhpaknodvnafvdasfdase",
+                             'amount': 5,
+                             'sort_by': "Recommended"})
+
+    response = test_client.post(
+        "/get_user_topics", data=test_query, headers=headers_logged_in)
+    response = json.loads(response.data)
+
+    status_code = response['status_code']
+
+    assert status_code and status_code == 500
+    return
+
+
+def test_get_user_topics_returns_valid_response(test_client):
+    access_token = create_access_token('testuser')
+    headers_logged_in = {'Content-Type': mimetype,
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
+
+    test_query = json.dumps({'username': "devuser4",
+                             'amount': 5,
+                             'sort_by': "Recommended"})
+
+    response = test_client.post(
+        "/get_user_topics", data=test_query, headers=headers_logged_in)
+    response = json.loads(response.data)
+
+    assert response['status_code'] == 200
+    topics = response['results']
+
+    assert len(topics) > 0
+    return
+
+
+def test_update_user_topics_without_username_returns_error(test_client):
+    access_token = create_access_token('testuser')
+    headers_logged_in = {'Content-Type': mimetype,
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
+
+    test_query = json.dumps({'topics': "placeholder_topic"})
+
+    response = test_client.post(
+        "/update_user_topics", data=test_query, headers=headers_logged_in)
+    response = json.loads(response.data)
+
+    status_code = response['status_code']
+    description = response['description']
+
+    assert status_code and status_code == 400
+    assert description and description == 'Missing payload fields'
+    return
+
+
+def test_update_user_topics_updates_user_topics(test_client):
+    access_token = create_access_token('testuser')
+    headers_logged_in = {'Content-Type': mimetype,
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
+
+    test_query = json.dumps({'username': "devuser4",
+                             'topics': "f1"})
+
+    response = test_client.post(
+        "/update_user_topics", data=test_query, headers=headers_logged_in)
+    response = json.loads(response.data)
+
+    status_code = response['status_code']
+
+    assert status_code and status_code == 200
+    return
+
+
+def test_update_user_watched_vids_without_username_returns_error(test_client):
+    access_token = create_access_token('testuser')
+    headers_logged_in = {'Content-Type': mimetype,
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
+
+    test_query = json.dumps({'video_id': "aouCUd_NcmE"})
+
+    response = test_client.post(
+        "/update_user_watched_videos",
+        data=test_query,
+        headers=headers_logged_in)
+    response = json.loads(response.data)
+
+    status_code = response['status_code']
+    description = response['description']
+
+    assert status_code and status_code == 400
+    assert description and description == 'Missing payload fields'
+    return
+
+
+def test_update_user_watched_vids_without_vid_ID_returns_error(test_client):
+    access_token = create_access_token('testuser')
+    headers_logged_in = {'Content-Type': mimetype,
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
+
+    test_query = json.dumps({'username': "devuser4"})
+
+    response = test_client.post(
+        "/update_user_watched_videos",
+        data=test_query,
+        headers=headers_logged_in)
+    response = json.loads(response.data)
+
+    status_code = response['status_code']
+    description = response['description']
+
+    assert status_code and status_code == 400
+    assert description and description == 'Missing payload fields'
+    return
+
+
+def test_update_user_watched_vids(test_client):
+    access_token = create_access_token('testuser')
+    headers_logged_in = {'Content-Type': mimetype,
+                         'Accept': mimetype,
+                         'Authorization': 'Bearer {}'.format(access_token)}
+
+    test_query = json.dumps({'username': "devuser4",
+                             'video_id': "aouCUd_NcmE"})
+
+    response = test_client.post(
+        "/update_user_watched_videos",
+        data=test_query,
+        headers=headers_logged_in)
+    response = json.loads(response.data)
+
+    status_code = response['status_code']
+
+    assert status_code and status_code == 200
     return

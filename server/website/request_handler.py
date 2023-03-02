@@ -178,24 +178,31 @@ def request_user_videos():
         amount = body["amount"]
         sort_by = body["sort_by"]
     except KeyError:
-        return {'status_code': 400, 'description': 'Missing payload fields'}
+        return {'status_code': 400,
+                'description': 'Missing payload fields'}
 
     user = query_users(username)
     if not user:
-        return {'status_code': 500, 'description': 'username not found in database'}
+        return {'status_code': 500,
+                'description':
+                'username not found in database'}
 
     if sort_by == "Recommended":
         response = get_recommended_videos(username, amount)
     else:
         topics = user.topics
         if not valid_video_request(topics, amount):
-            return {'status_code': 400, 'description': 'Invalid payload fields'}
+            return {'status_code': 400,
+                    'description':
+                    'Invalid payload fields'}
         response = query_videos(topics, amount, sort_by)
 
     if not valid_video_response(response, int(amount)):
         abort(417)
 
-    return {'status_code': 200, 'description': 'Ok.', 'results': response}
+    return {'status_code': 200,
+            'description': 'Ok.',
+            'results': response}
 
 
 @request_blueprint.route("/get_user_topics", methods=['POST'])
@@ -204,12 +211,17 @@ def get_user_topics():
     try:
         username = request.json["username"]
     except KeyError:
-        return {'status_code': 400, 'description': 'Missing payload fields'}
+        return {'status_code': 400,
+                'description':
+                'Missing payload fields'}
     user = query_users(username)
     if not user:
-        return {'status_code': 500, 'description': 'username not found in database'}
+        return {'status_code': 500,
+                'description': 'username not found in database'}
     results = user.topics
-    return {'status_code': 200, 'description': 'Ok.', 'results': results}
+    return {'status_code': 200,
+            'description': 'Ok.',
+            'results': results}
 
 
 @request_blueprint.route("/update_user_topics", methods=['POST'])
@@ -219,9 +231,11 @@ def update_user_topics():
         username = request.json["username"]
         topics = request.json["topics"]
     except KeyError:
-        return {'status_code': 400, 'description': 'Missing payload fields'}
+        return {'status_code': 400,
+                'description': 'Missing payload fields'}
     if not set_user_topics(username, topics):
-        return {'status_code': 500, 'description': 'database update failed'}
+        return {'status_code': 500,
+                'description': 'database update failed'}
     add_videos_to_queue(topics)
     return {'status_code': 200, 'description': 'Ok.'}
 
@@ -233,7 +247,9 @@ def update_user_watched_videos():
         username = request.json["username"]
         video_id = request.json["video_id"]
     except KeyError:
-        return {'status_code': 400, 'description': 'Missing payload fields'}
+        return {'status_code': 400,
+                'description': 'Missing payload fields'}
     if not add_watched_video(username, video_id):
-        return {'status_code': 500, 'description': 'database update failed'}
+        return {'status_code': 500,
+                'description': 'database update failed'}
     return {'status_code': 200, 'description': 'Ok.'}
