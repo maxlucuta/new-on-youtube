@@ -93,11 +93,13 @@ def valid_video_request(topics, amount):
             False if request is invalid.
     """
     if not topics or not amount:
-        abort(400)
+        return False
 
     if not str(amount).isdigit() or \
             0 >= int(amount) or int(amount) > 20:
-        abort(400)
+        return False
+
+    return True
 
 
 def valid_video_response(response, amount):
@@ -142,9 +144,10 @@ def request_videos():
         topics = body["topics"]
         amount = body["amount"]
     except KeyError:
-        abort(400)
+        return {'status_code': 400, 'description': 'Missing payload fields'}
 
-    valid_video_request(topics, amount)
+    if not valid_video_request(topics, amount):
+        return {'status_code': 400, 'description': 'Invalid payload fields'}
 
     response = query_videos(topics, amount, "Random")
 
@@ -175,17 +178,18 @@ def request_user_videos():
         amount = body["amount"]
         sort_by = body["sort_by"]
     except KeyError:
-        abort(400)
+        return {'status_code': 400, 'description': 'Missing payload fields'}
 
     user = query_users(username)
     if not user:
-        return {'status_code': 500, 'description': 'database request failed'}
+        return {'status_code': 500, 'description': 'username not found in database'}
 
     if sort_by == "Recommended":
         response = get_recommended_videos(username, amount)
     else:
         topics = user.topics
-        valid_video_request(topics, amount)
+        if not valid_video_request(topics, amount):
+            return {'status_code': 400, 'description': 'Invalid payload fields'}
         response = query_videos(topics, amount, sort_by)
 
     if not valid_video_response(response, int(amount)):
@@ -200,10 +204,10 @@ def get_user_topics():
     try:
         username = request.json["username"]
     except KeyError:
-        abort(400)
+        return {'status_code': 400, 'description': 'Missing payload fields'}
     user = query_users(username)
     if not user:
-        return {'status_code': 500, 'description': 'database request failed'}
+        return {'status_code': 500, 'description': 'username not found in database'}
     results = user.topics
     return {'status_code': 200, 'description': 'Ok.', 'results': results}
 
@@ -215,7 +219,7 @@ def update_user_topics():
         username = request.json["username"]
         topics = request.json["topics"]
     except KeyError:
-        abort(400)
+        return {'status_code': 400, 'description': 'Missing payload fields'}
     if not set_user_topics(username, topics):
         return {'status_code': 500, 'description': 'database update failed'}
     add_videos_to_queue(topics)
@@ -229,7 +233,7 @@ def update_user_watched_videos():
         username = request.json["username"]
         video_id = request.json["video_id"]
     except KeyError:
-        abort(400)
+        return {'status_code': 400, 'description': 'Missing payload fields'}
     if not add_watched_video(username, video_id):
         return {'status_code': 500, 'description': 'database update failed'}
     return {'status_code': 200, 'description': 'Ok.'}
