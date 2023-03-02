@@ -79,7 +79,8 @@ class TranscriptScraper(YouTubeScraper):
         """
 
         task = "Please summarise this transcript for me in a \
-        few sentences: " + transcript + "\n\nTl;dr"
+        few sentences, without using the words 'this transcript': \
+        " + transcript + "\n\nTl;dr"
         summary = summariser(task)
         summary = summary.strip(" :-")
         time.sleep(limiter)

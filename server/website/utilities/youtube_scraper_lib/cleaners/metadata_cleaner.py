@@ -46,7 +46,8 @@ class MetaDataCleaner(DataCleaner):
         Returns:
             str: formatted date
         """
-
+        if not isinstance(date, str):
+            return None
         formatted_date = dateparser.parse(date)
         if not formatted_date:
             return None
