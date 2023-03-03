@@ -16,6 +16,7 @@ const SearchPage = () => {
     const { SERVER_URL } = useContext(RootContext);
 
     const searchCompleted = searchResults.length > 0;
+    const noResults = searchResults.length === 0;
 
     const handleSearchChange = (e: any) => {
         updateSearchValue(e.target.value);
@@ -79,6 +80,8 @@ const SearchPage = () => {
                     Refresh
                 </RefreshButton>
             </div>
+            {noResults ? !displaySelector && <div style={{textAlign: "center"}}>Generating videos, please wait a few minutes</div> : <div></div>}
+
 
             <div
                 style={{
