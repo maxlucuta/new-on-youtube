@@ -40,7 +40,7 @@ The backend is implemented in Python using Flask
 - Once the image has been built launch the container with 'docker run -e PORT=8080 -p 5000:8080 my_image'
 - The app should now be accessible via http://localhost:5000
 
-## CI/CD pipeline
+## CI/CD pipeline and Production
 
 ### Deployment pipeline
 - The deployment pipeline is run on all commits using GitHub actions
