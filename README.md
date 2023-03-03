@@ -1,15 +1,24 @@
 # New On YouTube App
 
+## Project brief
+The goal of this project is to streamline video search for users. The project will implement a recommendation engine that allows users to register their interests, and receive a curated list of recommended YouTube videos accompanied by summaries of their contents which are generated from the video transcript by ChatGPT-3. From a technical standpoint, the interface should be simple to use and appealing, and generating recommendations should be reasonably quick. Each user should receive new curated lists based on previous activity, ensuring that the recommendation system improves itself in suggesting videos that are more closely aligned with the users interest.
+
 ## Project structure
 This project has two major subdirectories
 - client - All the user-facing frontend code
 - server - Code that runs on the Heroku server
 
 ### Client
-The frontend of this project is implemented in JavaScript (Typescript) and the React.js framework
+The frontend is implemented in JavaScript (Typescript) and the React.js framework
 
 ### Server
 The backend is implemented in Python using Flask
+
+### Third party technologies
+- User and video data is stored on Apache Cassandra
+- Videos are those hosted on YouTube.com
+- Video summaries are generated via OpenAI's ChatGPT-3 API
+- Video transcript retrieval and summarisation tasks are stored and retrieved from Google Pub/Sub
 
 ## Developement
 
@@ -54,3 +63,16 @@ The backend is implemented in Python using Flask
 ### Production application
 - The production application is deployed on Heroku and is accessible via https://new-on-youtube.herokuapp.com/
 - The produciton logs are accessible on the Heroku CLI by running 'heroku logs --app new-on-youtube --tail'
+
+## Credits
+
+### Authors
+- Max Lucuta
+- Alexander Arzt
+- Jack Pearce
+- Albert Ugwudike
+- David Bull
+- Patrick Gallagher
+
+### Date of completion
+- 14th March 2023
