@@ -10,24 +10,28 @@ type FeedProps = {
     results: Summary[];
 };
 
-const defualtSummary: Summary = {
+const defaultSummary: Summary = {
     video_id: "JRPC7a_AcQo",
     summary: "This is just a placeholder video, database connection failed or empty",
     video_title: "Placeholder video",
-    channel_name: "Placeholder channel name"
+    channel_name: "Placeholder channel name",
+    keyword: "Placeholder keyword",
+    likes: 1,
+    views: 1,
+    published_at: "Placeholder date"
 };
 
 const Feed = (props: FeedProps) => {
     const { token } = useContext(RootContext);
     const [summaryModalOpen, updateSummaryModalOpen] = useState(false);
-    const [selectedSummary, updateSelectedSummary] = useState(defualtSummary as Summary);
+    const [selectedSummary, updateSelectedSummary] = useState(defaultSummary as Summary);
     const post = usePost();
 
     const selectResult = (summary: Summary) => {
         updateSelectedSummary(summary);
         updateSummaryModalOpen(true);
         if (token) {
-            const payload = { username: tokenToEmail(token), video_id: summary.video_id };
+            const payload = { username: tokenToEmail(token), keyword: summary.keyword, video_id: summary.video_id };
             post("/update_user_watched_videos", payload);
         }
     };

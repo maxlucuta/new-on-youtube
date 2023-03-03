@@ -13,6 +13,7 @@ from .utilities.database import query_videos
 from .utilities.database import get_recommended_videos
 from .utilities.database import add_videos_to_queue
 from .utilities.database import add_watched_video
+from .utilities.database import add_more_videos_to_queue
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -245,10 +246,14 @@ def update_user_topics():
 def update_user_watched_videos():
     try:
         username = request.json["username"]
+        topic = request.json["keyword"]
         video_id = request.json["video_id"]
     except KeyError:
         return {'status_code': 400,
                 'description': 'Missing payload fields'}
+
+    add_more_videos_to_queue(topic, 2)
+
     if not add_watched_video(username, video_id):
         return {'status_code': 500,
                 'description': 'database update failed'}

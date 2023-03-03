@@ -485,7 +485,8 @@ def test_update_user_watched_vids_without_username_returns_error(test_client):
                          'Accept': mimetype,
                          'Authorization': 'Bearer {}'.format(access_token)}
 
-    test_query = json.dumps({'video_id': "aouCUd_NcmE"})
+    test_query = json.dumps({'topic': "f1",
+                             'video_id': "aouCUd_NcmE"})
 
     response = test_client.post(
         "/update_user_watched_videos",
@@ -507,7 +508,8 @@ def test_update_user_watched_vids_without_vid_ID_returns_error(test_client):
                          'Accept': mimetype,
                          'Authorization': 'Bearer {}'.format(access_token)}
 
-    test_query = json.dumps({'username': "devuser4"})
+    test_query = json.dumps({'username': "devuser4",
+                             'topic': "f1"})
 
     response = test_client.post(
         "/update_user_watched_videos",
@@ -523,7 +525,7 @@ def test_update_user_watched_vids_without_vid_ID_returns_error(test_client):
     return
 
 
-def test_update_user_watched_vids(test_client):
+def test_update_user_watched_vids_without_topic_returns_error(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
                          'Accept': mimetype,
@@ -539,6 +541,8 @@ def test_update_user_watched_vids(test_client):
     response = json.loads(response.data)
 
     status_code = response['status_code']
+    description = response['description']
 
-    assert status_code and status_code == 200
+    assert status_code and status_code == 400
+    assert description and description == 'Missing payload fields'
     return

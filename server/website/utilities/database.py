@@ -199,6 +199,12 @@ def add_videos_to_queue(topics):
             publisher.create_task(topic, str(5))
 
 
+def add_more_videos_to_queue(topic, number):
+    topic = clean_topics([topic])[0]
+    publisher = Publisher()
+    publisher.create_task(topic, str(number))
+
+
 def db_contains_video(keyword, video_id):
     """
     This function checks if a video is already in our db so
