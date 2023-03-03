@@ -1,14 +1,14 @@
 # YouTube Recommendations App
 
-## Project Structure
+## Project structure
 This project has two major subdirectories
 - client - All the user-facing frontend code
-- server - Code that is expected to run on the AWS server
+- server - Code that runs on the Heroku server
 
-### client
+### Client
 The frontend of this project is implemented in JavaScript (Typescript) and the React.js framework
 
-### server
+### Server
 The backend is implemented in Python using Flask
 
 ## Developement
@@ -16,22 +16,41 @@ The backend is implemented in Python using Flask
 ### Prerequisites
 - Install the latest version of node.js and the node package manager (npm) on your machine: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 - install python3 and the python package manager, pip https://www.python.org/downloads/
-- I recommmend editing using VS-Code and its integrated terminal
-- create your own branch of this repository and clone it to your machine
 
-### starting up the frontend 
+### Starting up the frontend 
 - Navigate to 'client' 
 - Use the command 'npm install' to install required node.js packages
 - Use 'npm run start' in your terminal to start the development server
-- The app should now be accessible via http://localhost:3000;
-- The server test should not yet be working!
+- The app should now be accessible via http://localhost:3000
 
-### starting up the backend
+### Starting up the backend
 - Navigate to 'server'
-- Create a python virtual environment: 'python3 -m venv venv' (this uses the python utility 'venv' to create a virutal environment named 'venv')
-- N.B. using a virtual environment enables all our python packages to be installed in the context of *this project* as opposed to your entire machine.
-- Activate your virtual environment using 'source venv/bin/activate'
-- The command prompt should now be prepended with '(venv)'
-- Install required dependencies using 'pip install flask flask-cors python-dotenv'
+- Install required dependencies using 'pip install -r requirements.txt'
 - Start the server using 'flask run'
-- The server test from the frontend should be successful!
+
+### Running tests
+- Navigate to 'server'
+- Run all tests with 'pytest'
+
+### Running linting
+- Run './run_autopep8.sh' in the root to run autopep8 and see which parts of the code still do not conform to PEP 8 standards
+
+### Launch in Docker locally
+- To run deploy in Docker locally run 'docker build -t my_image .' in the root
+- Once the image has been built launch the container with 'docker run -e PORT=8080 -p 5000:8080 my_image'
+- The app should now be accessible via http://localhost:5000
+
+## CI/CD pipeline
+
+### Deployment pipeline
+- The deployment pipeline is run on all commits using GitHub actions
+- PEP 8 linting checks are run on all commits
+- All tests can be run in the Docker container by including 'run_tests' in the commit message
+- Deployment to production server can be run by including 'run_deploy' in the commit message. Note that deployment requires that:
+  - 'run_tests' is also included in the commit message
+  - All tests are passed
+  - The commit is made on the 'main' branch
+
+### Production application
+- The production application is deployed on Heroku and is accessible via https://new-on-youtube.herokuapp.com/
+- The produciton logs are accessible on the Heroku CLI by running 'heroku logs --app new-on-youtube --tail'
