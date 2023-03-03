@@ -37,7 +37,7 @@ const SignInPage = () => {
             updateUserDoesNotExist(false);
         } else if (message === "logged in") {
             setToken(res.token);
-            navigate("/");
+            navigate("/Feed");
         }
     };
 
@@ -119,11 +119,11 @@ const PageFrame = styled.div`
     margin: 0 auto 0 auto;
 `;
 
-// RegFrame after back-col -> background-image: ${smoke}; 
+// RegFrame after back-col -> background-image: ${smoke};
 const RegFrame = styled.div`
     display: flex;
     flex-direction: column;
-    background-color: #f0f0f1;    
+    background-color: #f0f0f1;
     width: 75%;
     border-radius: 3px;
     margin-bottom: 40px;

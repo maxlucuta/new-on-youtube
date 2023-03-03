@@ -62,7 +62,7 @@ const RegisterPage = () => {
         if (message === "no topics selected") alert("Please select at least one topic");
         if (message === "successfully added and logged in") {
             setToken(res.token);
-            navigate("/");
+            navigate("/Feed");
         }
         if (message === "unrecognised error") alert("Registration unsuccessful, please try again")
     };
