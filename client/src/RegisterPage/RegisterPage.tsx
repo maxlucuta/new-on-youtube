@@ -12,6 +12,7 @@ const RegisterPage = () => {
     const [password1, updatePassword1] = useState("");
     const [password2, updatePassword2] = useState("");
     const [userAlreadyExists, updateUserAlreadyExists] = useState(false);
+    const [passwordTooShort, updatePasswordTooShort] = useState(false);
     const [searchBarValue, updateSearchBarValue] = useState("");
     const [filteredTopicSelection, updateFilteredTopicSelection] = useState(topics as string[]);
     const [selectedTopics, updateSelectedTopics] = useState([] as string[]);
@@ -26,6 +27,7 @@ const RegisterPage = () => {
 
     const handlePasswordChange = (e: any, idx: number) => {
         idx === 0 ? updatePassword1(e.target.value) : updatePassword2(e.target.value);
+        updatePasswordTooShort(false);
     };
 
     const handleSearchBar = (e: any) => {
@@ -47,6 +49,10 @@ const RegisterPage = () => {
     };
 
     const handleSubmit = async () => {
+        if (password1.length < 8) {
+            updatePasswordTooShort(true);
+            return;
+        }
         const payload = { username: username, password: password1, confirmation: password2, topics: selectedTopics};
         const res = await post("/register", payload) as any;
         const message = res.message;
@@ -62,7 +68,6 @@ const RegisterPage = () => {
     };
 
     const validPassword = password1.length > 7 && password1 === password2;
-    const longEnoughPassword = password1.length > 7;
     const passwordsMatch = password1 === password2;
 
     if (token !== "") return <Navigate replace to = "/" />
@@ -98,8 +103,8 @@ const RegisterPage = () => {
                                 placeholder="Confirm Password"
                                 onChange={e => handlePasswordChange(e, 1)}
                             />
-                            {!longEnoughPassword ? <div>Password must be at least 8 characters</div> : <div></div>}
-                            {longEnoughPassword && !passwordsMatch ? <div>Passwords do not match</div> : <div></div>}
+                            {passwordTooShort ? <div>Password must be at least 8 characters</div> : <div></div>}
+                            {!passwordsMatch ? <div>Passwords do not match</div> : <div></div>}
                         </RegForm>
 
 
