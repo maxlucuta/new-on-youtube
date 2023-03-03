@@ -20,7 +20,7 @@ const NavBar = () => {
                         <div style={{
                             fontSize: "16px",
                             fontWeight: "400",
-                            fontFamily: "'Rubik', sans-serif"   
+                            fontFamily: "'Rubik', sans-serif"
                         }}>New on YouTube</div>
                     </Logo>
                 </Link>
@@ -47,18 +47,18 @@ const NavBar = () => {
             </Bar>
             <SignInOutButton>
                 {!token && (
-                        <Link to={token ? "/" : "/SignIn"}>
-                            <Item>Sign In</Item>
-                        </Link>
+                    <Link to={token ? "/" : "/SignIn"}>
+                        <Item>Sign In</Item>
+                    </Link>
                 )}
                 {token && (
-                        <Link to={token ? "/" : "/"}>
-                            <Item onClick={signOut} style={{ cursor: "pointer" }}>Sign Out</Item>
-                        </Link>
+                    <Link to={token ? "/" : "/"}>
+                        <Item onClick={signOut} style={{ cursor: "pointer" }}>Sign Out</Item>
+                    </Link>
                 )}
             </SignInOutButton>
         </Backing>
-        
+
     );
 };
 
@@ -116,6 +116,9 @@ const SignInOutButton = styled.button`
 const SignedInIcon = styled.div`
     margin: 10px 20px;
     color: #707070;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Rubik', sans-serif; 
 `;
 
 const Logo = styled.div`
