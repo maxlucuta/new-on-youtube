@@ -43,7 +43,7 @@ The backend is implemented in Python using Flask
 ## CI/CD pipeline and Production
 
 ### Deployment pipeline
-- The deployment pipeline is run on all commits using GitHub actions
+- The deployment pipeline is run on all commits using GitHub actions and can be found in the '.github' directory
 - PEP 8 linting checks are run on all commits
 - All tests can be run in the Docker container by including 'run_tests' in the commit message
 - Deployment to production server can be run by including 'run_deploy' in the commit message. Note that deployment requires that:
