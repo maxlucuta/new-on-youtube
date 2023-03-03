@@ -14,7 +14,7 @@ import TopicSelectionPage from "./TopicSelection/TopicSelection";
 
 const App = () => {
     // conditionally switched to production url in live
-    const PRODUCTION = window.location.href.startsWith("https://new-on-youtube.herokuapp.com");
+    const PRODUCTION = window.location.href.indexOf("new-on-youtube.herokuapp.com") > -1;
     const SERVER_URL = PRODUCTION
         ? "https://new-on-youtube.herokuapp.com"
         : "http://localhost:5000";
