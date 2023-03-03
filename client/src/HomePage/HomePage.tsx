@@ -1,22 +1,16 @@
-import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { RootContext } from "../context";
 import styled from "styled-components";
-import logo from "../assets/logo.png";
-//import options from "../assets/options.png";
-//import select from "../assets/select.png";
-//import read from "../assets/read.png";
 import laptop from "../assets/laptop.png";
 import nlpIcon from "../assets/nlpClear.png";
 import choiceIcon from "../assets/choiceClear.png";
 import NavBar from "../NavBar/Navbar";
 import { Link } from "react-router-dom";
-import { Summary } from "../types";
-import Feed from "../Feed/Feed";
 
 const backgroundGrey = '#f0f0f1';
 
 const HomePage = () => {
+    const { token, setToken } = useContext(RootContext);
 
     return (
         <div>
@@ -42,8 +36,8 @@ const HomePage = () => {
                         <Text>to find what interests you, faster.</Text>
                         <br></br>
                         <Text>No promotions. No marketing. Just content.</Text>
-                        <Link to="/Register">
-                            <Start>Register Now</Start>
+                        <Link to={token ? "/Feed" : "/Register"}>
+                            {token ? <Start>Go To Video Feed</Start> : <Start>Register Now</Start> }
                         </Link>
                     </div>
 

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../assets/logo.png";
 import { RootContext } from "../context";
-import { tokenToEmail, usePost } from "../functions";
+import { tokenToEmail } from "../functions";
 
 const NavBar = () => {
     const { token, setToken } = useContext(RootContext);
@@ -20,7 +20,7 @@ const NavBar = () => {
                         <div style={{
                             fontSize: "16px",
                             fontWeight: "400",
-                            fontFamily: "'Rubik', sans-serif"   
+                            fontFamily: "'Rubik', sans-serif"
                         }}>New on YouTube</div>
                     </Logo>
                 </Link>
@@ -58,7 +58,7 @@ const NavBar = () => {
                 )}
             </SignInOutButton>
         </Backing>
-        
+
     );
 };
 
@@ -79,7 +79,7 @@ const Bar = styled.div`
     align-items: center;
     padding-top: 10px;
     background-color: none;
-    
+
 `;
 
 const Item = styled.div`
@@ -91,7 +91,7 @@ const Item = styled.div`
     transition: 0.5s;
     &:hover {
         text-decoration: underline;
-    }   
+    }
 `;
 
 const SignInOutButton = styled.button`
