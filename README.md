@@ -1,4 +1,4 @@
-# YouTube Recommendations App
+# New On YouTube App
 
 ## Project structure
 This project has two major subdirectories
