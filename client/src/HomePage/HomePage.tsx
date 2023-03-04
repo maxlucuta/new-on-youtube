@@ -51,7 +51,7 @@ const HomePage = () => {
             <div style={{ marginTop: "100px", marginLeft: "400px" }}>
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "left" }}>
                     <SubTitle>Finding out what's new on YouTube</SubTitle>
-                    <div style={{ display: "flex"}}>
+                    <div style={{ display: "flex", flexWrap: "wrap"}}>
                         <Panel>
                             <PanelIcon src={choiceIcon}/>
                             <PanelTitle>Choose your topics</PanelTitle>
