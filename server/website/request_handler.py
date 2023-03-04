@@ -271,7 +271,7 @@ def run_database_update_job():
        them with the latest metadata.
     """
 
-    to_update = query_random_videos(3)
+    to_update = query_random_videos(200)
     for response in to_update:
         get_newest_data = get_updated_metadata_by_id(response['video_id'])
         if not get_newest_data:
@@ -286,3 +286,6 @@ def run_database_update_job():
         response.update(get_newest_data)
         response['video_name'] = video_name
         insert_video(response)
+
+    return {'status_code': 200, 'description': 'Ok.'}
+    
