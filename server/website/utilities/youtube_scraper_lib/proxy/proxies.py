@@ -14,7 +14,7 @@ class Proxy:
 
         self.proxy = None
         self.host = None
-        
+
         while True:
             try:
                 proxy = self.proxy_server.get().split("//")
