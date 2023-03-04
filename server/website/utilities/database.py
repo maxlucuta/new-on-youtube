@@ -9,6 +9,7 @@ Date: 19. Januar 2023
 import os
 import random
 from cassandra.cluster import Cluster, DriverException
+from cassandra.protocol import SyntaxException
 from cassandra.auth import PlainTextAuthProvider
 import website
 from .users import User
@@ -170,8 +171,7 @@ def delete_database_entry(entry):
     try:
         website.session.execute(cql)
         print(f"Deleted {video_name} from the database!", flush=True)
-    except DriverException as exception:
-        print("DriverException: " + str(exception))
+    except (DriverException, SyntaxException):
         return False
     return True
 

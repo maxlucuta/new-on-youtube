@@ -5,7 +5,7 @@ it is the front-end developers responsibility to ensure
 that the request contains both topic = x and amount = y,
 otherwise an error code will be returned.
 """
-from flask import Blueprint, request, abort
+from flask import Blueprint, request, abort, redirect, url_for
 from flask_jwt_extended import jwt_required
 from .utilities.database import query_users
 from .utilities.database import set_user_topics
@@ -18,6 +18,7 @@ from .utilities.database import delete_database_entry
 from .utilities.database import insert_video
 from .utilities.database import query_random_videos
 from .utilities.youtube_scraper_lib.youtube import get_updated_metadata_by_id
+from threading import Thread
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -265,18 +266,27 @@ def update_user_watched_videos():
 
 
 @request_blueprint.route("/update_me_daddy", methods=['GET'])
-def run_database_update_job():
+def initiate_database_update_job():
     """Hidden endpoint for running data update jobs, this method
        will fetch a number of entires from the database and update
        them with the latest metadata.
     """
 
+    thread = Thread(target=run_update_job)
+    thread.start()
+    return redirect(url_for("/"))
+
+
+def run_update_job():
+    """Executes database update job, this is run on a seperate thread
+       to prevent HTTP response timeout errors.
+    """
+
     to_update = query_random_videos(200)
     for response in to_update:
         get_newest_data = get_updated_metadata_by_id(response['video_id'])
-        if not get_newest_data:
+        if not get_newest_data or delete_database_entry(response):
             continue
-        delete_database_entry(response)
         video_name = response['video_title']
         response['video_tags'] = response['video_tags'].split(",")
         del response['video_title']
@@ -286,5 +296,3 @@ def run_database_update_job():
         response.update(get_newest_data)
         response['video_name'] = video_name
         insert_video(response)
-
-    return {'status_code': 200, 'description': 'Ok.'}
