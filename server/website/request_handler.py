@@ -285,7 +285,9 @@ def run_update_job():
     to_update = query_random_videos(200)
     for response in to_update:
         get_newest_data = get_updated_metadata_by_id(response['video_id'])
-        if not get_newest_data or delete_database_entry(response):
+        if not get_newest_data:
+            continue
+        if not delete_database_entry(response):
             continue
         video_name = response['video_title']
         response['video_tags'] = response['video_tags'].split(",")
