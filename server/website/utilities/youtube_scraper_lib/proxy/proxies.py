@@ -30,12 +30,13 @@ class Proxy:
         self.host = None
         while True:
             try:
-                proxy = self.proxy_server.get().split("//")
+                proxy_server = self.proxy_server.get()
+                proxy = proxy_server.split("//")
                 request_proxy = {proxy[0][:-1]: proxy[1]}
                 res = requests.get(self.website, request_proxy, timeout=10)
                 if res.status_code == 200:
                     self.proxy = request_proxy
-                    self.host = proxy[1]
+                    self.host = proxy_server
                     break
             except TimeoutError:
                 continue
