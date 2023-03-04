@@ -82,8 +82,11 @@ class MetaDataScraper(YouTubeScraper):
             str: upload date in format yy:mm:dd
         """
 
-        metadata = Video.get(url, get_upload_date=True)
-        return metadata.get("publishDate")
+        try:
+            metadata = Video.get(url, get_upload_date=True)
+            return metadata.get("publishDate")
+        except (TypeError, ValueError):
+            return None
 
     @staticmethod
     def get_keywords(url: str) -> list[str]:

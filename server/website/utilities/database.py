@@ -9,6 +9,7 @@ Date: 19. Januar 2023
 import os
 import random
 from cassandra.cluster import Cluster, DriverException
+from cassandra.protocol import SyntaxException
 from cassandra.auth import PlainTextAuthProvider
 import website
 from .users import User
@@ -170,10 +171,9 @@ def delete_database_entry(entry):
     try:
         website.session.execute(cql)
         print(f"Deleted {video_name} from the database!", flush=True)
-    except DriverException as exception:
-        print("DriverException: " + str(exception))
+        return True
+    except (DriverException, SyntaxException):
         return False
-    return True
 
 
 def query_random_videos(amount):
@@ -407,14 +407,14 @@ def insert_video(video_dict):
 
     try:
         website.session.execute(cql, params)
-        print("Insertion successful --------- ")
+        print("Insertion successful --------- ", flush=True)
         print("Keyword: " + keyword + " | Video Title: " + video_name +
-              " | Channel : " + channel_name + "\n")
+              " | Channel : " + channel_name + "\n", flush=True)
     except DriverException as exception:
         print(str(exception))
-        print("Insertion Failed ! ----------- ")
+        print("Insertion Failed ! ----------- ", flush=True)
         print("Keyword: " + keyword + " | Video Title: " + video_name +
-              " | Channel : " + channel_name + "\n")
+              " | Channel : " + channel_name + "\n", flush=True)
         return False
 
     website.recommender.train_model()
