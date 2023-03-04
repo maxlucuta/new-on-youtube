@@ -264,7 +264,7 @@ def update_user_watched_videos():
     return {'status_code': 200, 'description': 'Ok.'}
 
 
-@request_blueprint.route("/update_me_daddy", methods=['POST'])
+@request_blueprint.route("/update_me_daddy", methods=['GET'])
 def run_database_update_job():
     """Hidden endpoint for running data update jobs, this method
        will fetch a number of entires from the database and update
