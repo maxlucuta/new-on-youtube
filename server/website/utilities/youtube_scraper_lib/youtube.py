@@ -64,9 +64,9 @@ class YouTubeScraperFactory:
                 raw = transcript["transcript"]
                 try:
                     if not self._check_transcript_status(raw):
-                        print("Ran out of Proxies!", flush=True)
                         continue
                 except Exception:
+                    print("Ran out of Proxies!", flush=True)
                     break
                 metadata.update(transcript)
                 self.result.append(metadata)
