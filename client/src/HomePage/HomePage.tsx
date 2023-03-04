@@ -16,7 +16,7 @@ const HomePage = () => {
         <div>
             <div
                 style={{
-                    backgroundColor: backgroundGrey,
+                    backgroundColor: "var(--colour-background)",
                     textAlign: "left",
                 }}>
                 <NavBar />
@@ -103,7 +103,7 @@ const Panel = styled.div`
     height: 300px;
     margin: 20px;
     padding: 30px;
-    background-color: ${backgroundGrey};
+    background-color: var(--colour-background);
     border: none;
     border-radius: 30px;
     transition: 0.3s;
@@ -131,7 +131,7 @@ const Start = styled.button`
     font-size: 20px;
     font-weight: regular;
     font-family: 'Rubik', sans-serif;
-    background-color: ${backgroundGrey};
+    background-color: var(--colour-background);
     color: black;
     border-color: #e52b87;
     border-radius: 5px;
