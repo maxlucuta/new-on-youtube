@@ -171,9 +171,9 @@ def delete_database_entry(entry):
     try:
         website.session.execute(cql)
         print(f"Deleted {video_name} from the database!", flush=True)
+        return True
     except (DriverException, SyntaxException):
         return False
-    return True
 
 
 def query_random_videos(amount):

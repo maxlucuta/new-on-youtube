@@ -282,7 +282,7 @@ def run_update_job():
        to prevent HTTP GET response timeout errors.
     """
 
-    to_update = query_random_videos(200)
+    to_update = query_random_videos(1)
     for response in to_update:
         get_newest_data = get_updated_metadata_by_id(response['video_id'])
         if not get_newest_data:
