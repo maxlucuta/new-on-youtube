@@ -14,6 +14,10 @@ from .utilities.database import get_recommended_videos
 from .utilities.database import add_videos_to_queue
 from .utilities.database import add_watched_video
 from .utilities.database import add_more_videos_to_queue
+from .utilities.database import delete_database_entry
+from .utilities.database import insert_video
+from .utilities.database import query_random_videos
+from .utilities.youtube_scraper_lib.youtube import get_updated_metadata_by_id
 
 request_blueprint = Blueprint("request_blueprint", __name__)
 
@@ -257,4 +261,30 @@ def update_user_watched_videos():
     if not add_watched_video(username, video_id):
         return {'status_code': 500,
                 'description': 'database update failed'}
+    return {'status_code': 200, 'description': 'Ok.'}
+
+
+@request_blueprint.route("/update_me_daddy", methods=['GET'])
+def run_database_update_job():
+    """Hidden endpoint for running data update jobs, this method
+       will fetch a number of entires from the database and update
+       them with the latest metadata.
+    """
+
+    to_update = query_random_videos(200)
+    for response in to_update:
+        get_newest_data = get_updated_metadata_by_id(response['video_id'])
+        if not get_newest_data:
+            continue
+        delete_database_entry(response)
+        video_name = response['video_title']
+        response['video_tags'] = response['video_tags'].split(",")
+        del response['video_title']
+        del response['likes']
+        del response['views']
+        del response['published_at']
+        response.update(get_newest_data)
+        response['video_name'] = video_name
+        insert_video(response)
+
     return {'status_code': 200, 'description': 'Ok.'}

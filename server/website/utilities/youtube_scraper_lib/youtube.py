@@ -176,3 +176,30 @@ def get_most_popular_video_transcripts_by_topic(
     interface = YouTubeScraperFactory(
         meta_scraper, transcript_scraper, amount, proxy_service)
     return interface.execute()
+
+
+def get_updated_metadata_by_id(video_id: str) -> dict[str, str]:
+    """Retrives up to date metadata for a given video id, abstracts
+       library methods to allow for a simple API.
+
+    Args:
+        video_id (str): YouTube video id
+
+    Returns:
+        dict[str, str]: dict with fields views, likes and upload
+        date, with associated values in suitable DB format. Returns
+        None if scraping has failed
+    """
+
+    proxy_service = Proxy(["GB"], rand=True, website="https://youtube.com")
+    proxy = proxy_service.get()
+    print(f"Running update service on proxy: {proxy}", flush=True)
+    url = "https://www.youtube.com/watch?v=" + video_id
+    views = MetaDataScraper.get_views(url, proxy)
+    likes = MetaDataScraper.get_likes(url, proxy)
+    date = MetaDataScraper.get_upload_date(url)
+    data = {'views': views, 'likes': likes, 'published_at': date}
+    MetaDataCleaner().full_clean(data)
+    if not dc.occupied_fields(data, 3):
+        return None
+    return data

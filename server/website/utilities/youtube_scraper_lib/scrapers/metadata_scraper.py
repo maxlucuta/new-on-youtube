@@ -72,6 +72,20 @@ class MetaDataScraper(YouTubeScraper):
             return ""
 
     @staticmethod
+    def get_upload_date(url: str) -> str:
+        """Retrieves the upload date for a video.
+
+        Args:
+            url (str): full url of video
+
+        Returns:
+            str: upload date in format yy:mm:dd
+        """
+
+        metadata = Video.get(url, get_upload_date=True)
+        return metadata.get("publishDate")
+
+    @staticmethod
     def get_keywords(url: str) -> list[str]:
         """Retrieves all associated tags for a video.
 
