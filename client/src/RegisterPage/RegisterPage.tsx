@@ -5,7 +5,6 @@ import { RootContext } from "../context";
 import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
 import topics from "../TopicTags/topicTagsMasterList";
-import "./register.css";
 
 const RegisterPage = () => {
     const [username, updateUsername] = useState("");
@@ -74,93 +73,92 @@ const RegisterPage = () => {
 
     return (
         <div>
-            <div style={{ backgroundColor: "#f0f0f1", height: "100vh" }}>
-                <NavBar />
-                <PageFrame>
-                    <LeftFrame>
-                        <RegFrame>
-                            <div style={{ textAlign: "center" }}>
-                                <Title>Create an account</Title>
-                                <RegForm>
-                                    <FormInput
-                                        type="email"
-                                        name="email"
-                                        placeholder="Enter Username"
-                                        onChange={handleEmailChange}
-                                    />
-                                    {userAlreadyExists
-                                        ? username.length > 0 && <div>That username is already in use, please try a different username</div>
-                                        : <div></div>}
-                                    <FormInput
-                                        type="password"
-                                        name="password"
-                                        placeholder="Enter Password"
-                                        onChange={e => handlePasswordChange(e, 0)}
-                                    />
-                                    <FormInput
-                                        type="password"
-                                        name="confirm password"
-                                        placeholder="Confirm Password"
-                                        onChange={e => handlePasswordChange(e, 1)}
-                                    />
-                                    {passwordTooShort ? <div style={{ fontFamily: 'Rubik, sans-serif' }}>Password must be at least 8 characters</div> : <div></div>}
-                                    {!passwordsMatch ? <div style={{ fontFamily: 'Rubik, sans-serif' }}>Passwords do not match</div> : <div></div>}
-                                </RegForm>
+            <NavBar />
+            <PageFrame>
+                <LeftFrame>
+                    <RegFrame>
+                        <div style={{ textAlign: "center" }}>
+                            <Title>Create an account</Title>
+                            <RegForm>
+                                <FormInput
+                                    type="email"
+                                    name="email"
+                                    placeholder="Enter Username"
+                                    onChange={handleEmailChange}
+                                />
+                                {userAlreadyExists
+                                    ? username.length > 0 && <div>That username is already in use, please try a different username</div>
+                                    : <div></div>}
+                                <FormInput
+                                    type="password"
+                                    name="password"
+                                    placeholder="Enter Password"
+                                    onChange={e => handlePasswordChange(e, 0)}
+                                />
+                                <FormInput
+                                    type="password"
+                                    name="confirm password"
+                                    placeholder="Confirm Password"
+                                    onChange={e => handlePasswordChange(e, 1)}
+                                />
+                                {passwordTooShort ? <div>Password must be at least 8 characters</div> : <div></div>}
+                                {!passwordsMatch ? <div>Passwords do not match</div> : <div></div>}
+                            </RegForm>
 
 
-                                <SubmitButton
-                                    active={validPassword && username.length > 0 && selectedTopics.length > 0}
-                                    onClick={handleSubmit}>
-                                    REGISTER
-                                </SubmitButton>
-                            </div>
-                        </RegFrame>
+                            <SubmitButton
+                                active={validPassword && username.length > 0 && selectedTopics.length > 0}
+                                onClick={handleSubmit}>
+                                REGISTER
+                            </SubmitButton>
+                        </div>
+                    </RegFrame>
 
-                        {selectedTopics.length == 0 && (
-                            <Text>Select at least one topic to register.</Text>
-                        )}
-                        <Text>Topics selected: {selectedTopics.length}</Text>
+                    {selectedTopics.length == 0 && (
+                        <Text>Select at least one topic to register.</Text>
+                    )}
+                    <Text>Topics selected: {selectedTopics.length}</Text>
 
-                        <SelectedContainer>
-                            {selectedTopics.map(c => (
-                                <SelectedCategory selected={true} onClick={() => handleSelectedTopics(c)}>
+                    <SelectedContainer>
+                        {selectedTopics.map(c => (
+                            <SelectedCategory selected={true} onClick={() => handleSelectedTopics(c)}>
+                                {c}
+                            </SelectedCategory>
+                        ))}
+                    </SelectedContainer>
+
+                </LeftFrame>
+                <RightFrame>
+                    <VerticalFrame>
+                        <Title style={{ textAlign: "left" }}>Select the topics that interest you</Title>
+                        <SearchBar
+                            placeholder="Search"
+                            onChange={handleSearchBar}
+                        />
+                        <SelectionContainer>
+                            {searchBarValue.length !== 0 && (
+                                <SelectionCategory
+                                    selected={selectedTopics.includes(searchBarValue)}
+                                    onClick={() => handleSelectedTopics(searchBarValue)}>
+                                    Add Custom Topic: {searchBarValue}
+                                </SelectionCategory>
+                            )}
+                            {filteredTopicSelection.map(c => (
+                                <SelectionCategory
+                                    selected={selectedTopics.includes(c)}
+                                    onClick={() => handleSelectedTopics(c)}>
                                     {c}
-                                </SelectedCategory>
+                                </SelectionCategory>
                             ))}
-                        </SelectedContainer>
+                        </SelectionContainer>
+                    </VerticalFrame>
+                    <VerticalFrame>
 
-                    </LeftFrame>
-                    <RightFrame>
-                        <VerticalFrame>
-                            <Title style={{ textAlign: "left" }}>Select the topics that interest you</Title>
-                            <SearchBar
-                                placeholder="Search"
-                                onChange={handleSearchBar}
-                            />
-                            <SelectionContainer>
-                                {searchBarValue.length !== 0 && (
-                                    <SelectionCategory
-                                        selected={selectedTopics.includes(searchBarValue)}
-                                        onClick={() => handleSelectedTopics(searchBarValue)}>
-                                        Add Custom Topic: {searchBarValue}
-                                    </SelectionCategory>
-                                )}
-                                {filteredTopicSelection.map(c => (
-                                    <SelectionCategory
-                                        selected={selectedTopics.includes(c)}
-                                        onClick={() => handleSelectedTopics(c)}>
-                                        {c}
-                                    </SelectionCategory>
-                                ))}
-                            </SelectionContainer>
-                        </VerticalFrame>
-                        <VerticalFrame>
-
-                        </VerticalFrame>
-                    </RightFrame>
-                </PageFrame>
-            </div>
+                    </VerticalFrame>
+                </RightFrame>
+            </PageFrame>
         </div>
+
 
     );
 };
@@ -180,7 +178,7 @@ const SubmitButton = styled.button<{ active: boolean }>`
     border-radius: 5px;
     &:hover {
         cursor: ${props => (props.active ? "pointer" : "not-allowed")};
-        background-color: ${props => (props.active ? "#e52b87" : "black")};
+        background-color: ${props => (props.active ? "var(--colour-pink-accent)" : "black")};
     }
 `;
 
@@ -206,7 +204,6 @@ const PageFrame = styled.div`
     display: flex;
     justify-content: center;
     width: 80%;
-    max-height: 100vh;
     padding-top: 75px;
     padding-left: 10%;
     padding-right: 10%;
@@ -218,7 +215,6 @@ const LeftFrame = styled.div`
     flex-direction: column;
     text-align: left;
     width: 45%;
-    height: 100vh;
 `;
 
 const RightFrame = styled.div`
@@ -226,7 +222,6 @@ const RightFrame = styled.div`
     flex-direction: column;
     text-align: left;
     width: 55%;
-    height: 100vh;
 `;
 
 
@@ -272,19 +267,13 @@ const SearchBar = styled.input`
     }
 `;
 
-const PanelTitle = styled.div`
-    font-size: 30px;
-    font-weight: 500;
-    font-family: 'Rubik', sans-serif;
-`;
-
 const SelectionContainer = styled.div`
     display: flex;
     width: 100%;
     flex-wrap: wrap;
     justify-content: left;
     overflow: scroll;
-    max-height: 70vh;
+    max-height: 60vh;
 `;
 
 const SelectedContainer = styled.div`
@@ -305,7 +294,7 @@ const SelectionCategory = styled.button<{ selected: boolean }>`
     font-family: 'Rubik', sans-serif;
     padding: 10px;
     border-style: none;
-    background-color: ${props => (props.selected ? "#2d1871" : "#b0b0b0")};
+    background-color: ${props => (props.selected ? "var(--colour-dark-purple)" : "var(--colour-background-darker-grey)")};
     border-radius: 2px;
     &:hover {
         transform: scale(1.1);
