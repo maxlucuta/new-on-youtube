@@ -143,6 +143,58 @@ def set_user_topics(username, topics):
     return True
 
 
+def delete_database_entry(entry):
+    """
+    Deletes an entry from the database.
+
+    Args:
+        entry (dict[str, str]): metadata for an entry in the database
+
+    Returns:
+        bool: true if successful, false otherwise
+    """
+
+    keyword = entry["keyword"]
+    views = entry["views"]
+    likes = entry["likes"]
+    video_name = entry["video_title"]
+    channel_name = entry["channel_name"]
+    video_id = entry["video_id"]
+
+    cql = f"""DELETE from summaries.video_summaries where
+             keyword='{keyword}' and views={views} and
+             likes={likes} and video_title='{video_name}'
+             and channel_name='{channel_name}' and video_id=
+             '{video_id}'"""
+
+    try:
+        website.session.execute(cql)
+    except DriverException as exception:
+        print("DriverException: " + str(exception))
+        return False
+    return True
+
+
+def query_random_videos(amount):
+    """Queries a number of random videos from the database
+       and returns them.
+
+    Args:
+        amount (int): number of videos to be retrieved
+
+    Returns:
+        list[dict[any]]: query response
+    """
+
+    try:
+        cql = "SELECT * from summaries.video_summaries Limit " + str(amount)
+        response = website.session.execute(cql)
+        return response.all()
+    except DriverException as exception:
+        print("DriverException: " + str(exception))
+        return None
+
+
 def add_watched_video(username, video_id):
     """
     This function performs an update on the users DB and returns True

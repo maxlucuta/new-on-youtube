@@ -1,5 +1,6 @@
 from os import environ
 from google.cloud import pubsub_v1
+from google.cloud.pubsub_v1.subscriber.exceptions import AcknowledgeError
 from ..youtube_scraper_lib.youtube import (
     get_most_popular_video_transcripts_by_topic
 )
@@ -66,7 +67,6 @@ class Subscriber:
 
         print(f"{topic} processed!", flush=True)
         message.ack()
-        return
 
     def process_tasks(self):
         """Stream processes subsriber content indefinitely until
@@ -83,9 +83,12 @@ class Subscriber:
             except TimeoutError:
                 streaming_pull_future.cancel()
                 streaming_pull_future.result()
-        return
+            except (AcknowledgeError, ValueError):
+                pass
 
 
 def run_background_task():
+    """API for daemon thread background processing."""
+
     subscriber = Subscriber()
     subscriber.process_tasks()
