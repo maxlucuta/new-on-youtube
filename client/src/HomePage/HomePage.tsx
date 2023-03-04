@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
     const { token, setToken } = useContext(RootContext);
 
+    //TO DO: center content relative to screen / navbar
+
     return (
         <div>
             <div
