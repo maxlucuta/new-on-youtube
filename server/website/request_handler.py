@@ -288,4 +288,3 @@ def run_database_update_job():
         insert_video(response)
 
     return {'status_code': 200, 'description': 'Ok.'}
-    
