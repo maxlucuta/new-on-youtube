@@ -81,7 +81,7 @@ class YouTubeScraperFactory:
             try:
                 transcript = data['transcript']
                 data["summary"] = self.transcript_scraper.summarise(
-                    transcript, summarize_yt_script_with_gpt3, 10)
+                    transcript, summarize_yt_script_with_gpt3, 0)
             except (RateLimitError, ServiceUnavailableError,
                     InvalidRequestError):
                 continue
