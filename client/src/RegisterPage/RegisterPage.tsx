@@ -104,7 +104,7 @@ const RegisterPage = () => {
                                         onChange={e => handlePasswordChange(e, 1)}
                                     />
                                     {passwordTooShort ? <div style={{ fontFamily: 'Rubik, sans-serif' }}>Password must be at least 8 characters</div> : <div></div>}
-                                    {!passwordsMatch ? <div>Passwords do not match</div> : <div></div>}
+                                    {!passwordsMatch ? <div style={{ fontFamily: 'Rubik, sans-serif' }}>Passwords do not match</div> : <div></div>}
                                 </RegForm>
 
 
