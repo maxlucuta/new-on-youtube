@@ -128,18 +128,7 @@ const RegFrame = styled.div`
     border-radius: 3px;
     margin-bottom: 40px;
     filter: drop-shadow(0 0.3rem 0.25rem grey);
-    opacity: 0;
-    animation: fade-in 1s ease-in-out forwards;
-    animation-delay: 0.3s;
-
-    @keyframes fade-in {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
-    }
+    opacity: 1;
 `;
 const RegForm = styled.form`
     background-color: none;
