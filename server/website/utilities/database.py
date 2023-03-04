@@ -169,6 +169,7 @@ def delete_database_entry(entry):
 
     try:
         website.session.execute(cql)
+        print(f"Deleted {video_name} from the database!", flush=True)
     except DriverException as exception:
         print("DriverException: " + str(exception))
         return False
