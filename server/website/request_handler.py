@@ -273,7 +273,7 @@ def run_database_update_job():
 
     to_update = query_random_videos(3)
     for response in to_update:
-        get_newest_data = get_updated_metadata_by_id(response['id'])
+        get_newest_data = get_updated_metadata_by_id(response['video_id'])
         if not get_newest_data:
             continue
         delete_database_entry(response)
