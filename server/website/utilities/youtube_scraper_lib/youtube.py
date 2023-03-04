@@ -6,6 +6,7 @@ from .scrapers.transcript_scraper import TranscriptScraper
 from .cleaners.metadata_cleaner import MetaDataCleaner
 from .cleaners.transcript_cleaner import TranscriptCleaner
 from .cleaners.data_cleaner import DataCleaner as dc
+from .proxy.proxies import Proxy
 from ..gpt3 import summarize_yt_script_with_gpt3
 from ..database import db_contains_video
 
@@ -15,7 +16,7 @@ class YouTubeScraperFactory:
        for project specific YouTube scraping."""
 
     def __init__(self, metadata_scraper: object, transcript_scraper:
-                 object, amount: int):
+                 object, amount: int, proxy_service: object):
         """Contructs YouTubeScraperFactory object.
 
         Args:
@@ -26,6 +27,7 @@ class YouTubeScraperFactory:
 
         self.metadata_scraper = metadata_scraper
         self.transcript_scraper = transcript_scraper
+        self.proxy_service = proxy_service
         self.metadata_cleaner = MetaDataCleaner()
         self.transcript_cleaner = TranscriptCleaner()
         self.amount = amount
@@ -60,8 +62,12 @@ class YouTubeScraperFactory:
                 video_id = metadata["video_id"]
                 transcript = self.transcript_scraper.execute(video_id)
                 raw = transcript["transcript"]
-                if not self._check_transcript_status(raw):
-                    continue
+                try:
+                    if not self._check_transcript_status(raw):
+                        print("Ran out of Proxies!", flush=True)
+                        continue
+                except Exception:
+                    break
                 metadata.update(transcript)
                 self.result.append(metadata)
                 self.videos.add(video_id)
@@ -116,7 +122,10 @@ class YouTubeScraperFactory:
         if not response or response == "404":
             return False
         if response == "blocked":
-            proxy = {"https": "localhost"}
+            proxy = self.proxy_service.get()
+            if not proxy:
+                raise Exception
+            print(f"Proxy rotated to: {proxy}", flush=True)
             self.metadata_scraper.rotate_proxy(proxy)
             self.transcript_scraper.rotate_proxy(proxy)
             return False
@@ -159,7 +168,11 @@ def get_most_popular_video_transcripts_by_topic(
               "likes",
               "video_tags"]
 
-    meta_scraper = MetaDataScraper(topic, params)
-    transcript_scraper = TranscriptScraper()
-    interface = YouTubeScraperFactory(meta_scraper, transcript_scraper, amount)
+    proxy_service = Proxy(["GB"], rand=True, website="https://youtube.com")
+    proxy = proxy_service.get()
+    print(f"Running scraper service on proxy: {proxy}", flush=True)
+    meta_scraper = MetaDataScraper(topic, params, proxy=proxy)
+    transcript_scraper = TranscriptScraper(proxy=proxy)
+    interface = YouTubeScraperFactory(
+        meta_scraper, transcript_scraper, amount, proxy_service)
     return interface.execute()

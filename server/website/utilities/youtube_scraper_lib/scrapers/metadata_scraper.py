@@ -32,11 +32,12 @@ class MetaDataScraper(YouTubeScraper):
         self.proxy = proxy
 
     @staticmethod
-    def get_likes(url: str) -> str:
+    def get_likes(url: str, proxy: dict[str, str] = None) -> str:
         """Retrieves number of likes for a video.
 
         Args:
             url (str): full url of video
+            proxy dict[str, str]: http proxy in requests format
 
         Returns:
             str: number of likes for the video, may be raw hmtl
@@ -44,18 +45,19 @@ class MetaDataScraper(YouTubeScraper):
 
         try:
             response = requests.get(
-                url, headers={'User-Agent': ''}, timeout=50)
+                url, headers={'User-Agent': ''}, timeout=50, proxies=proxy)
             likes = response.text[:response.text.find(' likes"')]
             return likes[likes.rfind('"') + 1:]
         except TimeoutError:
             return ""
 
     @staticmethod
-    def get_views(url: str) -> str:
+    def get_views(url: str, proxy: dict[str, str] = None) -> str:
         """Retrieves number of views for a video.
 
         Args:
             url (str): full url of video
+            proxy dict[str, str]: http proxy in requests format
 
         Returns:
             str: number of views for the video, may be raw hmtl
@@ -63,7 +65,7 @@ class MetaDataScraper(YouTubeScraper):
 
         try:
             response = requests.get(
-                url, headers={'User-Agent': ''}, timeout=50)
+                url, headers={'User-Agent': ''}, timeout=50,  proxies=proxy)
             views = response.text[:response.text.find(' views"')]
             return views[views.rfind('"') + 1:]
         except TimeoutError:
@@ -146,8 +148,8 @@ class MetaDataScraper(YouTubeScraper):
                     "channel_name": result['channel']['name'],
                     "video_name": result['title'],
                     "published_at": result['publishedTime'],
-                    "views": self.get_views(result['link']),
-                    "likes": self.get_likes(result['link']),
+                    "views": self.get_views(result['link'], self.proxy),
+                    "likes": self.get_likes(result['link'], self.proxy),
                     "video_tags": self.get_keywords(result['link'])
                     }
         return metadata
