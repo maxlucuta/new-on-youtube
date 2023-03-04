@@ -407,14 +407,14 @@ def insert_video(video_dict):
 
     try:
         website.session.execute(cql, params)
-        print("Insertion successful --------- ")
+        print("Insertion successful --------- ", flush=True)
         print("Keyword: " + keyword + " | Video Title: " + video_name +
-              " | Channel : " + channel_name + "\n")
+              " | Channel : " + channel_name + "\n", flush=True)
     except DriverException as exception:
         print(str(exception))
-        print("Insertion Failed ! ----------- ")
+        print("Insertion Failed ! ----------- ", flush=True)
         print("Keyword: " + keyword + " | Video Title: " + video_name +
-              " | Channel : " + channel_name + "\n")
+              " | Channel : " + channel_name + "\n", flush=True)
         return False
 
     website.recommender.train_model()
