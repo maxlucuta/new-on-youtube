@@ -279,7 +279,7 @@ def initiate_database_update_job():
 
 def run_update_job():
     """Executes database update job, this is run on a seperate thread
-       to prevent HTTP response timeout errors.
+       to prevent HTTP GET response timeout errors.
     """
 
     to_update = query_random_videos(200)
