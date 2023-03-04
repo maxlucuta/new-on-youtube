@@ -7,8 +7,6 @@ import choiceIcon from "../assets/choiceClear.png";
 import NavBar from "../NavBar/Navbar";
 import { Link } from "react-router-dom";
 
-const backgroundGrey = '#f0f0f1';
-
 const HomePage = () => {
     const { token, setToken } = useContext(RootContext);
 
@@ -16,7 +14,7 @@ const HomePage = () => {
         <div>
             <div
                 style={{
-                    backgroundColor: "var(--colour-background)",
+                    backgroundColor: "var(--colour-background-grey)",
                     textAlign: "left",
                 }}>
                 <NavBar />
@@ -103,12 +101,12 @@ const Panel = styled.div`
     height: 300px;
     margin: 20px;
     padding: 30px;
-    background-color: var(--colour-background);
+    background-color: var(--colour-background-grey);
     border: none;
     border-radius: 30px;
     transition: 0.3s;
     &:hover {
-        background-color: #e4e4e5;
+        background-color: var(--colour-background-darker-grey);
     }
 `;
 
@@ -131,7 +129,7 @@ const Start = styled.button`
     font-size: 20px;
     font-weight: regular;
     font-family: 'Rubik', sans-serif;
-    background-color: var(--colour-background);
+    background-color: var(--colour-background-grey);
     color: black;
     border-color: #e52b87;
     border-radius: 5px;
@@ -139,7 +137,7 @@ const Start = styled.button`
     transition: 0.5s;
     &:hover {
         color: white;
-        background-color: #e52b87;
+        background-color: var(--colour-pink-accent);
         cursor: pointer;
     }
 `;
