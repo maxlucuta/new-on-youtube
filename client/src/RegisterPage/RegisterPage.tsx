@@ -53,7 +53,7 @@ const RegisterPage = () => {
             updatePasswordTooShort(true);
             return;
         }
-        const payload = { username: username, password: password1, confirmation: password2, topics: selectedTopics};
+        const payload = { username: username, password: password1, confirmation: password2, topics: selectedTopics };
         const res = await post("/register", payload) as any;
         const message = res.message;
         console.log(message)
@@ -70,54 +70,54 @@ const RegisterPage = () => {
     const validPassword = password1.length > 7 && password1 === password2;
     const passwordsMatch = password1 === password2;
 
-    if (token !== "") return <Navigate replace to = "/" />
+    if (token !== "") return <Navigate replace to="/" />
 
     return (
         <div>
-            <div style={{backgroundColor: "#f0f0f1", height: "100vh"}}>
+            <div style={{ backgroundColor: "#f0f0f1", height: "100vh" }}>
                 <NavBar />
                 <PageFrame>
                     <LeftFrame>
                         <RegFrame>
-                        <div style={{textAlign: "center"}}>
-                        <Title>Create an account</Title>
-                        <RegForm>
-                            <FormInput
-                                type="email"
-                                name="email"
-                                placeholder="Enter Username"
-                                onChange={handleEmailChange}
-                            />
-                            {userAlreadyExists
-                                ? username.length > 0 && <div>That username is already in use, please try a different username</div>
-                                : <div></div>}
-                            <FormInput
-                                type="password"
-                                name="password"
-                                placeholder="Enter Password"
-                                onChange={e => handlePasswordChange(e, 0)}
-                            />
-                            <FormInput
-                                type="password"
-                                name="confirm password"
-                                placeholder="Confirm Password"
-                                onChange={e => handlePasswordChange(e, 1)}
-                            />
-                            {passwordTooShort ? <div>Password must be at least 8 characters</div> : <div></div>}
-                            {!passwordsMatch ? <div>Passwords do not match</div> : <div></div>}
-                        </RegForm>
+                            <div style={{ textAlign: "center" }}>
+                                <Title>Create an account</Title>
+                                <RegForm>
+                                    <FormInput
+                                        type="email"
+                                        name="email"
+                                        placeholder="Enter Username"
+                                        onChange={handleEmailChange}
+                                    />
+                                    {userAlreadyExists
+                                        ? username.length > 0 && <div>That username is already in use, please try a different username</div>
+                                        : <div></div>}
+                                    <FormInput
+                                        type="password"
+                                        name="password"
+                                        placeholder="Enter Password"
+                                        onChange={e => handlePasswordChange(e, 0)}
+                                    />
+                                    <FormInput
+                                        type="password"
+                                        name="confirm password"
+                                        placeholder="Confirm Password"
+                                        onChange={e => handlePasswordChange(e, 1)}
+                                    />
+                                    {passwordTooShort ? <div style={{ fontFamily: 'Rubik, sans-serif' }}>Password must be at least 8 characters</div> : <div></div>}
+                                    {!passwordsMatch ? <div>Passwords do not match</div> : <div></div>}
+                                </RegForm>
 
 
-                        <SubmitButton
-                            active={validPassword && username.length > 0 && selectedTopics.length > 0}
-                            onClick={handleSubmit}>
-                            REGISTER
-                        </SubmitButton>
-                        </div>
+                                <SubmitButton
+                                    active={validPassword && username.length > 0 && selectedTopics.length > 0}
+                                    onClick={handleSubmit}>
+                                    REGISTER
+                                </SubmitButton>
+                            </div>
                         </RegFrame>
 
                         {selectedTopics.length == 0 && (
-                        <Text>Select at least one topic to register.</Text>
+                            <Text>Select at least one topic to register.</Text>
                         )}
                         <Text>Topics selected: {selectedTopics.length}</Text>
 
@@ -132,7 +132,7 @@ const RegisterPage = () => {
                     </LeftFrame>
                     <RightFrame>
                         <VerticalFrame>
-                            <Title style={{textAlign: "left"}}>Select the topics that interest you</Title>
+                            <Title style={{ textAlign: "left" }}>Select the topics that interest you</Title>
                             <SearchBar
                                 placeholder="Search"
                                 onChange={handleSearchBar}
