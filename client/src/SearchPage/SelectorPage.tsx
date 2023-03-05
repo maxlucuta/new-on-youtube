@@ -22,7 +22,7 @@ const SelectorPage = (props: SelectorPageProps) => {
         if (e.target.value.length !== 0) {
             updateFiltered(props.availableTopics.filter(c => c.toLowerCase().startsWith(e.target.value.toLowerCase())));
         } else {
-            updateFiltered(props.availableTopics);
+            updateFiltered(props.availableTopics); 
         }
     };
 
