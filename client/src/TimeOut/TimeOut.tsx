@@ -8,10 +8,10 @@ const TimeOut = () => {
         <>
             <NavBar/>
             <Alert>
-                You have been logged out due to inactivity, please Sign in again!
+                You have been logged out due to inactivity, please sign in again!
                 <Link to = "/SignIn">
                     <SignInButton>
-                        SIGN IN
+                        Sign In
                     </SignInButton>
                 </Link>
             </Alert>
@@ -26,14 +26,15 @@ const Alert = styled.div`
     margin: 50px auto;
     text-align: center;
     padding: 50px 20px;
-    background-color: #fad000;
+    background-color: var(--colour-background-grey);
     border-radius: 5px;
 `
 
 const SignInButton = styled.div`
     width: 200px;
     margin: 20px auto 0 auto;
-    background-color: black;
-    color: #fad000;
+    color: white;
+    padding: 10px;
+    background-color: var(--colour-pink-accent);
     border-radius: 5px;
 `
