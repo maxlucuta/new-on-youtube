@@ -4,3 +4,7 @@ knitting,10
 knitting,5
 Khabib,10
 hot air balloons,5
+burnley_football_club,5
+football_skill,5
+monday_night_football,5
+freestyle_football,5

@@ -56,7 +56,6 @@ const Feed = (props: FeedProps) => {
 export default Feed;
 
 const SearchResults = styled.div`
-    width: 60%;
-    border-top: 5px solid black;
+    width: 100%;
     margin: auto;
 `;

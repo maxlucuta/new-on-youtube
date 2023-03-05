@@ -17,6 +17,7 @@ from .utilities.database import add_more_videos_to_queue
 from .utilities.database import delete_database_entry
 from .utilities.database import insert_video
 from .utilities.database import query_random_videos
+from .utilities.database import get_unique_topics
 from .utilities.youtube_scraper_lib.youtube import get_updated_metadata_by_id
 from threading import Thread
 
@@ -125,6 +126,16 @@ def valid_video_response(response, amount):
             return False
     return len(response) <= amount
 
+@request_blueprint.route("/unique_topics", methods=['POST'])
+def unique_topics():
+    """ Retrieves list of unique topics in database.
+    Returns:
+        unique topics: List[str]
+    Raises:
+            HTTPException 400 / 404 / 408 / 417 / 500
+    """
+    response = get_unique_topics()
+    return {'status_code': 200, 'description': 'Ok.', 'topics': response}
 
 @request_blueprint.route("/", methods=['POST'])
 @request_blueprint.route("/home", methods=['POST'])

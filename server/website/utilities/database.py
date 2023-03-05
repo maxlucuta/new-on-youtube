@@ -278,6 +278,22 @@ def db_contains_video(keyword, video_id):
             return True
     return False
 
+def get_unique_topics():
+    """
+    This function retrieves all unique topics currently in the database
+    Return:
+        List[str]: list of unique topics in the database
+    """
+    cql = """SELECT keyword FROM summaries.video_summaries"""
+
+    try:
+        response = website.session.execute(cql).all()
+    except DriverException as exception:
+        print("Database Error:", exception)
+        return []
+
+    return list(set(map(lambda r: r["keyword"], response)))
+
 
 def get_recommended_videos(username, amount):
     """
