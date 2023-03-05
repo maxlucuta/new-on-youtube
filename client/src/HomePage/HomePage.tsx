@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
     const { token, setToken } = useContext(RootContext);
 
+    //TO DO: center content relative to screen / navbar
+
     return (
         <div>
             <div
@@ -21,13 +23,13 @@ const HomePage = () => {
                 <div
                     style={{
                         display: "flex",
-                        width: "max-content",
-                        marginLeft: "20%",
+                        flexWrap: "wrap",
+                        marginLeft: "15%",
                         paddingTop: "75px",
                         paddingBottom: "50px",
                         alignItems: "left",
                     }}>
-                    <div style={{ margin: "20px" }}>
+                    <div style={{ margin: "20px", paddingLeft: "15px", paddingRight: "50px" }}>
                         <Title>New On YouTube</Title>
                         <SubTitle>Daily videos on your favourite topics, <br></br>summarised.</SubTitle>
                         <Text>Harness the power of GPT-3 and use detailed video summaries</Text>
@@ -40,13 +42,13 @@ const HomePage = () => {
                     </div>
 
 
-                    <div style={{ margin: "20px" , width: "500px"}}>
+                    <div style={{ width: "max-content", justifyContent: "left", alignItems: "left" }}>
                         <div><LaptopImage src={laptop}/></div>
                     </div>
                 </div>
             </div>
 
-            <div style={{ marginTop: "100px", marginLeft: "400px" }}>
+            <div style={{ marginTop: "100px", marginLeft: "15%" }}>
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "left" }}>
                     <SubTitle>Finding out what's new on YouTube</SubTitle>
                     <div style={{ display: "flex", flexWrap: "wrap"}}>
@@ -63,7 +65,7 @@ const HomePage = () => {
                         </Panel>
                     </div>
                     <div></div>
-                    <div style={{ display: "flex"}}>
+                    <div style={{ display: "flex", flexWrap: "wrap" }}>
                         <Panel>Recommendations</Panel>
                         <Panel>Feed</Panel>
                     </div>
@@ -129,7 +131,7 @@ const Start = styled.button`
     font-size: 20px;
     font-weight: regular;
     font-family: 'Rubik', sans-serif;
-    background-color: var(--colour-background-grey);
+    background-color: none;
     color: black;
     border-color: #e52b87;
     border-radius: 5px;
@@ -143,6 +145,7 @@ const Start = styled.button`
 `;
 
 const LaptopImage = styled.img`
-    width: 550px;
+    width: 400px;
+    margin-top: 50px;
     filter: drop-shadow(0 0.3rem 0.25rem grey);
 `;
