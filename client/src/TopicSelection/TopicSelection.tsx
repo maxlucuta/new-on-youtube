@@ -4,139 +4,66 @@ import NavBar from "../NavBar/Navbar";
 import topics from "../TopicTags/topicTagsMasterList";
 import { RootContext } from "../context";
 import { tokenToEmail, usePost } from "../functions";
+import SelectorPage from "../SearchPage/SelectorPage";
 
 const TopicSelection = () => {
     const { token } = useContext(RootContext);
-    const [selectedTopics, updateSelectedTopics] = useState([]);
-    const [searchValue, updateSearchValue] = useState("");
-    const [newTopicSelection, updateNewTopicSelection] = useState([] as string[]);
-    const [filtered, updateFiltered] = useState(topics as string[]);
+    const [awaitingUserTopics, updateAwaitingUserTopics] = useState(false);
+    const [userTopics, updateUserTopics] = useState([] as string[]);
+    const [availableTopics, updateAvailableTopics] = useState([] as string[])
     const post = usePost();
 
-    const handleLoadSelectedTopics = async () => {
+    const loadUserTopics = async () => {
+        updateAwaitingUserTopics(true);
         const payload = { username: tokenToEmail(token)};
         const response = await post("/get_user_topics", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else {
-            updateSelectedTopics(response.results);
-            updateNewTopicSelection(response.results);
+            updateUserTopics(response.results);
         }
+        updateAwaitingUserTopics(false);
+    }
+
+    const getAvailableTopics = async () => {
+        const response = (await post("/unique_topics", {}));
+        if (response.status_code != 200) console.log("Request Error!", response)
+        else updateAvailableTopics(response.topics);
     }
 
     useEffect(() => {
-        handleLoadSelectedTopics();
+        loadUserTopics();
+        getAvailableTopics();
     }, []);
 
-    const handleSearchChange = (e: any) => {
-        updateSearchValue(e.target.value);
-        if (e.target.value.length !== 0) {
-            updateFiltered(topics.filter(c => c.startsWith(e.target.value)));
-        } else {
-            updateFiltered(topics);
+    const updateUserTopicsDatabase = async (topics: string[]) => {
+        if (topics.length === 0) {
+            return alert("Please select at least one topic");
         }
-    };
-
-    const handleSelection = (c: string) => {
-        if (!newTopicSelection.includes(c)) {
-            updateNewTopicSelection(newTopicSelection.concat([c]));
-        } else {
-            updateNewTopicSelection(s => s.filter(cat => cat !== c));
-        }
-    };
-
-    const handleNewEntryEnter = (e: any) => {
-        if (e.key != "Enter") return;
-        if (filtered.length !== 0) return;
-        if (true) {
-            updateNewTopicSelection(newTopicSelection.concat([searchValue]));
-            e.target.value = "";
-            updateSearchValue("");
-            updateFiltered(topics);
-        }
-    };
-
-    const handleUpdatedTopics = async () => {
-        if (newTopicSelection.length === 0) {
-            alert("Please select at least one topic");
-            return;
-        }
-        console.log(newTopicSelection)
-        const payload = { username: tokenToEmail(token), topics: newTopicSelection };
+        const payload = { username: tokenToEmail(token), topics };
+        updateAwaitingUserTopics(true);
         const response = await post("/update_user_topics", payload) as any;
         if (response.status_code != 200) {
-            console.log("Request Error!", response)
             alert("Failed to update topics, please try again");
-        } else handleLoadSelectedTopics();
-    };
+        } else loadUserTopics();
+        updateAwaitingUserTopics(false);
+    }
 
     return (
-        <div>
-            <NavBar />
-            <div style={{ marginLeft: "20%" }}>
-                <Title>Your Selected Topics</Title>
-            </div>
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "max-content",
-                    margin: "auto",
-                }}>
-            </div>
-
-            <div style={{ display: "flex", width: "60%", margin: "auto", justifyContent: "left" }}>
-                <Description style={{marginRight: "10px", fontWeight: "500"}}>Topics in your feed:</Description>
-                {selectedTopics.map((r, i) => (
-                    <>
-                    {i !== 0 ? <div style={{fontSize: "20px", margin: "0 10px 0 10px"}}>|</div>: <></>}
-                    <Description>{r}</Description>
-                    </>
-                ))}
-            </div>
-            <TwoPanel>
-                <LeftPanel>
-                    <PanelTitle>Available</PanelTitle>
-                    <SearchBar
-                        placeholder="Search"
-                        onChange={handleSearchChange}
-                        onKeyDown={handleNewEntryEnter}
-                    />
-                    <CategoryContainer>
-                        {searchValue.length !== 0 && (
-                            <Category
-                                selected={newTopicSelection.includes(searchValue)}
-                                onClick={() => handleSelection(searchValue)}>
-                                Add Custom Topic: {searchValue}
-                            </Category>
-                        )}
-                        {filtered.map(c => (
-                            <Category
-                                selected={newTopicSelection.includes(c)}
-                                onClick={() => handleSelection(c)}>
-                                {c}
-                            </Category>
-                        ))}
-                    </CategoryContainer>
-                </LeftPanel>
-                <RightPanel>
-                    <PanelTitle>Selected</PanelTitle>
-                    <CategoryContainer>
-                        {newTopicSelection.map(c => (
-                            <Category selected={true} onClick={() => handleSelection(c)}>
-                                {c}
-                            </Category>
-                        ))}
-                    </CategoryContainer>
-                </RightPanel>
-            </TwoPanel>
-            <SearchButton
-                onClick={handleUpdatedTopics}>
-                Update Topics
-            </SearchButton>
-
+    <div>
+        <NavBar />
+        <div style={{ marginLeft: "10%" }}>
+            <Title>Your Selected Topics</Title>
         </div>
-    );
+        <div style = {{ width: "80%", margin: "auto" }}>
+            <SelectorPage 
+                selection = { userTopics }
+                availableTopics = { availableTopics }
+                updateSelection = { updateUserTopicsDatabase }
+            />
+        </div>
+        {/* { awaitingUserTopics && <div>Loading message goes here!</div> } */}
+    </div>
+    )
 };
 
 export default TopicSelection;

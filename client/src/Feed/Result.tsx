@@ -10,19 +10,25 @@ type ResultProps = {
 
 const Result = (props: ResultProps) => {
 
+    const WEEK = 28*24*3600*1000;
+    const isRecent = Date.now() - Date.parse(props.summary.published_at) < WEEK;
+
     return (
         <Container href = {url(props.summary.video_id)} target = "_blank">
             <Img src={thumbnail(props.summary.video_id)} />
             <MetaData>
+            {isRecent && <Detail>
+                <div style = {{ margin: "10px 0" }}><b>Recently Added!</b></div>
+            </Detail>}
             <Detail>
                 <div style = {{ margin: "10px 0" }}><b>Title</b>: {props.summary.video_title}</div>
             </Detail>
                 <div style = {{ margin: "10px 30px" }}><b>Description</b></div>
                 <Description>{props.summary.summary}</Description>
                 <Detail>
-                 <div style = {{ margin: "10px 0" }}><b>Channel</b>: {props.summary.channel_name}</div>
-                    <div style = {{ margin: "10px 0" }}><b>View Count</b>: {props.summary.views}</div>
-                    <div style = {{ margin: "10px 0" }}><b>Likes</b>: {props.summary.likes}</div>
+                    <div style = {{ margin: "10px 20px 10px 0" }}><b>Channel</b>: {props.summary.channel_name}</div>
+                    <div style = {{ margin: "10px 20px 10px 0" }}><b>View Count</b>: {props.summary.views}</div>
+                    <div style = {{ margin: "10px 20px 10px 0" }}><b>Likes</b>: {props.summary.likes}</div>
                 </Detail>
             </MetaData>
             
@@ -33,6 +39,7 @@ export default Result;
 
 const Container = styled.a`
     display: flex;
+    align-items: center;
     text-decoration: none;
     color: black;
     padding: 10px;
@@ -50,7 +57,7 @@ const Container = styled.a`
 
 const Img = styled.img`
     border-radius: 10px;
-    width: 50%;
+    height: 200px;
 `;
 
 const MetaData = styled.div`
@@ -58,6 +65,7 @@ const MetaData = styled.div`
 `;
 
 const Detail = styled.div`
+    display: flex;
     margin-left: 30px;
 `;
 

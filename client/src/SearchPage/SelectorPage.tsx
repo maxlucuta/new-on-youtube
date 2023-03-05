@@ -7,10 +7,7 @@ import topics from "../TopicTags/topicTagsMasterList";
 type SelectorPageProps = {
     availableTopics: string[]
     selection: string[];
-    updateSelection: Dispatch<SetStateAction<string[]>>;
-    updateSearchResults: Dispatch<SetStateAction<Summary[]>>;
-    updateMode: Dispatch<SetStateAction<"SELECTION" | "RESULTS">>;
-    handleSubmission: () => void;
+    updateSelection: (v: string[]) => void;
 }
 
 const SelectorPage = (props: SelectorPageProps) => {
@@ -30,7 +27,7 @@ const SelectorPage = (props: SelectorPageProps) => {
         if (!props.selection.includes(c)) {
             props.updateSelection(props.selection.concat([c]));
         } else {
-            props.updateSelection(s => s.filter(cat => cat !== c));
+            props.updateSelection(props.selection.filter(cat => cat !== c));
         }
     };
 
@@ -44,11 +41,6 @@ const SelectorPage = (props: SelectorPageProps) => {
             updateFiltered(topics);
         }
     };
-
-    const submitAndShowResults = () => {
-        props.handleSubmission();
-        props.updateMode("RESULTS");
-    }
 
     return (
         <>
@@ -93,17 +85,6 @@ const SelectorPage = (props: SelectorPageProps) => {
                     </CategoryContainer>
                 </RightPanel>
             </TwoPanel>
-            { 
-                props.selection.length > 0
-                    ? <SearchButton
-                        onClick={submitAndShowResults}>
-                        Search videos
-                    </SearchButton>
-                    : <NoSearchButton>
-                        Please make selection
-                    </NoSearchButton>
-            }
-            
         </>
     );
 };
@@ -189,36 +170,5 @@ const SelectedCategory = styled.button<{ selected: boolean }>`
     }
 `;
 
-const SearchButton = styled.div`
-    width: 50%;
-    margin: 50px auto;
-    font-size: 20px;
-    text-align: center;
-    background-color: black;
-    color: white;
-    border-style: none;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 20px;
-    font-weight: regular;
-    font-family: 'Rubik', sans-serif;
-    &:hover {
-        cursor: pointer;
-        transform: scale(1.1);
-    }
-`;
 
-const NoSearchButton = styled.div`
-    width: 50%;
-    margin: 50px auto;
-    font-size: 20px;
-    text-align: center;
-    background-color: grey;
-    color: black;
-    border-style: none;
-    border-radius: 5px;
-    padding: 10px;
-    font-weight: regular;
-    font-family: 'Rubik', sans-serif;
-`;
 

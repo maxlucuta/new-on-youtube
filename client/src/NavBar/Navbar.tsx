@@ -78,13 +78,14 @@ const BarNav = styled.div`
     justify-content: flex-start;
     align-items: center;
     margin-left: 15%;
-    padding-top: 10px
+    padding-top: 20px;
     background-color: none;
 
 `;
 const NavBarItemContainer = styled.div`
     display: flex;
     flex-direction: row;
+    align-items: center;
 `;
 
 const NavBarItems = styled.div`

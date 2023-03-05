@@ -57,7 +57,7 @@ const FeedPage = () => {
             </div>
             {noResults ? mode === "Recommended" && <div style={{textAlign: "center"}}>Please watch at least one video to receive recommendations</div> : <div></div>}
             {noResults ? mode !== "Recommended" && <div style={{textAlign: "center"}}>Generating videos, please wait a few minutes</div> : <div></div>}
-            <div>
+            <div style = {{ width: "80%", margin: "auto" }}>
                 <Feed results={searchResults} />
             </div>
         </div>

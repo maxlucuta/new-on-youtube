@@ -8,3 +8,8 @@ burnley_football_club,5
 football_skill,5
 monday_night_football,5
 freestyle_football,5
+ferrari_f1,5
+ferrari_enzo,5
+ferrari_360,5
+ferrari_laferrari,5
+coding_interview,5

@@ -21,6 +21,7 @@ const SearchPage = () => {
         const response = (await axios.post(SERVER_URL + "/request", payload)).data;
         if (response.status_code != 200) console.log("Request Error!", response)
         else updateSearchResults(response.results);
+        updateMode("RESULTS")
     };
 
     const getAvailableTopics = async () => {
@@ -39,14 +40,23 @@ const SearchPage = () => {
                 <Title>Find Videos</Title>
             {
                 mode === "SELECTION"
-                    ? <SelectorPage 
-                        availableTopics = { availableTopics }
-                        selection = { selection }
-                        updateSelection = { updateSelection }
-                        updateSearchResults = { updateSearchResults }
-                        updateMode = { updateMode }
-                        handleSubmission = { handleSubmission }
-                    />
+                    ? <>
+                        <SelectorPage 
+                            availableTopics = { availableTopics }
+                            selection = { selection }
+                            updateSelection = { updateSelection }
+                        />
+                        { 
+                            selection.length > 0
+                                ? <SearchButton
+                                    onClick={handleSubmission}>
+                                    Search videos
+                                </SearchButton>
+                                : <NoSearchButton>
+                                    Please make selection
+                                </NoSearchButton>
+                        }
+                    </>
                     : <ResultsPage
                         updateMode = { updateMode }
                         updateSelection = { updateSelection }
@@ -75,5 +85,38 @@ const Title = styled.div`
     font-weight: 600;
     font-family: 'Rubik', sans-serif;
     margin-top: 50px;
+`;
+
+const SearchButton = styled.div`
+    width: 50%;
+    margin: 50px auto;
+    font-size: 20px;
+    text-align: center;
+    background-color: black;
+    color: white;
+    border-style: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: regular;
+    font-family: 'Rubik', sans-serif;
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+    }
+`;
+
+const NoSearchButton = styled.div`
+    width: 50%;
+    margin: 50px auto;
+    font-size: 20px;
+    text-align: center;
+    background-color: grey;
+    color: black;
+    border-style: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: regular;
+    font-family: 'Rubik', sans-serif;
 `;
 
