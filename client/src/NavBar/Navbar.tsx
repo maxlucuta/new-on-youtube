@@ -28,7 +28,7 @@ const NavBar = () => {
             
                         <Link to="/Search">
                             <NavBarItem>Search</NavBarItem>
-                        </Link>
+                        </Link> 
         
                         {token && (
                             <Link to={token ? "/Feed" : "/"}>
