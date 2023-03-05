@@ -45,13 +45,14 @@ const NavBar = () => {
                                 <NavBarItem>Register</NavBarItem>
                             </Link>
                         )}
-                        {token && <SignedInIcon>Signed in as: {tokenToEmail(token)}</SignedInIcon>}
+                        {/* Removed sign in text for now. Replace with icon with info tooltip on hover?*/}
+                        {/*{token && <SignedInIcon>Signed in as: {tokenToEmail(token)}</SignedInIcon>}*/}
                     </NavBarItemContainer>
                 </NavBarItems>
-                <div style={{marginRight: "15%"}}>
+                <div style={{marginRight: "15%", paddingTop: "10px"}}>
                 <Link to={token ? "/" : "/SignIn"}>
                     <SignInOutButton onClick={token ? signOut : function(){}} style={{ cursor: "pointer" }}>
-                        <Item>{token ? "Sign Out" : "Sign In"}</Item>
+                        {token ? "Sign Out" : "Sign In"}
                     </SignInOutButton>  
                 </Link>
                 </div>
@@ -77,14 +78,16 @@ const BarNav = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin-left: 15%;
+    margin: auto;
     padding-top: 10px
     background-color: none;
+    width: 70%;
 
 `;
 const NavBarItemContainer = styled.div`
     display: flex;
     flex-direction: row;
+    align-items: center;
 `;
 
 const NavBarItems = styled.div`
@@ -115,14 +118,17 @@ const Item = styled.div`
     font-family: 'Rubik', sans-serif;
     transition: 0.5s;
     &:hover {
-        text-decoration: underline;
+        color: white;
     }
 `;
 
 const SignInOutButton = styled.button`
     display: flex;
     flex-direction: flex-end;
-    color: black;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Rubik', sans-serif;
     margin-right: 15%;
     width: max-content;
     background-color: none;
@@ -130,10 +136,9 @@ const SignInOutButton = styled.button`
     border-radius: 5px;
     transition: 0.5s;
     &:hover {
-        color: white;
         background-color: var(--colour-pink-accent);
-        cursor: pointer;
-        transform: scale(1.0);
+        color: white;
+        cursor: pointer;    
     }
 `;
 

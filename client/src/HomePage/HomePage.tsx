@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { RootContext } from "../context";
 import styled from "styled-components";
-import laptop from "../assets/laptop.png";
+import heroImage from "../assets/logoColour.png";
 import nlpIcon from "../assets/nlpClear.png";
 import choiceIcon from "../assets/choiceClear.png";
 import NavBar from "../NavBar/Navbar";
@@ -10,48 +10,42 @@ import { Link } from "react-router-dom";
 const HomePage = () => {
     const { token, setToken } = useContext(RootContext);
 
-    //TO DO: center content relative to screen / navbar
-
     return (
         <div>
             <div
                 style={{
-                    backgroundColor: "var(--colour-background-grey)",
+                    backgroundColor: "var(--colour-background-grey)", 
+                    paddingBottom: "5px",
                     textAlign: "left",
+                    minWidth: "100%"
                 }}>
                 <NavBar />
-                <div
-                    style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        marginLeft: "15%",
-                        paddingTop: "75px",
-                        paddingBottom: "50px",
-                        alignItems: "left",
-                    }}>
-                    <div style={{ margin: "20px", paddingLeft: "15px", paddingRight: "50px" }}>
-                        <Title>New On YouTube</Title>
-                        <SubTitle>Daily videos on your favourite topics, <br></br>summarised.</SubTitle>
-                        <Text>Harness the power of GPT-3 and use detailed video summaries</Text>
-                        <Text>to find what interests you, faster.</Text>
-                        <br></br>
-                        <Text>No promotions. No marketing. Just content.</Text>
-                        <Link to={token ? "/Feed" : "/Register"}>
-                            {token ? <Start>Go To Video Feed</Start> : <Start>Register Now</Start> }
-                        </Link>
-                    </div>
+                <Container>
+                    <HeroBox>
+                        <div style={{ margin: "10px", paddingRight: "50px" }}>
+                            <Title>New On YouTube</Title>
+                            <SubTitle>Daily videos on your favourite topics, <br></br>summarised.</SubTitle>
+                            <Text>Harness the power of GPT-3 and use detailed video summaries</Text>
+                            <Text>to find what interests you, faster.</Text>
+                            <br></br>
+                            <Text>No promotions. No marketing. Just content.</Text>
+                            <Link to={token ? "/Feed" : "/Register"}>
+                                {token ? <Start>Go To Video Feed</Start> : <Start>Register Now</Start> }
+                            </Link>
+                        </div>
 
 
-                    <div style={{ width: "max-content", justifyContent: "left", alignItems: "left" }}>
-                        <div><LaptopImage src={laptop}/></div>
-                    </div>
-                </div>
+                        <div style={{ width: "max-content" }}>
+                            <div><LogoImage  src={heroImage}/></div>
+                        </div>
+                    </HeroBox>
+                </Container>
             </div>
 
-            <div style={{ marginTop: "100px", marginLeft: "15%" }}>
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "left" }}>
+            <Container>
+                <div style={{ display: "flex", flexDirection: "column" }}>
                     <SubTitle>Finding out what's new on YouTube</SubTitle>
-                    <div style={{ display: "flex", flexWrap: "wrap"}}>
+                    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "left"}}>
                         <Panel>
                             <PanelIcon src={choiceIcon}/>
                             <PanelTitle>Choose your topics</PanelTitle>
@@ -65,17 +59,31 @@ const HomePage = () => {
                         </Panel>
                     </div>
                     <div></div>
-                    <div style={{ display: "flex", flexWrap: "wrap" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap" , justifyContent: "left"}}>
                         <Panel>Recommendations</Panel>
                         <Panel>Feed</Panel>
                     </div>
                 </div>
-            </div>
+            </Container>
         </div>
     );
 };
 
 export default HomePage;
+
+const Container = styled.div`
+    width: 70%;
+    margin: 50px auto;
+`;
+
+const HeroBox = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 10px;
+`;
+
+    
 
 const Title = styled.div`
     padding-bottom: 10px;
@@ -147,5 +155,13 @@ const Start = styled.button`
 const LaptopImage = styled.img`
     width: 400px;
     margin-top: 50px;
+    margin-right: 150px;
+    filter: drop-shadow(0 0.3rem 0.25rem grey);
+`;
+
+const LogoImage = styled.img`
+    width: 250px;
+    margin-top: 50px;
+    margin-right: 350px;
     filter: drop-shadow(0 0.3rem 0.25rem grey);
 `;
