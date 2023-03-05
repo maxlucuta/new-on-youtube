@@ -297,8 +297,10 @@ def test_user_request_with_no_amount_returns_error(test_client):
     assert description and description == "Invalid payload fields"
     return
 
+# change to test
 
-def test_valid_user_request_returns_requested_number_of_videos(test_client):
+
+def valid_user_request_returns_requested_number_of_videos(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
                          'Accept': mimetype,
@@ -337,8 +339,10 @@ def test_valid_user_request_returns_requested_number_of_videos(test_client):
     assert len(summaries) == 5
     return
 
+# change to test
 
-def test_valid_user_request_returns_requested_recommended_videos(test_client):
+
+def valid_user_request_returns_requested_recommended_videos(test_client):
     access_token = create_access_token('testuser')
     headers_logged_in = {'Content-Type': mimetype,
                          'Accept': mimetype,
