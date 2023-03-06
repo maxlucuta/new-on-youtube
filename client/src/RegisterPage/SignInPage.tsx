@@ -60,14 +60,14 @@ const SignInPage = () => {
                                 placeholder="Enter Email"
                                 onChange={handleEmailChange}
                             />
-                            {userDoesNotExist ? <div>Username not found, please try again</div> : <div></div>}
+                            {userDoesNotExist ? <MessageText>Username not found, please try again</MessageText> : <p></p>}
                             <FormInput
                                 type="password"
                                 name="password"
                                 placeholder="Enter Password"
                                 onChange={e => handlePasswordChange(e)}
                             />
-                            {invalidPassword ? <div>Invalid password, please try again</div> : <div></div>}
+                            {invalidPassword ? <MessageText>Invalid password, please try again</MessageText> : <p></p>}
                         </RegForm>
 
 
@@ -76,9 +76,9 @@ const SignInPage = () => {
                             onClick={handleSubmit}>
                             SIGN IN
                         </SubmitButton>
-                        <RegisterText>Don't have an account yet?&nbsp;&nbsp;
+                        <MessageText>Don't have an account yet?&nbsp;&nbsp;
                             <Link to="/Register" style={{color: "var(--colour-pink-accent"}}>Register</Link>
-                        </RegisterText>
+                        </MessageText>
                         <Division data-content="OR"/>
                     </div>
                 </RegFrame>
@@ -89,7 +89,7 @@ const SignInPage = () => {
 
 export default SignInPage;
 
-const RegisterText = styled.p`
+const MessageText = styled.p`
     font-size: 12px;
     font-weight: 300;
     font-family: 'Rubik', sans-serif;
@@ -98,7 +98,7 @@ const RegisterText = styled.p`
 const SubmitButton = styled.button<{ active: boolean }>`
     padding: 15px;
     width: 90%;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 10px;
     background-color: var(--colour-pink-accent);
     color: white;
@@ -144,17 +144,13 @@ const RegForm = styled.form`
 const FormInput = styled.input`
     padding: 12px;
     width: 80%;
-    margin: 15px;
+    margin: 8px;
     border: 1px solid grey;
     border-radius: 3px;
     outline: none;  
     font-size: 15px;
     font-weight: 300;
     font-family: 'Rubik', sans-serif
-    &:focus {
-        border-color: red;
-        outline: 0;
-    };
 `;
 
 const LogoImage = styled.img`
