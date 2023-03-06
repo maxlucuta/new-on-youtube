@@ -107,7 +107,9 @@ class YouTubeScraperFactory:
         duration = metadata["duration"]
         if video_id in self.videos or not dc.occupied_fields(metadata, 9):
             return False
-        if db_contains_video(topic, video_id) or not self._check_video_duration(duration):
+        if db_contains_video(topic, video_id):
+            return False
+        if not self._check_video_duration(duration):
             return False
         return True
 
@@ -121,20 +123,35 @@ class YouTubeScraperFactory:
         Returns:
             bool: True if a valid transcript exists, False otherwise.
             Will rotate proxies if IP gets blocked.
+
+        Raises:
+            Exception: if there are no more proxies available
         """
 
         if not response or response == "404":
             return False
         if response == "blocked":
-            proxy = self.proxy_service.get()
-            if not proxy:
+            if not self._rotate_proxies():
                 raise Exception
-            print(f"Proxy rotated to: {proxy}", flush=True)
-            self.metadata_scraper.rotate_proxy(proxy)
-            self.transcript_scraper.rotate_proxy(proxy)
             return False
         return True
-    
+
+    def _rotate_proxies(self) -> bool:
+        """Rotates proxies for all scrapers.
+
+        Returns:
+            bool: True if successfull, false if there are
+            no more proxies available.
+        """
+
+        proxy = self.proxy_service.get()
+        if not proxy:
+            return False
+        print(f"Proxy rotated to: {proxy}", flush=True)
+        self.metadata_scraper.rotate_proxy(proxy)
+        self.transcript_scraper.rotate_proxy(proxy)
+        return True
+
     def _check_video_duration(self, duration: str) -> bool:
         """Checks if the duration of the video is between 1 min
            and 7 min.

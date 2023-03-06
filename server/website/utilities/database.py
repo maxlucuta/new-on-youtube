@@ -278,6 +278,7 @@ def db_contains_video(keyword, video_id):
             return True
     return False
 
+
 def get_unique_topics():
     """
     This function retrieves all unique topics currently in the database

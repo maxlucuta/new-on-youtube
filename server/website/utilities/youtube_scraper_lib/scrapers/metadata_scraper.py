@@ -133,7 +133,11 @@ class MetaDataScraper(YouTubeScraper):
             result = query.result()['result']
             for response in result:
                 yield self._process_query(response)
-            if not query.next():
+            try:
+                if not query.next():
+                    break
+            except Exception:
+                print("IP has been blocked!", flush=True)
                 break
 
     def _process_query(self, result: dict[str, str]) -> dict[str, str]:
@@ -172,9 +176,5 @@ class MetaDataScraper(YouTubeScraper):
                     "video_tags": self.get_keywords(result['link']),
                     "duration": result['duration']
                     }
-        
+
         return metadata
-    
-
-
-
