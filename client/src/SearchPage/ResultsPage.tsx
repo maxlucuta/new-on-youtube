@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 import { Summary } from "../types";
 import Feed from "../Feed/Feed";
+import refresh from "../assets/refresh.png";
 
 type ResultsPageProps = {
     updateMode: Dispatch<SetStateAction<"SELECTION" | "RESULTS">>;
@@ -15,7 +16,7 @@ const ResultsPage = (props: ResultsPageProps) => {
 
     return (
         <>
-            <div style = {{ display: "flex", marginBottom: "20px" }}>
+            <div style={{ display: "flex", marginBottom: "20px" }}>
                 <NewSearchButton
                     onClick={() => {
                         props.updateMode("SELECTION")
@@ -25,7 +26,7 @@ const ResultsPage = (props: ResultsPageProps) => {
                     New Search
                 </NewSearchButton>
                 <RefreshButton onClick={props.handleSubmission}>
-                    Refresh
+                    <RefreshIcon src={refresh} />
                 </RefreshButton>
             </div>
             {/*  add loading logic */}
@@ -72,5 +73,11 @@ const RefreshButton = styled.div`
     &:hover {
         cursor: pointer;
         transform: scale(1.1);
+    }
+`;
+
+
+const RefreshIcon = styled.img`
+    width: 75px;
     }
 `;
