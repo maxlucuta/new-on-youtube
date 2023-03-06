@@ -12,13 +12,18 @@ html {
   --colour-background-darker-grey: #b0b0b0;
   --colour-pink-accent: #e9156c;
   --colour-dark-purple: #2d1871;
+  --colour-light-purple: #7f1579;
+  --colour-mauve: #aa145e;
+  --colour-dark-orange: #f04c27;
+  --colour-light-orange: #f88c0e;
+  --colour-yellow: #ffbc01;
 }
 
 body {
   margin: 0;
   padding: 0;
   min-height: 100%;
-}
+} 
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

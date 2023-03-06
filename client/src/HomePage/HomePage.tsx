@@ -4,6 +4,8 @@ import styled from "styled-components";
 import heroImage from "../assets/logoColour.png";
 import nlpIcon from "../assets/nlpClear.png";
 import choiceIcon from "../assets/choiceClear.png";
+import recommendIcon from "../assets/recommend.png";
+import feedIcon from "../assets/filmReel.png";
 import NavBar from "../NavBar/Navbar";
 import { Link } from "react-router-dom";
 
@@ -49,19 +51,28 @@ const HomePage = () => {
                         <Panel>
                             <PanelIcon src={choiceIcon}/>
                             <PanelTitle>Choose your topics</PanelTitle>
-                            <Text>Choose something from our comprehensive library of topics or customise your own.</Text>
+                            <Text>Choose the topics that interest you from our library of topics, or customise your own. Whatever the topic, we can fetch the videos.</Text>
                         </Panel>
 
                         <Panel>
                             <PanelIcon src={nlpIcon}/>
                             <PanelTitle>Generate Summaries</PanelTitle>
-                            <Text>We process the transcripts of your videos to give you a clear written summary of the full video, in plain English.</Text>
+                            <Text>We process the transcripts of your videos with GPT-3 to give you a clear written summary of the full video, in plain English.</Text>
                         </Panel>
                     </div>
                     <div></div>
                     <div style={{ display: "flex", flexWrap: "wrap" , justifyContent: "left"}}>
-                        <Panel>Recommendations</Panel>
-                        <Panel>Feed</Panel>
+                        <Panel>
+                            <PanelIcon src={feedIcon}/>
+                            <PanelTitle>Browse your feed</PanelTitle>
+                            <Text>Your feed will be updated with the latest and most popular YouTube videos for the topics you selected. Check back regularly to enjoy more new videos.</Text>
+                        </Panel>
+                        <Panel>
+                            <PanelIcon src={recommendIcon}/>
+                            <PanelTitle>Get recommendations</PanelTitle>
+                            <Text>Watch the videos you like and we'll add videos on similar topics to your recommendations with every click. So you can always find something new.</Text>
+                        </Panel>
+                        
                     </div>
                 </div>
             </Container>
