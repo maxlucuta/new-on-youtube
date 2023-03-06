@@ -8,6 +8,7 @@ Date: 19. Januar 2023
 """
 import os
 import random
+import string
 from cassandra.cluster import Cluster, DriverException
 from cassandra.protocol import SyntaxException
 from cassandra.auth import PlainTextAuthProvider
@@ -243,7 +244,7 @@ def add_videos_to_queue(topics):
     Returns:
         void
     """
-    topics = clean_topics(topics)
+    topics = convert_topic_for_generalisation(topics)
     publisher = Publisher()
     for topic in topics:
         cql = "SELECT * FROM summaries.video_summaries WHERE keyword = %s"
@@ -253,7 +254,7 @@ def add_videos_to_queue(topics):
 
 
 def add_more_videos_to_queue(topic, number):
-    topic = clean_topics([topic])[0]
+    topic = convert_topic_for_generalisation([topic])[0]
     publisher = Publisher()
     publisher.create_task(topic, str(number))
 
@@ -271,7 +272,7 @@ def db_contains_video(keyword, video_id):
     """
     cql = """SELECT video_id FROM summaries.video_summaries
             WHERE keyword = %s"""
-    keyword = clean_topics([keyword])[0]
+    keyword = convert_topic_for_generalisation([keyword])[0]
     response = website.session.execute(cql, (keyword,)).all()
     for video in response:
         if video['video_id'] == video_id:
@@ -293,7 +294,9 @@ def get_unique_topics():
         print("Database Error:", exception)
         return []
 
-    return list(set(map(lambda r: r["keyword"], response)))
+    return list(set(map(lambda r:
+                        convert_topic_for_readability(r["keyword"]),
+                        response)))
 
 
 def get_recommended_videos(username, amount):
@@ -357,7 +360,7 @@ def query_videos(topics, amount, sort_by):
 
     """
     amount = int(amount)
-    topics = clean_topics(topics)
+    topics = convert_topic_for_generalisation(topics)
     cql = """SELECT keyword, likes, video_title, published_at, video_id,
              summary, views, channel_name FROM summaries.video_summaries
              WHERE keyword IN ("""
@@ -401,7 +404,7 @@ def insert_video(video_dict):
 
     """
 
-    keyword = clean_topics([video_dict["keyword"]])[0]
+    keyword = convert_topic_for_generalisation([video_dict["keyword"]])[0]
     views = video_dict["views"]
     likes = video_dict["likes"]
     video_name = video_dict["video_name"]
@@ -438,8 +441,14 @@ def insert_video(video_dict):
     return True
 
 
-def clean_topics(topics):
+def convert_topic_for_generalisation(topics):
     return [topic.lower().replace(" ", "_") for topic in topics]
+
+
+def convert_topic_for_readability(topic):
+    topic = topic.replace("_", " ")
+    topic = string.capwords(topic)
+    return topic
 
 
 def clean_summary(summary):
