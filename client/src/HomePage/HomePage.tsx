@@ -119,7 +119,7 @@ const Text = styled.div`
 
 const Panel = styled.div`
     width: 400px;
-    height: 300px;
+    height: max-content;
     margin: 20px;
     padding: 30px;
     background-color: var(--colour-background-grey);
