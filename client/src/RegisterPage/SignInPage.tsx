@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { RootContext } from "../context";
 import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
+import logo from "../assets/logoColour.png";
+import { Link } from "react-router-dom";
 
 const SignInPage = () => {
     const [username, updateUsername] = useState("");
@@ -46,9 +48,11 @@ const SignInPage = () => {
         <div className="signup_background">
             <NavBar />
             <PageFrame>
+            
                 <RegFrame>
+                    <LogoImage src={logo} />
+                    <Title>Sign in to your account</Title>
                     <div style={{ textAlign: "center" }}>
-                        <Title>Sign in</Title>
                         <RegForm>
                             <FormInput
                                 type="email"
@@ -72,6 +76,10 @@ const SignInPage = () => {
                             onClick={handleSubmit}>
                             SIGN IN
                         </SubmitButton>
+                        <RegisterText>Don't have an account yet?&nbsp;&nbsp;
+                            <Link to="/Register" style={{color: "var(--colour-pink-accent"}}>Register</Link>
+                        </RegisterText>
+                        <Division data-content="OR"/>
                     </div>
                 </RegFrame>
             </PageFrame>
@@ -81,20 +89,25 @@ const SignInPage = () => {
 
 export default SignInPage;
 
+const RegisterText = styled.p`
+    font-size: 12px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif;
+`
+
 const SubmitButton = styled.button<{ active: boolean }>`
-    padding: 12px 30px;
-    width: 65%;
-    margin: 40px;
-    background-color: black;
-    opacity: ${props => (props.active ? "1" : "0.2")};
+    padding: 15px;
+    width: 90%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    background-color: var(--colour-pink-accent);
     color: white;
     font-weight: bold;
     border: none;
     outline: none;
-    border-radius: 5px;
+    border-radius: 3px;
     &:hover {
-        cursor: ${props => (props.active ? "pointer" : "not-allowed")};
-        background-color: ${props => (props.active ? "#e52b87" : "black")};
+        cursor: pointer;
     }
 `;
 
@@ -102,7 +115,7 @@ const Title = styled.div`
     text-align: center;
     padding-top: 30px;
     padding-bottom: 15px;
-    font-size: 25px;
+    font-size: 30px;
     font-weight: 500;
     font-family: 'Rubik', sans-serif;
 `;
@@ -111,24 +124,18 @@ const PageFrame = styled.div`
     display: flex;
     justify-content: center;
     width: 80%;
-    max-height: 100vh;
     padding-top: 75px;
-    padding-left: 10%;
-    padding-right: 10%;
     margin: 0 auto 0 auto;
 `;
 
-// RegFrame after back-col -> background-image: ${smoke};
 const RegFrame = styled.div`
     display: flex;
     flex-direction: column;
-    background-color: #f0f0f1;
+    align-items: center;
+    background-color: none;
     width: 75%;
-    border-radius: 3px;
-    margin-bottom: 40px;
-    filter: drop-shadow(0 0.3rem 0.25rem grey);
-    opacity: 1;
 `;
+
 const RegForm = styled.form`
     background-color: none;
     border-radius: 10px;
@@ -136,13 +143,52 @@ const RegForm = styled.form`
 
 const FormInput = styled.input`
     padding: 12px;
-    width: 65%;
+    width: 80%;
     margin: 15px;
-    border: 1px solid black;
-    outline: none;
-    border-radius: 5px;
-    background-color: #f0f0f1;
+    border: 1px solid grey;
+    border-radius: 3px;
+    outline: none;  
     font-size: 15px;
     font-weight: 300;
-    font-family: 'Rubik', sans-serif;
+    font-family: 'Rubik', sans-serif
+    &:focus {
+        border-color: red;
+        outline: 0;
+    };
+`;
+
+const LogoImage = styled.img`
+    width: 75px;
+    margin-top: 50px;
+`;
+
+const Division = styled.hr`
+    line-height: 1em;
+    position: relative;
+    outline: 0;
+    border: 0;
+    color: black;
+    text-align: center;
+    height: 1.5em;
+    opacity: .5;
+    &:before {
+        content: '';
+        background: grey;
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 1px;
+        }
+    &:after {
+        content: attr(data-content);
+        position: relative;
+        display: inline-block;
+        color: black;
+
+        padding: 0 .5em;
+        line-height: 1.5em;
+        color: #818078;
+        background-color: #fcfcfa;
+        }
 `;
