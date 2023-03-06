@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { RootContext } from "../context";
 import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
-import "./signin.css";
 
 const SignInPage = () => {
     const [username, updateUsername] = useState("");
