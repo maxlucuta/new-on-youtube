@@ -25,6 +25,7 @@ class MetaDataScraper(YouTubeScraper):
                 "likes" -> number of likes at the curretn date
                 "video_tags" -> associated keywords for the video
                 "duration" -> length of the video
+                "visible" -> public or private video
 
             proxy (dict[str, str], optional): proxies for scraping
         """
@@ -174,7 +175,27 @@ class MetaDataScraper(YouTubeScraper):
                     "views": self.get_views(result['link'], self.proxy),
                     "likes": self.get_likes(result['link'], self.proxy),
                     "video_tags": self.get_keywords(result['link']),
-                    "duration": result['duration']
+                    "duration": result['duration'],
+                    "visible": self._video_is_public(result['link'])
                     }
 
         return metadata
+
+    def _video_is_public(self, url: str) -> bool:
+        """Checks if a video is public or private.
+
+        Args:
+            url (str): url of the video
+
+        Returns:
+            bool: True if the video is public, false if
+            it is private
+        """
+
+        try:
+            response = requests.get(url, timeout=50, proxies=self.proxy)
+            if "Private video" in response.text:
+                return False
+            return True
+        except TimeoutError:
+            return False

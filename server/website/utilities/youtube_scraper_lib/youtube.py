@@ -105,9 +105,10 @@ class YouTubeScraperFactory:
         video_id = metadata["video_id"]
         topic = metadata["keyword"]
         duration = metadata["duration"]
-        if video_id in self.videos or not dc.occupied_fields(metadata, 9):
+        visible = metadata["visible"]
+        if video_id in self.videos or not dc.occupied_fields(metadata, 10):
             return False
-        if db_contains_video(topic, video_id):
+        if db_contains_video(topic, video_id) or not visible:
             return False
         if not self._check_video_duration(duration):
             return False
@@ -167,7 +168,7 @@ class YouTubeScraperFactory:
         time = duration.split(":")
         if len(time) > 2:
             return False
-        return 60 < (int(time[-1]) + int(time[-2]) * 60) <= 420
+        return 60 < (int(time[-1]) + int(time[-2]) * 60) <= 300
 
     def _remove_failed_summaries(self):
         """Removes entries in self.result that do not have a valid
@@ -206,7 +207,8 @@ def get_most_popular_video_transcripts_by_topic(
               "views",
               "likes",
               "video_tags",
-              "duration"]
+              "duration",
+              "visible"]
 
     proxy_service = Proxy(["GB"], rand=True, website="https://youtube.com")
     proxy = proxy_service.get()
