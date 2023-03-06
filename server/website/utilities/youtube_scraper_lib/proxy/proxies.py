@@ -19,6 +19,7 @@ class Proxy:
         self.website = website
         self.proxy = None
         self.host = None
+        self.used = set()
 
     def rotate(self):
         """Rotates proxies when called, assumed to be called only if
@@ -31,12 +32,15 @@ class Proxy:
         while True:
             try:
                 proxy_server = self.proxy_server.get()
+                if proxy_server in self.used:
+                    continue
                 proxy = proxy_server.split("//")
                 request_proxy = {proxy[0][:-1]: proxy[1]}
                 res = requests.get(self.website, request_proxy, timeout=10)
                 if res.status_code == 200:
                     self.proxy = request_proxy
                     self.host = proxy_server
+                    self.used.add(proxy_server)
                     break
             except TimeoutError:
                 continue
@@ -52,9 +56,8 @@ class Proxy:
             dict[str, str]: http/https proxy in requests format
         """
 
-        if not self.proxy:
-            self.rotate()
-            self.set_env()
+        self.rotate()
+        self.set_env()
         return self.proxy
 
     def set_env(self):

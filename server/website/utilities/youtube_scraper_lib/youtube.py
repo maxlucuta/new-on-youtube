@@ -168,7 +168,7 @@ class YouTubeScraperFactory:
         time = duration.split(":")
         if len(time) > 2:
             return False
-        return 60 < (int(time[-1]) + int(time[-2]) * 60) <= 300
+        return (int(time[-1]) + int(time[-2]) * 60) > 60
 
     def _remove_failed_summaries(self):
         """Removes entries in self.result that do not have a valid
