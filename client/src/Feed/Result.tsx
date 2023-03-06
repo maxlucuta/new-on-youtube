@@ -10,8 +10,8 @@ type ResultProps = {
 
 const Result = (props: ResultProps) => {
 
-    const WEEK = 28*24*3600*1000;
-    const isRecent = Date.now() - Date.parse(props.summary.published_at) < WEEK;
+    const THREE_DAYS = 3*24*3600*1000;
+    const isRecent = Date.now() - Date.parse(props.summary.published_at) < THREE_DAYS;
 
     const { token } = useContext(RootContext);
     const post = usePost();
@@ -27,9 +27,9 @@ const Result = (props: ResultProps) => {
         <Container onClick={() => handleWatchVideo(props.summary)} href = {url(props.summary.video_id)} target = "_blank">
             <Img src={thumbnail(props.summary.video_id)} />
             <MetaData>
-            {isRecent && <Detail>
+            {isRecent && <RecentlyAdded>
                 <div style = {{ margin: "10px 0" }}><b>Recently Added!</b></div>
-            </Detail>}
+            </RecentlyAdded>}
             <Detail>
                 <div style = {{ margin: "10px 0" }}><b>Title</b>: {props.summary.video_title}</div>
             </Detail>
@@ -37,8 +37,9 @@ const Result = (props: ResultProps) => {
                 <Description>{props.summary.summary}</Description>
                 <Detail>
                     <div style = {{ margin: "10px 20px 10px 0" }}><b>Channel</b>: {props.summary.channel_name}</div>
-                    <div style = {{ margin: "10px 20px 10px 0" }}><b>View Count</b>: {props.summary.views}</div>
+                    <div style = {{ margin: "10px 20px 10px 0" }}><b>Views</b>: {props.summary.views}</div>
                     <div style = {{ margin: "10px 20px 10px 0" }}><b>Likes</b>: {props.summary.likes}</div>
+                    <div style = {{ margin: "10px 20px 10px 0" }}><b>Uploaded on</b>: {props.summary.published_at}</div>
                 </Detail>
             </MetaData>
 
@@ -77,6 +78,12 @@ const MetaData = styled.div`
 const Detail = styled.div`
     display: flex;
     margin-left: 30px;
+`;
+
+const RecentlyAdded = styled.div`
+    display: flex;
+    margin-left: 30px;
+    color: ${"#e52b87"};
 `;
 
 const Description = styled.div`

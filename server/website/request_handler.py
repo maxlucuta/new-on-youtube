@@ -126,6 +126,7 @@ def valid_video_response(response, amount):
             return False
     return len(response) <= amount
 
+
 @request_blueprint.route("/unique_topics", methods=['POST'])
 def unique_topics():
     """ Retrieves list of unique topics in database.
@@ -136,6 +137,7 @@ def unique_topics():
     """
     response = get_unique_topics()
     return {'status_code': 200, 'description': 'Ok.', 'topics': response}
+
 
 @request_blueprint.route("/", methods=['POST'])
 @request_blueprint.route("/home", methods=['POST'])
