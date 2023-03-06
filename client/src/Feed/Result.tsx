@@ -17,6 +17,7 @@ const Result = (props: ResultProps) => {
     const post = usePost();
 
     const handleWatchVideo = (summary: Summary) => {
+        console.log("Updating user watched videos")
         if (token) {
             const payload = { username: tokenToEmail(token), keyword: summary.keyword, video_id: summary.video_id };
             post("/update_user_watched_videos", payload);
