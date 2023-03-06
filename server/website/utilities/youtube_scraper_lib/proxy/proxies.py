@@ -34,8 +34,7 @@ class Proxy:
                 proxy_server = self.proxy_server.get()
                 if proxy_server in self.used:
                     continue
-                proxy = proxy_server.split("//")
-                request_proxy = {proxy[0][:-1]: proxy[1]}
+                request_proxy = {"http" : proxy_server}
                 res = requests.get(self.website, request_proxy, timeout=10)
                 if res.status_code == 200:
                     self.proxy = request_proxy
