@@ -1,9 +1,9 @@
-import axios from "axios";
-import { useEffect } from "react";
 import styled from "styled-components";
-import { thumbnail, url } from "../functions";
+import { useContext } from "react";
+import { tokenToEmail, thumbnail, url, usePost } from "../functions";
 import { Summary } from "../types";
 
+import { RootContext } from "../context";
 type ResultProps = {
     summary: Summary;
 };
@@ -13,8 +13,18 @@ const Result = (props: ResultProps) => {
     const WEEK = 28*24*3600*1000;
     const isRecent = Date.now() - Date.parse(props.summary.published_at) < WEEK;
 
+    const { token } = useContext(RootContext);
+    const post = usePost();
+
+    const handleWatchVideo = (summary: Summary) => {
+        if (token) {
+            const payload = { username: tokenToEmail(token), keyword: summary.keyword, video_id: summary.video_id };
+            post("/update_user_watched_videos", payload);
+        }
+    };
+
     return (
-        <Container href = {url(props.summary.video_id)} target = "_blank">
+        <Container onClick={() => handleWatchVideo(props.summary)} href = {url(props.summary.video_id)} target = "_blank">
             <Img src={thumbnail(props.summary.video_id)} />
             <MetaData>
             {isRecent && <Detail>
@@ -31,7 +41,7 @@ const Result = (props: ResultProps) => {
                     <div style = {{ margin: "10px 20px 10px 0" }}><b>Likes</b>: {props.summary.likes}</div>
                 </Detail>
             </MetaData>
-            
+
         </Container>
     );
 };
@@ -61,7 +71,7 @@ const Img = styled.img`
 `;
 
 const MetaData = styled.div`
-    
+
 `;
 
 const Detail = styled.div`
