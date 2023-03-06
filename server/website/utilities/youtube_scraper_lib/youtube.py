@@ -56,7 +56,10 @@ class YouTubeScraperFactory:
 
         response = self.metadata_scraper.execute()
         while len(self.result) < self.amount:
-            metadata = next(response)
+            try:
+                metadata = next(response)
+            except StopIteration:
+                break
             self.metadata_cleaner.full_clean(metadata)
             if self._check_metadata_status(metadata):
                 video_id = metadata["video_id"]
@@ -101,9 +104,10 @@ class YouTubeScraperFactory:
 
         video_id = metadata["video_id"]
         topic = metadata["keyword"]
-        if video_id in self.videos or not dc.occupied_fields(metadata, 8):
+        duration = metadata["duration"]
+        if video_id in self.videos or not dc.occupied_fields(metadata, 9):
             return False
-        if db_contains_video(topic, video_id):
+        if db_contains_video(topic, video_id) or not self._check_video_duration(duration):
             return False
         return True
 
@@ -130,6 +134,23 @@ class YouTubeScraperFactory:
             self.transcript_scraper.rotate_proxy(proxy)
             return False
         return True
+    
+    def _check_video_duration(self, duration: str) -> bool:
+        """Checks if the duration of the video is between 1 min
+           and 7 min.
+
+        Args:
+            duration (str): Duration of the video in hh:mm:ss
+
+        Returns:
+            bool: true if the video is within range, false if it
+            exceeds the range
+        """
+
+        time = duration.split(":")
+        if len(time) > 2:
+            return False
+        return 60 < (int(time[-1]) + int(time[-2]) * 60) <= 420
 
     def _remove_failed_summaries(self):
         """Removes entries in self.result that do not have a valid
@@ -140,6 +161,7 @@ class YouTubeScraperFactory:
         for data in self.result:
             if "summary" in data:
                 del data['transcript']
+                del data['duration']
                 response.append(data)
         self.result = response
 
@@ -166,7 +188,8 @@ def get_most_popular_video_transcripts_by_topic(
               "published_at",
               "views",
               "likes",
-              "video_tags"]
+              "video_tags",
+              "duration"]
 
     proxy_service = Proxy(["GB"], rand=True, website="https://youtube.com")
     proxy = proxy_service.get()

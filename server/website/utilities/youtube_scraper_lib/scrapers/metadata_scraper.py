@@ -1,7 +1,7 @@
 from .youtube_scraper import YouTubeScraper
 from youtubesearchpython import (
     Video,
-    VideoDurationFilter,
+    SearchMode,
     CustomSearch,
 )
 import requests
@@ -24,6 +24,7 @@ class MetaDataScraper(YouTubeScraper):
                 "views" -> number of views at the current date
                 "likes" -> number of likes at the curretn date
                 "video_tags" -> associated keywords for the video
+                "duration" -> length of the video
 
             proxy (dict[str, str], optional): proxies for scraping
         """
@@ -126,13 +127,14 @@ class MetaDataScraper(YouTubeScraper):
             Generator[dict[str, str]]: current metadata scraped from a page
         """
 
-        query = CustomSearch(self.topic, VideoDurationFilter.short,
+        query = CustomSearch(self.topic, SearchMode.videos,
                              language=language, region=region, limit=limit)
         while True:
             result = query.result()['result']
             for response in result:
                 yield self._process_query(response)
-            query.next()
+            if not query.next():
+                break
 
     def _process_query(self, result: dict[str, str]) -> dict[str, str]:
         """Helper method to extract relevant metadata.
@@ -167,6 +169,12 @@ class MetaDataScraper(YouTubeScraper):
                     "published_at": result['publishedTime'],
                     "views": self.get_views(result['link'], self.proxy),
                     "likes": self.get_likes(result['link'], self.proxy),
-                    "video_tags": self.get_keywords(result['link'])
+                    "video_tags": self.get_keywords(result['link']),
+                    "duration": result['duration']
                     }
+        
         return metadata
+    
+
+
+
