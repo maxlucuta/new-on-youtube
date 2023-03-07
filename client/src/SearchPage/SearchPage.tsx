@@ -16,7 +16,7 @@ type SelectOption = {
 const SearchPage = () => {
     const [selection, updateSelection] = useState([] as string[]);
     const [searchResults, updateSearchResults] = useState([] as Summary[]);
-    const [availableTopics, updateAvailableTopics] = useState([] as SelectOption[])
+    const [availableTopics, updateAvailableTopics] = useState([] as string[])
     const [mode, updateMode] = useState("SELECTION" as "SELECTION" | "RESULTS")
     const { SERVER_URL } = useContext(RootContext);
 
@@ -31,7 +31,7 @@ const SearchPage = () => {
     const getAvailableTopics = async () => {
         const response = (await axios.post(SERVER_URL + "/unique_topics", {})).data;
         if (response.status_code != 200) console.log("Request Error!", response)
-        else updateAvailableTopics(response.topics.map((t: string) => { return {value: t, label: t} }));
+        else updateAvailableTopics(response.topics);
     }
 
     useEffect(() => { getAvailableTopics(); }, [])
@@ -51,7 +51,7 @@ const SearchPage = () => {
                     ? <>
                         <div style = {{ marginTop: "20px" }}>
                             <Select 
-                                options = {availableTopics} 
+                                options = {availableTopics.map(t => { return {value: t, label: t} })} 
                                 isClearable=  {true} 
                                 isSearchable = {true} 
                                 isMulti = {true} 

@@ -5,6 +5,12 @@ import topics from "../TopicTags/topicTagsMasterList";
 import { RootContext } from "../context";
 import { tokenToEmail, usePost } from "../functions";
 import SelectorPage from "../SearchPage/SelectorPage";
+import Select, { ActionMeta, MultiValue } from "react-select";
+
+type SelectOption = {
+    label: string;
+    value: string;
+}
 
 const TopicSelection = () => {
     const { token } = useContext(RootContext);
@@ -48,6 +54,10 @@ const TopicSelection = () => {
         updateAwaitingUserTopics(false);
     }
 
+    const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
+        updateUserTopicsDatabase(newValue.map(nv => nv.value));
+    }
+
     return (
     <div>
         <NavBar />
@@ -55,11 +65,17 @@ const TopicSelection = () => {
             <Title>Your Selected Topics</Title>
         </div>
         <div style = {{ width: "80%", margin: "auto" }}>
-            <SelectorPage 
-                selection = { userTopics }
-                availableTopics = { availableTopics }
-                updateSelection = { updateUserTopicsDatabase }
-            />
+            <div style = {{ marginTop: "20px" }}>
+                <Select 
+                    value = {userTopics.map(t => { return { label: t, value: t }})}
+                    options = {availableTopics.map(t => { return { label: t, value: t }})} 
+                    isClearable=  {true} 
+                    isSearchable = {true} 
+                    isMulti = {true} 
+                    onChange = {handleChange}
+                    isLoading = { awaitingUserTopics }
+                />
+            </div>
         </div>
         {/* { awaitingUserTopics && <div>Loading message goes here!</div> } */}
     </div>
