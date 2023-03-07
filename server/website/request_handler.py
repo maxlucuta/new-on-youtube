@@ -278,24 +278,29 @@ def update_user_watched_videos():
     return {'status_code': 200, 'description': 'Ok.'}
 
 
-@request_blueprint.route("/update_me_daddy", methods=['GET'])
+@request_blueprint.route("/update_me", methods=['GET'])
 def initiate_database_update_job():
     """Hidden endpoint for running data update jobs, this method
        will fetch a number of entires from the database and update
        them with the latest metadata.
     """
 
-    thread = Thread(target=run_update_job)
-    thread.start()
+    videos = request.args.get("videos")
+    if videos.isdigit():
+        thread = Thread(target=run_update_job(int(videos)))
+        thread.start()
     return {'status_code': 200, 'description': 'Ok.'}
 
 
-def run_update_job():
+def run_update_job(videos: int):
     """Executes database update job, this is run on a seperate thread
        to prevent HTTP GET response timeout errors.
+
+       Args:
+            videos (int): number of videos to update.
     """
 
-    to_update = query_random_videos(200)
+    to_update = query_random_videos(videos)
     for response in to_update:
         get_newest_data = get_updated_metadata_by_id(response['video_id'])
         if not get_newest_data:
