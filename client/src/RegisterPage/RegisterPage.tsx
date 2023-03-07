@@ -1,10 +1,15 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router";
+import Select, { ActionMeta, MultiValue } from "react-select";
 import styled from "styled-components";
 import { RootContext } from "../context";
 import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
-import topics from "../TopicTags/topicTagsMasterList";
+
+type SelectOption = {
+    label: string;
+    value: string;
+}
 
 const RegisterPage = () => {
     const [username, updateUsername] = useState("");
@@ -13,7 +18,8 @@ const RegisterPage = () => {
     const [userAlreadyExists, updateUserAlreadyExists] = useState(false);
     const [passwordTooShort, updatePasswordTooShort] = useState(false);
     const [searchBarValue, updateSearchBarValue] = useState("");
-    const [filteredTopicSelection, updateFilteredTopicSelection] = useState(topics as string[]);
+    // const [filteredTopicSelection, updateFilteredTopicSelection] = useState(topics as string[]);
+    const [availableTopics, updateAvailableTopics] = useState([] as string[]);
     const [selectedTopics, updateSelectedTopics] = useState([] as string[]);
     const { token, setToken } = useContext(RootContext);
     const navigate = useNavigate();
@@ -29,14 +35,14 @@ const RegisterPage = () => {
         updatePasswordTooShort(false);
     };
 
-    const handleSearchBar = (e: any) => {
-        updateSearchBarValue(e.target.value);
-        if (e.target.value.length !== 0) {
-            updateFilteredTopicSelection(topics.filter(c => c.startsWith(e.target.value)));
-        } else {
-            updateFilteredTopicSelection(topics);
-        }
-    };
+    // const handleSearchBar = (e: any) => {
+    //     updateSearchBarValue(e.target.value);
+    //     if (e.target.value.length !== 0) {
+    //         updateFilteredTopicSelection(topics.filter(c => c.startsWith(e.target.value)));
+    //     } else {
+    //         updateFilteredTopicSelection(topics);
+    //     }
+    // };
 
     const handleSelectedTopics = (c: string) => {
         if (!selectedTopics.includes(c)) {
@@ -46,6 +52,19 @@ const RegisterPage = () => {
         }
         console.log(selectedTopics)
     };
+    const getAvailableTopics = async () => {
+        const response = (await post("/unique_topics", {}));
+        if (response.status_code != 200) console.log("Request Error!", response)
+        else updateAvailableTopics(response.topics);
+    }
+
+    useEffect(() => {
+        getAvailableTopics();
+    }, []);
+
+    const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
+        updateSelectedTopics(newValue.map(nv => nv.value));
+    }
 
     const handleSubmit = async () => {
         if (password1.length < 8) {
@@ -61,7 +80,6 @@ const RegisterPage = () => {
         if (message === "no topics selected") alert("Please select at least one topic");
         if (message === "successfully added and logged in") {
             setToken(res.token);
-            navigate("/Feed");
         }
         if (message === "unrecognised error") alert("Registration unsuccessful, please try again")
     };
@@ -69,7 +87,7 @@ const RegisterPage = () => {
     const validPassword = password1.length > 7 && password1 === password2;
     const passwordsMatch = password1 === password2;
 
-    if (token !== "") return <Navigate replace to="/" />
+    if (token !== "") return <Navigate replace to="/Feed" />;
 
     return (
         <div>
@@ -131,7 +149,17 @@ const RegisterPage = () => {
                 <RightFrame>
                     <VerticalFrame>
                         <Title style={{ textAlign: "left" }}>Select the topics that interest you</Title>
-                        <SearchBar
+
+                        <div style = {{ marginTop: "20px" }}>
+                            <Select 
+                                options = {availableTopics.map(t => { return {value: t, label: t} })} 
+                                isClearable=  {true} 
+                                isSearchable = {true} 
+                                isMulti = {true} 
+                                onChange = {handleChange}
+                            />
+                        </div>
+                        {/* <SearchBar
                             placeholder="Search"
                             onChange={handleSearchBar}
                         />
@@ -150,7 +178,7 @@ const RegisterPage = () => {
                                     {c}
                                 </SelectionCategory>
                             ))}
-                        </SelectionContainer>
+                        </SelectionContainer> */}
                     </VerticalFrame>
                     <VerticalFrame>
 
