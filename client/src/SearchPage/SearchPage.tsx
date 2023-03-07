@@ -2,17 +2,21 @@ import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
 import { Summary } from "../types";
-import topics from "../TopicTags/topicTagsMasterList";
 import axios from "axios";
 import { RootContext } from "../context";
-import Feed from "../Feed/Feed";
 import SelectorPage from "./SelectorPage";
 import ResultsPage from "./ResultsPage";
+import Select, { ActionMeta, MultiValue } from 'react-select'
+
+type SelectOption = {
+    label: string;
+    value: string;
+}
 
 const SearchPage = () => {
     const [selection, updateSelection] = useState([] as string[]);
     const [searchResults, updateSearchResults] = useState([] as Summary[]);
-    const [availableTopics, updateAvailableTopics] = useState([] as string[])
+    const [availableTopics, updateAvailableTopics] = useState([] as SelectOption[])
     const [mode, updateMode] = useState("SELECTION" as "SELECTION" | "RESULTS")
     const { SERVER_URL } = useContext(RootContext);
 
@@ -27,10 +31,14 @@ const SearchPage = () => {
     const getAvailableTopics = async () => {
         const response = (await axios.post(SERVER_URL + "/unique_topics", {})).data;
         if (response.status_code != 200) console.log("Request Error!", response)
-        else updateAvailableTopics(response.topics);
+        else updateAvailableTopics(response.topics.map((t: string) => { return {value: t, label: t} }));
     }
 
     useEffect(() => { getAvailableTopics(); }, [])
+
+    const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
+        updateSelection(newValue.map(nv => nv.value));
+    }
 
     return (
         
@@ -41,11 +49,16 @@ const SearchPage = () => {
             {
                 mode === "SELECTION"
                     ? <>
-                        <SelectorPage 
-                            availableTopics = { availableTopics }
-                            selection = { selection }
-                            updateSelection = { updateSelection }
-                        />
+                        <div style = {{ marginTop: "20px" }}>
+                            <Select 
+                                options = {availableTopics} 
+                                isClearable=  {true} 
+                                isSearchable = {true} 
+                                isMulti = {true} 
+                                onChange = {handleChange}
+                            />
+                        </div>
+                        
                         { 
                             selection.length > 0
                                 ? <SearchButton
