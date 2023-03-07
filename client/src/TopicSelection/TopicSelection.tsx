@@ -73,7 +73,7 @@ const TopicSelection = () => {
                     isSearchable = {true} 
                     isMulti = {true} 
                     onChange = {handleChange}
-                    isLoading = { awaitingUserTopics }
+                    isLoading = { awaitingUserTopics } 
                 />
             </div>
         </div>
