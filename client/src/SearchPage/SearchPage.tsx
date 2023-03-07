@@ -8,6 +8,7 @@ import { RootContext } from "../context";
 import Feed from "../Feed/Feed";
 import SelectorPage from "./SelectorPage";
 import ResultsPage from "./ResultsPage";
+import Select from 'react-select'
 
 const SearchPage = () => {
     const [selection, updateSelection] = useState([] as string[]);
@@ -32,12 +33,57 @@ const SearchPage = () => {
 
     useEffect(() => { getAvailableTopics(); }, [])
 
+    const options = [
+        { value: 'chocolate', label: 'Chocolate' },
+        { value: 'strawberry', label: 'Strawberry' },
+        { value: 'vanilla', label: 'Vanilla' },
+        ];
+
+    const styles = {
+        option: (provided: any, state: any) => ({
+            ...provided,
+            fontWeight: state.isSelected ? "bold" : "normal",
+            fontSize: state.selectProps.myFontSize
+        })
+        };
+        
+
     return (
         
         <div>
             <NavBar />
             <Container>
+                <div style={{display: "flex", borderBottom: "2px solid black"}}>
                 <Title>Find Videos</Title>
+                <div style={{width: "60%", paddingLeft: "50px", marginTop: "65px"}}>
+                <Select
+                defaultValue={options[0]}
+                isMulti={true}
+                isSearchable={true}
+                isClearable={true}
+                options={options}
+                styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      borderColor: state.isFocused ? 'grey' : 'black',
+                    }),
+                    container: (baseStyles, state) => ({
+                        ...baseStyles,
+                        borderColor: state.isFocused ? 'red' : 'red',
+                      }),
+                  }}
+                  theme={(theme) => ({
+                    ...theme,
+                    borderRadius: 0,
+                    colors: {
+                      ...theme.colors,
+                      primary25: 'grey',
+                      primary: 'var(--colour-pink-accent)',
+                    },
+                })}
+                />
+                </div>
+                </div>
             {
                 mode === "SELECTION"
                     ? <>
@@ -80,7 +126,6 @@ const Container = styled.div`
 
 const Title = styled.div`
     padding-bottom: 10px;
-    border-bottom: 2px solid black;
     font-size: 50px;
     font-weight: 600;
     font-family: 'Rubik', sans-serif;
