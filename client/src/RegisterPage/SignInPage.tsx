@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router";
 import styled from "styled-components";
 import { RootContext } from "../context";
@@ -38,11 +38,10 @@ const SignInPage = () => {
             updateUserDoesNotExist(false);
         } else if (message === "logged in") {
             setToken(res.token);
-            navigate("/Feed");
         }
     };
 
-    if (token !== "") return <Navigate replace to="/" />;
+    if (token !== "") return <Navigate replace to="/Feed" />;
 
     return (
         <div className="signup_background">
