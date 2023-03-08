@@ -5,6 +5,7 @@ import Feed from "../Feed/Feed";
 import { tokenToEmail, usePost } from "../functions";
 import { Summary } from "../types";
 import { RootContext } from "../context";
+import refresh from "../assets/refresh.png";
 
 const FeedPage = () => {
     const { token } = useContext(RootContext);
@@ -14,7 +15,7 @@ const FeedPage = () => {
     const post = usePost();
 
     const handleRequest = async (sort_by_mode: String | ((prevState: String) => String)) => {
-        const payload = { username: tokenToEmail(token), amount: 20, sort_by: sort_by_mode};
+        const payload = { username: tokenToEmail(token), amount: 20, sort_by: sort_by_mode };
         const response = await post("/user_request", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else updateResults(response.results);
@@ -41,23 +42,23 @@ const FeedPage = () => {
                 }}>
                 {modes.map((m, i) => (
                     <>
-                        {i !== 0 ? <div style={{fontSize: "30px", margin: "0 20px 0 20px"}}>|</div>: <></>}
-                        <FeedSelector selected={mode === m} onClick={() => {updateMode(m); handleRequest(m);}}>
+                        {i !== 0 ? <div style={{ fontSize: "30px", margin: "0 20px 0 20px" }}>|</div> : <></>}
+                        <FeedSelector selected={mode === m} onClick={() => { updateMode(m); handleRequest(m); }}>
                             {m}
                         </FeedSelector>
                     </>
                 ))}
                 <RefreshButton
-                    style={{display: "flex", margin: "0 20px 0 20px"}}
+                    style={{ display: "flex", margin: "0 20px 0 20px" }}
                     onClick={() => {
                         handleRequest(mode);
                     }}>
-                    Refresh
+                    <div><RefreshIcon src={refresh} /></div>
                 </RefreshButton>
             </div>
-            {noResults && mode === "Recommended" && <div style={{textAlign: "center", color: "grey"}}>Please watch at least one video to receive recommendations</div>}
-            {noResults && mode !== "Recommended" && <div style={{textAlign: "center", color: "grey"}}>Generating videos, please wait a few minutes</div>}
-            <div style = {{ width: "80%", margin: "auto" }}>
+            {noResults && mode === "Recommended" && <div style={{ textAlign: "center", color: "grey" }}>Please watch at least one video to receive recommendations</div>}
+            {noResults && mode !== "Recommended" && <div style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</div>}
+            <div style={{ width: "80%", margin: "auto" }}>
                 <Feed results={searchResults} />
             </div>
         </div>
@@ -92,7 +93,7 @@ const RefreshButton = styled.div`
     margin: 40px 0 0 40px;
     font-size: 20px;
     text-align: center;
-    background-color: #f0f0f1;
+    
     color: black;
     border-style: none;
     border-radius: 5px;
@@ -105,3 +106,8 @@ const RefreshButton = styled.div`
         transform: scale(1.1);
     }
 `;
+
+const RefreshIcon = styled.img`
+    width: 30px;
+    margin-top: 10px;
+    `
