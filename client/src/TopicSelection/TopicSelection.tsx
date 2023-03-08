@@ -1,11 +1,10 @@
 import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
-import topics from "../TopicTags/topicTagsMasterList";
 import { RootContext } from "../context";
 import { tokenToEmail, usePost } from "../functions";
-import SelectorPage from "../SearchPage/SelectorPage";
-import Select, { ActionMeta, MultiValue } from "react-select";
+import { ActionMeta, MultiValue } from "react-select";
+import Creatable from 'react-select/creatable'
 
 type SelectOption = {
     label: string;
@@ -58,6 +57,10 @@ const TopicSelection = () => {
         updateUserTopicsDatabase(newValue.map(nv => nv.value));
     }
 
+    const handleNewOption = (newOption: string) => {
+        updateUserTopicsDatabase(userTopics.concat([newOption]));
+    }
+
     return (
     <div>
         <NavBar />
@@ -66,7 +69,7 @@ const TopicSelection = () => {
         </div>
         <div style = {{ width: "80%", margin: "auto" }}>
             <div style = {{ marginTop: "20px" }}>
-                <Select 
+                <Creatable 
                     value = {userTopics.map(t => { return { label: t, value: t }})}
                     options = {availableTopics.map(t => { return { label: t, value: t }})} 
                     isClearable=  {true} 
@@ -74,6 +77,8 @@ const TopicSelection = () => {
                     isMulti = {true} 
                     onChange = {handleChange}
                     isLoading = { awaitingUserTopics } 
+                    onCreateOption = {handleNewOption}
+                    isDisabled = {userTopics.length == 0}
                 />
             </div>
         </div>

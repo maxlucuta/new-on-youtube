@@ -4,9 +4,9 @@ import NavBar from "../NavBar/Navbar";
 import { Summary } from "../types";
 import axios from "axios";
 import { RootContext } from "../context";
-import SelectorPage from "./SelectorPage";
 import ResultsPage from "./ResultsPage";
-import Select, { ActionMeta, MultiValue } from 'react-select'
+import { ActionMeta, MultiValue } from 'react-select'
+import Creatable from 'react-select/creatable'
 
 type SelectOption = {
     label: string;
@@ -40,6 +40,10 @@ const SearchPage = () => {
         updateSelection(newValue.map(nv => nv.value));
     }
 
+    const handleNewOption = (newOption: string) => {
+        updateSelection(s => s.concat([newOption]));
+    }
+
     return (
         
         <div>
@@ -50,12 +54,14 @@ const SearchPage = () => {
                 mode === "SELECTION"
                     ? <>
                         <div style = {{ marginTop: "20px" }}>
-                            <Select 
+                            <Creatable 
+                                value = {selection.map(t => { return {value: t, label: t} })}
                                 options = {availableTopics.map(t => { return {value: t, label: t} })} 
                                 isClearable=  {true} 
                                 isSearchable = {true} 
                                 isMulti = {true} 
                                 onChange = {handleChange}
+                                onCreateOption = {handleNewOption}
                             />
                         </div>
                         
