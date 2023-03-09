@@ -46,7 +46,7 @@ jobs:
           email: jack.pearce22@imperial.ac.uk
 
           #heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_api_key: 39821d29-ff7a-474e-8ae3-6ae7c8268c09
+          heroku_api_key: 2cc0ba59-28db-4782-a164-71b660de0f3a
 
           #heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_app_name: new-on-youtube
