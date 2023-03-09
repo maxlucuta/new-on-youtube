@@ -49,7 +49,7 @@ class TranscriptScraper(YouTubeScraper):
                 youtube_transcript_api.TranscriptsDisabled,
                 youtube_transcript_api.NoTranscriptAvailable):
             response["transcript"] = "404"
-        except youtube_transcript_api.YouTubeRequestFailed:
+        except Exception:
             response["transcript"] = "blocked"
         return response
 
@@ -79,8 +79,8 @@ class TranscriptScraper(YouTubeScraper):
         """
 
         task = "Please summarise this transcript for me in a \
-        few sentences, without using the words 'this transcript': \
-        " + transcript + "\n\nTl;dr"
+        few sentences, without using the words 'this transcript', \
+        be descriptive and go into detail: " + transcript + "\n\nTl;dr"
         summary = summariser(task)
         summary = summary.strip(" :-")
         time.sleep(limiter)
