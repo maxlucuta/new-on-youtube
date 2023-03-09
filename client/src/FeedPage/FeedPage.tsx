@@ -20,8 +20,8 @@ const FeedPage = () => {
         let response = await post("/user_request", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else {
-            while (response.results.length === 0) {
-                await delay(7000);
+            while (response.results.length < 3) {
+                await delay(5000);
                 response = await post("/user_request", payload) as any;
                 console.log("Resent request")
             }
