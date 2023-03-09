@@ -20,7 +20,7 @@ The backend is implemented in Python using Flask
 - Video summaries are generated via OpenAI's ChatGPT-3 API
 - Video transcript retrieval and summarisation tasks are stored and retrieved from Google Pub/Sub
 
-## Developement
+## Development
 
 ### Prerequisites
 - Install the latest version of node.js and the node package manager (npm) on your machine: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
