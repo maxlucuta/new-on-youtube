@@ -47,7 +47,6 @@ const SignInPage = () => {
         <div className="signup_background">
             <NavBar />
             <PageFrame>
-            
                 <RegFrame>
                     <LogoImage src={logo} />
                     <Title>Sign in to your account</Title>
@@ -56,7 +55,7 @@ const SignInPage = () => {
                             <FormInput
                                 type="email"
                                 name="email"
-                                placeholder="Enter Email"
+                                placeholder="Enter Username"
                                 onChange={handleEmailChange}
                             />
                             {userDoesNotExist ? <MessageText>Username not found, please try again</MessageText> : <p></p>}
@@ -69,7 +68,6 @@ const SignInPage = () => {
                             {invalidPassword ? <MessageText>Invalid password, please try again</MessageText> : <p></p>}
                         </RegForm>
 
-
                         <SubmitButton
                             active={password.length > 0 && username.length > 0}
                             onClick={handleSubmit}>
@@ -78,7 +76,6 @@ const SignInPage = () => {
                         <MessageText>Don't have an account yet?&nbsp;&nbsp;
                             <Link to="/Register" style={{color: "var(--colour-pink-accent"}}>Register</Link>
                         </MessageText>
-                        <Division data-content="OR"/>
                     </div>
                 </RegFrame>
             </PageFrame>
@@ -123,7 +120,7 @@ const PageFrame = styled.div`
     display: flex;
     justify-content: center;
     width: 80%;
-    padding-top: 75px;
+    padding-top: 50px;
     margin: 0 auto 0 auto;
 `;
 
@@ -155,35 +152,4 @@ const FormInput = styled.input`
 const LogoImage = styled.img`
     width: 75px;
     margin-top: 50px;
-`;
-
-const Division = styled.hr`
-    line-height: 1em;
-    position: relative;
-    outline: 0;
-    border: 0;
-    color: black;
-    text-align: center;
-    height: 1.5em;
-    opacity: .5;
-    &:before {
-        content: '';
-        background: grey;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        width: 100%;
-        height: 1px;
-        }
-    &:after {
-        content: attr(data-content);
-        position: relative;
-        display: inline-block;
-        color: black;
-
-        padding: 0 .5em;
-        line-height: 1.5em;
-        color: #818078;
-        background-color: #fcfcfa;
-        }
 `;
