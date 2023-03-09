@@ -46,16 +46,16 @@ const NewSearchButton = styled.div`
     color: black;
     border-style: none;
     border-radius: 5px;
-    padding: 8px 8px;
+    padding: 14px 8px 8px 8px;
     font-size: 20px;
-    font-weight: 300;
+    font-weight: regular;
     font-family: 'Rubik', sans-serif;
     &:hover {
         cursor: pointer;
         transform: scale(1.1);
     }
     .button-text {
-        padding-top: 30px; /* adjust top padding to move text down */
+        padding-top: 40px; /* adjust top padding to move text down */
     }
 `;
 
@@ -65,7 +65,7 @@ const RefreshButton = styled.div`
     margin: 40px 0 0 40px;
     font-size: 20px;
     text-align: center;
-    
+
     color: black;
     border-style: none;
     border-radius: 5px;

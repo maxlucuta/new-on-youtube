@@ -136,7 +136,7 @@ const NoSearchButton = styled.div`
     margin: 50px auto;
     font-size: 20px;
     text-align: center;
-    background-color: grey;
+    background-color: #f0f0f1;
     color: black;
     border-style: none;
     border-radius: 5px;
