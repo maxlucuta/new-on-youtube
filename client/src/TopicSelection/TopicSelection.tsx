@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
 import { RootContext } from "../context";
-import { tokenToEmail, usePost } from "../functions";
+import { tokenToEmail, usePost, MAX_TOPICS } from "../functions";
 import { ActionMeta, MultiValue } from "react-select";
 import Creatable from 'react-select/creatable'
 
@@ -54,11 +54,13 @@ const TopicSelection = () => {
     }
 
     const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        updateUserTopicsDatabase(newValue.map(nv => nv.value));
+        if (newValue.length > MAX_TOPICS) alert("Maximum of 20 topics allowed.");
+        else updateUserTopicsDatabase(newValue.map(nv => nv.value));
     }
 
     const handleNewOption = (newOption: string) => {
-        updateUserTopicsDatabase(userTopics.concat([newOption]));
+        if (userTopics.length > MAX_TOPICS - 1) alert("Maximum of 20 topics allowed.");
+        else updateUserTopicsDatabase(userTopics.concat([newOption]));
     }
 
     return (
@@ -69,14 +71,14 @@ const TopicSelection = () => {
         </div>
         <div style = {{ width: "80%", margin: "auto" }}>
             <div style = {{ marginTop: "20px" }}>
-                <Creatable 
+                <Creatable
                     value = {userTopics.map(t => { return { label: t, value: t }})}
-                    options = {availableTopics.map(t => { return { label: t, value: t }})} 
-                    isClearable=  {true} 
-                    isSearchable = {true} 
-                    isMulti = {true} 
+                    options = {availableTopics.map(t => { return { label: t, value: t }})}
+                    isClearable=  {true}
+                    isSearchable = {true}
+                    isMulti = {true}
                     onChange = {handleChange}
-                    isLoading = { awaitingUserTopics } 
+                    isLoading = { awaitingUserTopics }
                     onCreateOption = {handleNewOption}
                     isDisabled = {userTopics.length == 0}
                 />

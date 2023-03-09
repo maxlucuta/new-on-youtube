@@ -7,6 +7,7 @@ import { RootContext } from "../context";
 import ResultsPage from "./ResultsPage";
 import { ActionMeta, MultiValue } from 'react-select'
 import Creatable from 'react-select/creatable'
+import { MAX_TOPICS } from "../functions";
 
 type SelectOption = {
     label: string;
@@ -37,15 +38,17 @@ const SearchPage = () => {
     useEffect(() => { getAvailableTopics(); }, [])
 
     const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        updateSelection(newValue.map(nv => nv.value));
+        if (selection.length > MAX_TOPICS) alert("Maximum of 20 topics allowed.");
+        else updateSelection(newValue.map(nv => nv.value));
     }
 
     const handleNewOption = (newOption: string) => {
-        updateSelection(s => s.concat([newOption]));
+        if (selection.length > MAX_TOPICS - 1) alert("Maximum of 20 topics allowed.");
+        else updateSelection(s => s.concat([newOption]));
     }
 
     return (
-        
+
         <div>
             <NavBar />
             <Container>
@@ -54,18 +57,18 @@ const SearchPage = () => {
                 mode === "SELECTION"
                     ? <>
                         <div style = {{ marginTop: "20px" }}>
-                            <Creatable 
+                            <Creatable
                                 value = {selection.map(t => { return {value: t, label: t} })}
-                                options = {availableTopics.map(t => { return {value: t, label: t} })} 
-                                isClearable=  {true} 
-                                isSearchable = {true} 
-                                isMulti = {true} 
+                                options = {availableTopics.map(t => { return {value: t, label: t} })}
+                                isClearable=  {true}
+                                isSearchable = {true}
+                                isMulti = {true}
                                 onChange = {handleChange}
                                 onCreateOption = {handleNewOption}
                             />
                         </div>
-                        
-                        { 
+
+                        {
                             selection.length > 0
                                 ? <SearchButton
                                     onClick={handleSubmission}>
