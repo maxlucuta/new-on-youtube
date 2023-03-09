@@ -8,6 +8,7 @@ import ResultsPage from "./ResultsPage";
 import { ActionMeta, MultiValue } from 'react-select'
 import Creatable from 'react-select/creatable'
 import { MAX_TOPICS } from "../functions";
+import Spinner from "../spinner";
 
 type SelectOption = {
     label: string;
@@ -89,7 +90,8 @@ const SearchPage = () => {
                         searchResults = { searchResults }
                     />
             }
-            {noResults && mode === "RESULTS" && <div style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</div>}
+            {noResults && mode === "RESULTS" && <Loading style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</Loading>}
+            {noResults && mode === "RESULTS" && <div><Spinner/></div>}
             </Container>
         </div>
     )
@@ -101,6 +103,10 @@ const Container = styled.div`
     width: 80%;
     padding: 10px;
     margin: 20px auto;
+`;
+
+const Loading = styled.div`
+    padding-bottom: 15px;
 `;
 
 const Title = styled.div`

@@ -6,6 +6,7 @@ import { tokenToEmail, usePost } from "../functions";
 import { Summary } from "../types";
 import { RootContext } from "../context";
 import refresh from "../assets/refresh.png";
+import Spinner from "../spinner";
 
 const FeedPage = () => {
     const { token } = useContext(RootContext);
@@ -57,7 +58,8 @@ const FeedPage = () => {
                 </RefreshButton>
             </div>
             {noResults && mode === "Recommended" && <div style={{ textAlign: "center", color: "grey" }}>Please watch at least one video to receive recommendations</div>}
-            {noResults && mode !== "Recommended" && <div style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</div>}
+            {noResults && mode !== "Recommended" && <Loading style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</Loading>}
+            {noResults && mode !== "Recommended" && <div><Spinner/></div>}
             <div style={{ width: "80%", margin: "auto" }}>
                 <Feed results={searchResults} />
             </div>
@@ -74,6 +76,10 @@ const Title = styled.div`
     font-family: 'Rubik', sans-serif;
     margin-left: 20%;
     margin-top: 50px;
+`;
+
+const Loading = styled.div`
+padding-bottom: 15px;
 `;
 
 const FeedSelector = styled.div<{ selected: boolean }>`
@@ -93,7 +99,7 @@ const RefreshButton = styled.div`
     margin: 40px 0 0 40px;
     font-size: 20px;
     text-align: center;
-    
+
     color: black;
     border-style: none;
     border-radius: 5px;
