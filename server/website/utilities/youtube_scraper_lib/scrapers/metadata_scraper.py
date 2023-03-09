@@ -49,7 +49,7 @@ class MetaDataScraper(YouTubeScraper):
                 url, headers={'User-Agent': ''}, timeout=50, proxies=proxy)
             likes = response.text[:response.text.find(' likes"')]
             return likes[likes.rfind('"') + 1:]
-        except TimeoutError:
+        except Exception:
             return ""
 
     @staticmethod
@@ -69,7 +69,7 @@ class MetaDataScraper(YouTubeScraper):
                 url, headers={'User-Agent': ''}, timeout=50,  proxies=proxy)
             views = response.text[:response.text.find(' views"')]
             return views[views.rfind('"') + 1:]
-        except TimeoutError:
+        except Exception:
             return ""
 
     @staticmethod
@@ -196,5 +196,5 @@ class MetaDataScraper(YouTubeScraper):
             if "Private video" in response.text:
                 return False
             return True
-        except TimeoutError:
+        except Exception:
             return False
