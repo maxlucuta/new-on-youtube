@@ -26,6 +26,8 @@ export const useToken = () => {
     return { token, setToken: saveToken };
 };
 
+export const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
 export const tokenToEmail = (token: string) => {
     return (jwt(token) as any).sub
 }

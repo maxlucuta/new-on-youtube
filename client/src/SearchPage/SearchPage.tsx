@@ -7,7 +7,7 @@ import { RootContext } from "../context";
 import ResultsPage from "./ResultsPage";
 import { ActionMeta, MultiValue } from 'react-select'
 import Creatable from 'react-select/creatable'
-import { MAX_TOPICS } from "../functions";
+import { MAX_TOPICS, delay } from "../functions";
 import Spinner from "../spinner";
 
 type SelectOption = {
@@ -26,10 +26,17 @@ const SearchPage = () => {
 
     const handleSubmission = async () => {
         const payload = { topics: selection, amount: 20 };
-        const response = (await axios.post(SERVER_URL + "/request", payload)).data;
+        let response = (await axios.post(SERVER_URL + "/request", payload)).data;
         if (response.status_code != 200) console.log("Request Error!", response)
-        else updateSearchResults(response.results);
-        updateMode("RESULTS")
+        else {
+            updateMode("RESULTS")
+            while (response.results.length === 0) {
+                await delay(7000);
+                response = (await axios.post(SERVER_URL + "/request", payload)).data;
+                console.log("Resent request")
+            }
+            updateSearchResults(response.results);
+        }
     };
 
     const getAvailableTopics = async () => {

@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import styled from "styled-components";
 import NavBar from "../NavBar/Navbar";
 import Feed from "../Feed/Feed";
-import { tokenToEmail, usePost } from "../functions";
+import { tokenToEmail, usePost, delay } from "../functions";
 import { Summary } from "../types";
 import { RootContext } from "../context";
 import refresh from "../assets/refresh.png";
@@ -17,9 +17,16 @@ const FeedPage = () => {
 
     const handleRequest = async (sort_by_mode: String | ((prevState: String) => String)) => {
         const payload = { username: tokenToEmail(token), amount: 20, sort_by: sort_by_mode };
-        const response = await post("/user_request", payload) as any;
+        let response = await post("/user_request", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
-        else updateResults(response.results);
+        else {
+            while (response.results.length === 0) {
+                await delay(7000);
+                response = await post("/user_request", payload) as any;
+                console.log("Resent request")
+            }
+            updateResults(response.results);
+        }
     };
 
     useEffect(() => {
