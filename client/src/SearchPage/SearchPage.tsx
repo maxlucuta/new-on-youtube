@@ -21,6 +21,8 @@ const SearchPage = () => {
     const [mode, updateMode] = useState("SELECTION" as "SELECTION" | "RESULTS")
     const { SERVER_URL } = useContext(RootContext);
 
+    const noResults = searchResults.length === 0;
+
     const handleSubmission = async () => {
         const payload = { topics: selection, amount: 20 };
         const response = (await axios.post(SERVER_URL + "/request", payload)).data;
@@ -87,6 +89,7 @@ const SearchPage = () => {
                         searchResults = { searchResults }
                     />
             }
+            {noResults && mode === "RESULTS" && <div style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</div>}
             </Container>
         </div>
     )
@@ -114,8 +117,8 @@ const SearchButton = styled.div`
     margin: 50px auto;
     font-size: 20px;
     text-align: center;
-    background-color: black;
-    color: white;
+    background-color: #f0f0f1;
+    color: black;
     border-style: none;
     border-radius: 5px;
     padding: 10px;
