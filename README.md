@@ -1,4 +1,4 @@
-# New On YouTube App 
+# New On YouTube App
 
 ## Project brief
 The goal of this project is to streamline video search for users. The project will implement a recommendation engine that allows users to register their interests, and receive a curated list of recommended YouTube videos accompanied by summaries of their contents which are generated from the video transcript by ChatGPT-3. From a technical standpoint, the interface should be simple to use and appealing, and generating recommendations should be reasonably quick. Each user should receive new curated lists based on previous activity, ensuring that the recommendation system improves itself in suggesting videos that are more closely aligned with the users interest.
@@ -26,8 +26,8 @@ The backend is implemented in Python using Flask
 - Install the latest version of node.js and the node package manager (npm) on your machine: https://docs.npmjs.com/downloading-and-installing-node-js-and-npm
 - install python3 and the python package manager, pip https://www.python.org/downloads/
 
-### Starting up the frontend 
-- Navigate to 'client' 
+### Starting up the frontend
+- Navigate to 'client'
 - Use the command 'npm install' to install required node.js packages
 - Use 'npm run start' in your terminal to start the development server
 - The app should now be accessible via http://localhost:3000
