@@ -18,7 +18,7 @@ const App = () => {
     const TEST_DEPLOY = window.location.href.indexOf("new-on-youtube.herokuapp.com") > -1;
 
     const SERVER_URL = PRODUCTION
-        ? "https://newonyoutube.com"
+        ? "https://www.newonyoutube.com"
         : TEST_DEPLOY
         ? "https://new-on-youtube.herokuapp.com"
         : "http://localhost:5000";
