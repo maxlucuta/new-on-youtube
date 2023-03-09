@@ -15,7 +15,7 @@ class Proxy:
             website (str): intended website for proxy use
         """
 
-        self.proxy_server = FreeProxy(region, rand=rand)
+        self.proxy_server = FreeProxy(region, rand=rand, https=True)
         self.website = website
         self.proxy = None
         self.host = None
@@ -34,7 +34,7 @@ class Proxy:
                 proxy_server = self.proxy_server.get()
                 if proxy_server in self.used:
                     continue
-                request_proxy = {"http": proxy_server}
+                request_proxy = {"https": proxy_server}
                 res = requests.get(self.website, request_proxy, timeout=10)
                 if res.status_code == 200:
                     self.proxy = request_proxy

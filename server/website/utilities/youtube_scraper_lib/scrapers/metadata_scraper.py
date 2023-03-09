@@ -1,7 +1,6 @@
 from .youtube_scraper import YouTubeScraper
 from youtubesearchpython import (
     Video,
-    VideoDurationFilter,
     CustomSearch,
 )
 import requests
@@ -128,7 +127,7 @@ class MetaDataScraper(YouTubeScraper):
             Generator[dict[str, str]]: current metadata scraped from a page
         """
 
-        query = CustomSearch(self.topic, VideoDurationFilter.short,
+        query = CustomSearch(self.topic, "EgQQARgD",
                              language=language, region=region, limit=limit)
         while True:
             result = query.result()['result']

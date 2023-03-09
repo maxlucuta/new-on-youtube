@@ -12,7 +12,7 @@ import openai
 
 def summarize_yt_script_with_gpt3(yt_transcript,
                                   temperature=0.7,
-                                  max_tokens=100,
+                                  max_tokens=500,
                                   top_p=1.0,
                                   frequency_penalty=0.5,
                                   presence_penalty=0.5):
