@@ -14,11 +14,14 @@ import TopicSelectionPage from "./TopicSelection/TopicSelection";
 
 const App = () => {
     // conditionally switched to production url in live
-    const PRODUCTION = window.location.href.indexOf("new-on-youtube.herokuapp.com") > -1;
+    const PRODUCTION = window.location.href.indexOf("newonyoutube.com") > -1;
+    const TEST_DEPLOY = window.location.href.indexOf("new-on-youtube.herokuapp.com") > -1;
+
     const SERVER_URL = PRODUCTION
+        ? "https://newonyoutube.com"
+        : TEST_DEPLOY
         ? "https://new-on-youtube.herokuapp.com"
         : "http://localhost:5000";
-
 
     const {token, setToken} = useToken()
 
