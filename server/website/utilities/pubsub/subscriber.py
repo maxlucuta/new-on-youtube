@@ -1,4 +1,5 @@
 from os import environ
+from functools import wraps
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.exceptions import AcknowledgeError
 from ..youtube_scraper_lib.youtube import (
@@ -8,6 +9,19 @@ from ..database import insert_video
 from .logs.message_logger import Logger
 
 SUBSCRIBER_PATH = "projects/new-on-youtube-375417/subscriptions/gpt-tasks-sub"
+
+
+def ignore_ack_errors(func: callable) -> callable:
+    """Wrapper function to supress AcknowledgeError bug in Google PubSub.
+       Prevents long stack trace being shown in logs console."""
+
+    @wraps(func)
+    def inner(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except (AcknowledgeError, ValueError):
+            print("Ack error handled!", flush=True)
+    return inner
 
 
 class Subscriber:
@@ -37,6 +51,7 @@ class Subscriber:
         subscriber = pubsub_v1.SubscriberClient()
         return subscriber
 
+    @ignore_ack_errors
     def callback(self, message: object):
         """Processes pulled message from Subscriber queue and calls
         database methods to insert into DB.
@@ -83,8 +98,6 @@ class Subscriber:
             except TimeoutError:
                 streaming_pull_future.cancel()
                 streaming_pull_future.result()
-            except (AcknowledgeError, ValueError):
-                pass
 
 
 def run_background_task():
