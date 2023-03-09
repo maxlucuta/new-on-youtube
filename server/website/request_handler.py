@@ -252,10 +252,13 @@ def update_user_topics():
     except KeyError:
         return {'status_code': 400,
                 'description': 'Missing payload fields'}
+    current_topics = query_users(username).topics
     if not set_user_topics(username, topics):
         return {'status_code': 500,
                 'description': 'database update failed'}
-    add_videos_to_queue(topics)
+    added_topics = [topic for topic in topics if topic not in current_topics]
+    if added_topics:
+        add_videos_to_queue(added_topics)
     return {'status_code': 200, 'description': 'Ok.'}
 
 
