@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 
 export const thumbnail = (id: string) => "https://img.youtube.com/vi/" + id + "/hqdefault.jpg";
 export const url = (id: string) => "http://www.youtube.com/watch?v=" + id;
+export const MAX_TOPICS = 20;
 
 export const useToken = () => {
     const getToken = () => {

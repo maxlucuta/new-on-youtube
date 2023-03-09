@@ -3,7 +3,7 @@ import { useNavigate, Navigate } from "react-router";
 import Select, { ActionMeta, MultiValue } from "react-select";
 import styled from "styled-components";
 import { RootContext } from "../context";
-import { usePost } from "../functions";
+import { usePost, MAX_TOPICS } from "../functions";
 import NavBar from "../NavBar/Navbar";
 
 type SelectOption = {
@@ -63,7 +63,8 @@ const RegisterPage = () => {
     }, []);
 
     const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        updateSelectedTopics(newValue.map(nv => nv.value));
+        if (newValue.length > MAX_TOPICS) alert("Maximum of 20 topics allowed.");
+        else updateSelectedTopics(newValue.map(nv => nv.value));
     }
 
     const handleSubmit = async () => {
@@ -151,11 +152,12 @@ const RegisterPage = () => {
                         <Title style={{ textAlign: "left" }}>Select the topics that interest you</Title>
 
                         <div style = {{ marginTop: "20px" }}>
-                            <Select 
-                                options = {availableTopics.map(t => { return {value: t, label: t} })} 
-                                isClearable=  {true} 
-                                isSearchable = {true} 
-                                isMulti = {true} 
+                            <Select
+                                value = {selectedTopics.map(t => { return {value: t, label: t} })}
+                                options = {availableTopics.map(t => { return {value: t, label: t} })}
+                                isClearable=  {true}
+                                isSearchable = {true}
+                                isMulti = {true}
                                 onChange = {handleChange}
                             />
                         </div>
