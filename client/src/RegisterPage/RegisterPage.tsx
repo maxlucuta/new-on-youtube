@@ -139,7 +139,7 @@ const RegisterPage = () => {
                             />
                             {userAlreadyExists
                                 ? username.length > 0 && <MessageText>That username is already in use, please try a different username</MessageText>
-                                : <p></p>}
+                                : <p style={{margin: "0", padding: "0"}}></p>}
                             <FormInput
                                 type="password"
                                 name="password"
@@ -152,8 +152,8 @@ const RegisterPage = () => {
                                 placeholder="Confirm Password"
                                 onChange={e => handlePasswordChange(e, 1)}
                             />
-                            {passwordTooShort ? <MessageText>Password must be at least 8 characters</MessageText> : <p></p>}
-                            {!passwordsMatch ? <MessageText>Passwords do not match</MessageText> : <p></p>}
+                            {passwordTooShort ? <MessageText>Password must be at least 8 characters</MessageText> : <p style={{margin: "0", padding: "0"}}></p>}
+                            {!passwordsMatch ? <MessageText>Passwords do not match</MessageText> : <p style={{margin: "0", padding: "0"}}></p>}
                         </RegForm>
 
                         
@@ -179,7 +179,7 @@ export default RegisterPage;
 const SubmitButton = styled.button<{ active: boolean }>`
     padding: 15px;
     width: 70%;
-    margin-top: 10px;
+    margin-top: 25px;
     margin-bottom: 10px;
     background-color: var(--colour-pink-accent);
     color: white;
@@ -202,7 +202,7 @@ const Title = styled.div`
 `;
 
 const MessageText = styled.p`
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 300;
     font-family: 'Rubik', sans-serif;
 `;
@@ -230,7 +230,7 @@ const RegForm = styled.form`
 const FormInput = styled.input`
     padding: 12px;
     width: 60%;
-    margin: 8px;
+    margin: 12px;
     border: 1px solid grey;
     border-radius: 3px;
     outline: none;  

@@ -86,7 +86,7 @@ const SignInPage = () => {
 export default SignInPage;
 
 const MessageText = styled.p`
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 300;
     font-family: 'Rubik', sans-serif;
 `
