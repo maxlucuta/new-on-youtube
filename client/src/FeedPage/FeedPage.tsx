@@ -20,8 +20,6 @@ const FeedPage = () => {
         let response = await post("/user_request", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else {
-            console.log(sort_by_mode)
-            console.log(sort_by_mode !== "Recommended")
             while (response.results.length < 3 && sort_by_mode !== "Recommended" && token) {
                 await delay(5000);
                 response = await post("/user_request", payload) as any;
