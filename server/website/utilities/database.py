@@ -14,7 +14,7 @@ from cassandra.protocol import SyntaxException
 from cassandra.auth import PlainTextAuthProvider
 import website
 from .users import User
-from .pubsub.publisher import Publisher
+
 
 
 def establish_connection():
@@ -245,18 +245,16 @@ def add_videos_to_queue(topics):
         void
     """
     topics = convert_topic_for_generalisation(topics)
-    publisher = Publisher()
     for topic in topics:
         cql = "SELECT * FROM summaries.video_summaries WHERE keyword = %s"
         response = website.session.execute(cql, (topic,)).all()
         if len(response) < 5:
-            publisher.create_task(topic, str(5))
+            website.publisher.create_task(topic, str(5))
 
 
 def add_more_videos_to_queue(topic, number):
     topic = convert_topic_for_generalisation([topic])[0]
-    publisher = Publisher()
-    publisher.create_task(topic, str(number))
+    website.publisher.create_task(topic, str(number))
 
 
 def db_contains_video(keyword, video_id):
