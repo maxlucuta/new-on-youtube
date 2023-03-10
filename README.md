@@ -42,7 +42,7 @@ The backend is implemented in Python using Flask
 - Run all tests with 'pytest'
 
 ### Running linting
-- Run './run_autopep8.sh' in the root to run autopep8 and see which parts of the code still do not conform to PEP 8 standards
+- Run './run_autopep8.sh' (located in the root) to run autopep8 and see which parts of the code still do not conform to PEP 8 standards
 
 ### Launch in Docker locally
 - To run deploy in Docker locally run 'docker build -t my_image .' in the root
