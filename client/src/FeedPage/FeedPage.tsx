@@ -67,7 +67,7 @@ const FeedPage = () => {
             {noResults && mode === "Recommended" && <div style={{ textAlign: "center", color: "grey" }}>Please watch at least one video to receive recommendations</div>}
             {noResults && mode !== "Recommended" && <Loading style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</Loading>}
             {noResults && mode !== "Recommended" && <div><Spinner/></div>}
-            <div style={{ width: "70%", margin: "auto" }}>
+            <div style={{ width: "80%", margin: "auto" }}>
                 <Feed results={searchResults} />
             </div>
         </div>
@@ -77,7 +77,7 @@ const FeedPage = () => {
 export default FeedPage;
 
 const Container = styled.div`
-    width: 70%;
+    width: 80%;
     margin: 50px auto;
     border-bottom: 2px solid black;
 `;

@@ -69,7 +69,6 @@ const Bar = styled.div`
     justify-content: flex-start;
     align-items: center;
     padding-top: 10px;
-    padding-left: 15%;
     background-color: none;
 
 `;
@@ -78,10 +77,10 @@ const BarNav = styled.div`
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    margin-left: 15%;
     padding-top: 20px;
     background-color: none;
-    width: 70%;
+    width: 80%;
+    margin: 5px auto;
 
 `;
 const NavBarItemContainer = styled.div`

@@ -66,10 +66,10 @@ const TopicSelection = () => {
     return (
     <div>
         <NavBar />
-        <div style={{  width: "70%", margin: "auto"  }}>
+        <div style={{  width: "80%", margin: "auto"  }}>
             <Title>Your Selected Topics</Title>
         </div>
-        <div style = {{ width: "70%", margin: "auto" }}>
+        <div style = {{ width: "80%", margin: "auto" }}>
             <div style = {{ marginTop: "20px" }}>
                 <Creatable
                     value = {userTopics.map(t => { return { label: t, value: t }})}

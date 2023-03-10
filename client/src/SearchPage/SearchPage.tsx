@@ -152,7 +152,7 @@ const SearchPage = () => {
 export default SearchPage;
 
 const Container = styled.div`
-    width: 70%;
+    width: 80%;
     padding: 10px;
     margin: 20px auto;
 `;

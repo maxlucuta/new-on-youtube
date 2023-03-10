@@ -87,7 +87,7 @@ const HomePage = () => {
 export default HomePage;
 
 const Container = styled.div`
-    width: 70%;
+    width: 80%;
     margin: 50px auto;
 `;
 
