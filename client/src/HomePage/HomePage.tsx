@@ -24,7 +24,7 @@ const HomePage = () => {
                 <NavBar />
                 <Container>
                     <HeroBox>
-                        <div style={{ margin: "10px", paddingRight: "50px" }}>
+                        <div style={{ margin: "10px", paddingRight: "130px" }}>
                             <Title>New On YouTube</Title>
                             <SubTitle>Daily videos on your favourite topics, <br></br>summarised.</SubTitle>
                             <Text>Harness the power of GPT-3 and use detailed video summaries</Text>
@@ -37,8 +37,8 @@ const HomePage = () => {
                         </div>
 
 
-                        <div style={{ width: "max-content" }}>
-                            <div><LogoImage  src={heroImage}/></div>
+                        <div style={{ width: "max-content" , textAlign: "left"}}>
+                            <LogoImage  src={heroImage} alt="New on YouTube logo"/>
                         </div>
                     </HeroBox>
                 </Container>
@@ -51,13 +51,15 @@ const HomePage = () => {
                         <Panel>
                             <PanelIcon src={choiceIcon}/>
                             <PanelTitle>Choose your topics</PanelTitle>
-                            <Text>Choose the topics that interest you from our library of topics, or customise your own. Whatever the topic, we can fetch the videos.</Text>
+                            <Text>Choose the topics that interest you from our library of topics, 
+                                or set your own custom topics. Whatever the topic, we can fetch the videos.</Text>
                         </Panel>
 
                         <Panel>
                             <PanelIcon src={nlpIcon}/>
                             <PanelTitle>Generate Summaries</PanelTitle>
-                            <Text>We process the transcripts of your videos with GPT-3 to give you a clear written summary of the full video, in plain English.</Text>
+                            <Text>We process the transcripts of your videos with GPT-3 to give 
+                                you a clear written summary of the full video, in plain English.</Text>
                         </Panel>
                     </div>
                     <div></div>
@@ -65,12 +67,14 @@ const HomePage = () => {
                         <Panel>
                             <PanelIcon src={feedIcon}/>
                             <PanelTitle>Browse your feed</PanelTitle>
-                            <Text>Your feed will be updated with the latest and most popular YouTube videos for the topics you selected. Check back regularly to enjoy more new videos.</Text>
+                            <Text>Your feed will be updated with the latest and most popular YouTube 
+                                videos for the topics you selected. Check back regularly to enjoy more new videos.</Text>
                         </Panel>
                         <Panel>
                             <PanelIcon src={recommendIcon}/>
                             <PanelTitle>Get recommendations</PanelTitle>
-                            <Text>Watch the videos you like and we'll add videos on similar topics to your recommendations with every click. So you can always find something new.</Text>
+                            <Text>Watch the videos you like and we'll add similar videos to 
+                                your recommendations with every click. So you can always find something new to watch.</Text>
                         </Panel>
                         
                     </div>
@@ -90,7 +94,6 @@ const Container = styled.div`
 const HeroBox = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     margin-bottom: 10px;
 `;
 
@@ -120,8 +123,10 @@ const Text = styled.div`
 const Panel = styled.div`
     width: 400px;
     height: max-content;
-    margin: 20px;
-    padding: 30px;
+    text-align: justify;
+    text-justify: inter-word;
+    margin: 20px 40px 20px 0;
+    padding: 30px 30px 45px 30px;
     background-color: var(--colour-background-grey);
     border: none;
     border-radius: 30px;
@@ -163,16 +168,8 @@ const Start = styled.button`
     }
 `;
 
-const LaptopImage = styled.img`
-    width: 400px;
-    margin-top: 50px;
-    margin-right: 150px;
-    filter: drop-shadow(0 0.3rem 0.25rem grey);
-`;
-
 const LogoImage = styled.img`
     width: 250px;
     margin-top: 50px;
-    margin-right: 350px;
     filter: drop-shadow(0 0.3rem 0.25rem grey);
 `;
