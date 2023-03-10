@@ -22,7 +22,7 @@ const TopicSelection = () => {
         updateAwaitingUserTopics(true);
         const payload = { username: tokenToEmail(token)};
         const response = await post("/get_user_topics", payload) as any;
-        if (response.status_code != 200) console.log("Request Error!", response)
+        if (response.status_code !== 200) console.log("Request Error!", response)
         else {
             updateUserTopics(response.results);
         }

@@ -7,10 +7,13 @@ import choiceIcon from "../assets/choiceClear.png";
 import recommendIcon from "../assets/recommend.png";
 import feedIcon from "../assets/filmReel.png";
 import NavBar from "../NavBar/Navbar";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { detectMobile } from "../functions";
 
 const HomePage = () => {
-    const { token, setToken } = useContext(RootContext);
+    const { token } = useContext(RootContext);
+
+    //if (detectMobile()) return <Navigate replace to="/UnsupportedDevice" />;
 
     return (
         <div>

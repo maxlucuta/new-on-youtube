@@ -8,9 +8,10 @@ import SearchPage from "./SearchPage/SearchPage";
 import FeedPage from "./FeedPage/FeedPage";
 import RegisterPage from "./RegisterPage/RegisterPage";
 import SignInPage from "./RegisterPage/SignInPage";
-import { useToken } from "./functions";
-import TimeOut from "./TimeOut/TimeOut";
+import { detectMobile, useToken } from "./functions";
+import TimeOut from "./ClientErrorPages/TimeOut";
 import TopicSelectionPage from "./TopicSelection/TopicSelection";
+import UnsupportedDevice from "./ClientErrorPages/UnsupportedDevice";
 
 const App = () => {
     // conditionally switched to production url in live
@@ -54,12 +55,16 @@ const App = () => {
             path: "/TimeOut",
             element: <TimeOut />,
         },
+        {
+            path: "/UnsupportedDevice",
+            element: <UnsupportedDevice />,
+        },
     ]);
 
     return (
         <React.StrictMode>
             <RootContext.Provider value={{ SERVER_URL, token, setToken }}>
-                <RouterProvider router={router} />
+                {detectMobile() ? <UnsupportedDevice /> : <RouterProvider router={router} />}
             </RootContext.Provider>
         </React.StrictMode>
     );
