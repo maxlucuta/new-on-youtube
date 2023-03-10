@@ -49,7 +49,7 @@ const NavBar = () => {
                         {/*{token && <SignedInIcon>Signed in as: {tokenToEmail(token)}</SignedInIcon>}*/}
                     </NavBarItemContainer>
                 </NavBarItems>
-                <div style={{marginRight: "15%", paddingTop: "10px"}}>
+                <div style={{paddingTop: "10px"}}>
                 <Link to={token ? "/" : "/SignIn"}>
                     <SignInOutButton onClick={token ? signOut : function(){}} style={{ cursor: "pointer" }}>
                         {token ? "Sign Out" : "Sign In"}
@@ -88,7 +88,6 @@ const NavBarItemContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    align-items: center;
 `;
 
 const NavBarItems = styled.div`
@@ -110,19 +109,6 @@ const NavBarItem = styled.p`
     }
 `;
 
-
-const Item = styled.div`
-    margin: 10px 20px;
-    color: black;
-    font-size: 16px;
-    font-weight: 400;
-    font-family: 'Rubik', sans-serif;
-    transition: 0.5s;
-    &:hover {
-        color: white;
-    }
-`;
-
 const SignInOutButton = styled.button`
     display: flex;
     flex-direction: flex-end;
@@ -132,7 +118,6 @@ const SignInOutButton = styled.button`
     font-family: 'Rubik', sans-serif;
     margin-right: 15%;
     width: max-content;
-    background-color: none;
     border-color: var(--colour-pink-accent);
     border-radius: 5px;
     transition: 0.5s;

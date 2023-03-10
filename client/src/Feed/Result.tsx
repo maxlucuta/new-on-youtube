@@ -28,20 +28,17 @@ const Result = (props: ResultProps) => {
         <Container onClick={() => handleWatchVideo(props.summary)} href = {url(props.summary.video_id)} target = "_blank">
             <Img src={thumbnail(props.summary.video_id)} />
             <MetaData>
-            {isRecent && <RecentlyAdded>
-                <div style = {{ margin: "10px 0" }}><b>Recently Added!</b></div>
-            </RecentlyAdded>}
-            <Detail>
-                <div style = {{ margin: "10px 0" }}><b>Title</b>: {props.summary.video_title}</div>
-            </Detail>
-                <div style = {{ margin: "10px 30px" }}><b>Description</b></div>
+            <DetailContainer>
+                <div style = {{ margin: "10px 0", fontWeight: "400" }}><b>{props.summary.video_title}</b></div>
+            </DetailContainer>
                 <Description>{props.summary.summary}</Description>
-                <Detail>
-                    <div style = {{ margin: "10px 20px 10px 0" }}><b>Channel</b>: {props.summary.channel_name}</div>
-                    <div style = {{ margin: "10px 20px 10px 0" }}><b>Views</b>: {props.summary.views}</div>
-                    <div style = {{ margin: "10px 20px 10px 0" }}><b>Likes</b>: {props.summary.likes}</div>
-                    <div style = {{ margin: "10px 20px 10px 0" }}><b>Uploaded on</b>: {props.summary.published_at}</div>
-                </Detail>
+                <DetailContainer>
+                    <DetailTile><b>Channel</b>: {props.summary.channel_name}</DetailTile>
+                    <DetailTile><b>Views</b>: {props.summary.views}</DetailTile>
+                    <DetailTile><b>Likes</b>: {props.summary.likes}</DetailTile>
+                    <DetailTile><b>Uploaded on</b>: {props.summary.published_at}</DetailTile>
+                    {isRecent && <DetailTile style={{backgroundColor: "var(--colour-pink-accent)", color: "white"}}><b>Recently Added!</b></DetailTile>}
+                </DetailContainer>
             </MetaData>
 
         </Container>
@@ -76,9 +73,18 @@ const MetaData = styled.div`
 
 `;
 
-const Detail = styled.div`
+const DetailContainer = styled.div`
     display: flex;
     margin-left: 30px;
+`;
+
+const DetailTile = styled.div`
+    margin: 10px 20px 10px 0;
+    padding: 5px;
+    background-color: var(--colour-background-grey);
+    border-radius: 5px;
+    font-size: 17px;
+
 `;
 
 const RecentlyAdded = styled.div`
@@ -92,4 +98,5 @@ const Description = styled.div`
     text-align: left;
     width: 85%;
     font-size: 20px;
+    font-weight: 300;
 `;

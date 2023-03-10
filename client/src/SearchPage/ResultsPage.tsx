@@ -81,4 +81,4 @@ const RefreshButton = styled.div`
 
 const RefreshIcon = styled.img`
     width:30px;
-    `
+`;
