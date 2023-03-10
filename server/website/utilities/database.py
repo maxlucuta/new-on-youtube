@@ -16,7 +16,6 @@ import website
 from .users import User
 
 
-
 def establish_connection():
     """
     This function initializes the connection to the DB using
