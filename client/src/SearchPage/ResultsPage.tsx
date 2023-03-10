@@ -16,20 +16,6 @@ const ResultsPage = (props: ResultsPageProps) => {
 
     return (
         <>
-            <div style={{ display: "flex", marginBottom: "20px" }}>
-                <NewSearchButton
-                    onClick={() => {
-                        props.updateMode("SELECTION")
-                        props.updateSelection([]);
-                        props.updateSearchResults([]);
-                    }}>
-                    <span className="button-text">New Search</span>
-                </NewSearchButton>
-                <RefreshButton onClick={props.handleSubmission}>
-                    <div><RefreshIcon src={refresh} /></div>
-                </RefreshButton>
-            </div>
-            {/*  add loading logic */}
             <Feed results={props.searchResults} />
         </>
     );
