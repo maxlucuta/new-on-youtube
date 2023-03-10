@@ -63,7 +63,7 @@ const SearchPage = () => {
         <div>
             <NavBar />
             <Container>
-            <div style={{ display: "flex", borderBottom: "2px solid black"}}>
+            <div style={{ display: "flex", borderBottom: mode === "SELECTION" ? "none" : "2px solid black"}}>
                 <Title>Find Videos</Title>
                 {
                     mode === "SELECTION" 
