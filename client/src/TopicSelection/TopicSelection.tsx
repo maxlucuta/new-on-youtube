@@ -109,9 +109,12 @@ const TopicSelection = () => {
                 marginTop: "30px",
                 color: "grey",
                 fontWeight: "300",
-                textAlign: "center"}}>New videos will be added to your feed regularly for any topics shown above.
+                textAlign: "center"}}
+                >New videos will be added to your feed regularly for any topics shown above.
                 Select or search to add new topics to your feed.<br></br>
-                Removing topics here will remove all videos for that topic from your feed.</div>
+                Feel free to type in and create new topics. You will just have to wait a few minutes for them to appear in your feed.<br></br>
+                Removing topics here will remove all videos for that topic from your feed.
+            </div>
         </div>
         {/* { awaitingUserTopics && <div>Loading message goes here!</div> } */}
     </div>

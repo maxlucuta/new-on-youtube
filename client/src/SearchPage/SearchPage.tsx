@@ -136,8 +136,14 @@ const SearchPage = () => {
                         searchResults = { searchResults }
                     />
             }
-            {noResults && mode === "RESULTS" && <Loading style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</Loading>}
+            <div style={{marginTop: "50px"}}>
+            {noResults && mode === "RESULTS" && 
+                <Loading>
+                    Searching Youtube for relevant videos. Extracting transcripts and summarising with GPT-3. <br></br> 
+                    Your videos will be ready in a few minutes!
+                </Loading>}
             {noResults && mode === "RESULTS" && <div><Spinner/></div>}
+            </div>
             </Container>
         </div>
     )
@@ -153,6 +159,9 @@ const Container = styled.div`
 
 const Loading = styled.div`
     padding-bottom: 15px;
+    text-align: center; 
+    color: black;
+    font-weight: 300;
 `;
 
 const Title = styled.div`

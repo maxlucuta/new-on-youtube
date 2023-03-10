@@ -116,7 +116,6 @@ const SignInOutButton = styled.button`
     font-size: 16px;
     font-weight: 400;
     font-family: 'Rubik', sans-serif;
-    margin-right: 15%;
     width: max-content;
     border-color: var(--colour-pink-accent);
     border-radius: 5px;
