@@ -452,7 +452,8 @@ def convert_topic_for_readability(topic):
 
 
 def clean_summary(summary):
-    if summary[:15] == "This transcript" or \
-            summary[:18] == "In this transcript":
+    if summary[:15] == "This transcript":
         summary = "This video" + summary[15:]
+    elif summary[:18] == "In this transcript":
+        summary = "This video" + summary[18:]
     return summary

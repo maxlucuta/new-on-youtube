@@ -66,7 +66,7 @@ const TopicSelection = () => {
     return (
     <div>
         <NavBar />
-        <div style={{ marginLeft: "10%" }}>
+        <div style={{  width: "80%", margin: "auto"  }}>
             <Title>Your Selected Topics</Title>
         </div>
         <div style = {{ width: "80%", margin: "auto" }}>
@@ -81,7 +81,39 @@ const TopicSelection = () => {
                     isLoading = { awaitingUserTopics }
                     onCreateOption = {handleNewOption}
                     isDisabled = {userTopics.length == 0}
+                    styles={{
+                        control: (baseStyles, state) => ({
+                        ...baseStyles,
+                        borderColor: state.isFocused ? 'black' : 'black',
+                        }),
+                        multiValue: (base) => ({
+                            ...base,
+                            padding: `10px`,
+                            margin: `10px`,
+                            fontSize: `20px`
+                          }),
+                    
+                    }}
+                    theme={(theme) => ({
+                        ...theme,
+                        borderRadius: 0,
+                        colors: {
+                        ...theme.colors,
+                        primary25: 'var(--colour-background-grey)',
+                        primary: 'none',
+                        },
+                    })}
                 />
+            </div>
+            <div style={{
+                marginTop: "30px",
+                color: "grey",
+                fontWeight: "300",
+                textAlign: "center"}}
+                >New videos will be added to your feed regularly for any topics shown above.
+                Select or search to add new topics to your feed.<br></br>
+                Feel free to type in and create new topics. You will just have to wait a few minutes for them to appear in your feed.<br></br>
+                Removing topics here will remove all videos for that topic from your feed.
             </div>
         </div>
         {/* { awaitingUserTopics && <div>Loading message goes here!</div> } */}
@@ -97,94 +129,4 @@ const Title = styled.div`
     font-weight: 600;
     font-family: 'Rubik', sans-serif;
     margin-top: 50px;
-`;
-
-const Description = styled.div`
-    text-align: left;
-    font-size: 18px;
-    font-weight: 300;
-    font-family: 'Rubik', sans-serif;
-`;
-
-const TwoPanel = styled.div`
-    display: flex;
-    justify-content: center;
-    width: 80%;
-    max-height: 50vh;
-    margin: 50px auto 0 auto;
-`;
-
-const LeftPanel = styled.div`
-    text-align: center;
-    width: 50%;
-    border-right: 2px solid black;
-`;
-
-const RightPanel = styled.div`
-    text-align: center;
-    width: 50%;
-    border-left: 2px solid black;
-`;
-
-const SearchBar = styled.input`
-    margin: 10px;
-    width: 250px;
-    font-size: 20px;
-    border-style: none;
-    border-bottom: 2px solid grey;
-    &:focus {
-        outline: none;
-    }
-`;
-
-const PanelTitle = styled.div`
-    font-size: 30px;
-    font-weight: 500;
-    font-weight: regular;
-    font-family: 'Rubik', sans-serif;
-    margin-bottom: 20px;
-`;
-
-const CategoryContainer = styled.div`
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-    justify-content: center;
-    overflow: scroll;
-    max-height: 80%;
-`;
-
-const Category = styled.button<{ selected: boolean }>`
-    margin: 5px;
-    color: ${props => (props.selected ? "white" : "black")};
-    font-size: 20px;
-    font-weight: 300;
-    font-family: 'Rubik', sans-serif;
-    padding: 10px;
-    border-style: none;
-    background-color: ${props => (props.selected ? "#2d1871" : "#b0b0b0")};
-    border-radius: 2px;
-    &:hover {
-        transform: scale(1.1);
-        cursor: pointer;
-    }
-`;
-
-const SearchButton = styled.div`
-    width: 300px;
-    margin: 50px auto;
-    font-size: 30px;
-    text-align: center;
-    background-color: black;
-    color: white;
-    border-style: none;
-    border-radius: 5px;
-    padding: 10px;
-    font-size: 20px;
-    font-weight: regular;
-    font-family: 'Rubik', sans-serif;
-    &:hover {
-        cursor: pointer;
-        transform: scale(1.1);
-    }
 `;

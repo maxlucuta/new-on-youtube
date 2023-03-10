@@ -9,6 +9,7 @@ import { ActionMeta, MultiValue } from 'react-select'
 import Creatable from 'react-select/creatable'
 import { MAX_TOPICS, delay } from "../functions";
 import Spinner from "../spinner";
+import refresh from "../assets/refreshSlim.png";
 
 type SelectOption = {
     label: string;
@@ -30,8 +31,8 @@ const SearchPage = () => {
         if (response.status_code != 200) console.log("Request Error!", response)
         else {
             updateMode("RESULTS")
-            while (response.results.length === 0) {
-                await delay(7000);
+            while (response.results.length < 3) {
+                await delay(5000);
                 response = (await axios.post(SERVER_URL + "/request", payload)).data;
                 console.log("Resent request")
             }
@@ -62,7 +63,28 @@ const SearchPage = () => {
         <div>
             <NavBar />
             <Container>
+            <div style={{ display: "flex", borderBottom: mode === "SELECTION" ? "none" : "2px solid black"}}>
                 <Title>Find Videos</Title>
+                {
+                    mode === "SELECTION" 
+                        ? <div></div> 
+                    
+                        : <div style={{ display: "flex"}}>
+                        <NewSearchButton
+                            onClick={() => {
+                                updateMode("SELECTION")
+                                updateSelection([]);
+                                updateSearchResults([]);
+                            }}>
+                            <span className="button-text">New Search</span>
+                        </NewSearchButton>
+                        <RefreshButton onClick={handleSubmission}>
+                            <RefreshIcon src={refresh} />
+                        </RefreshButton>
+                        </div>
+                }
+                
+            </div>
             {
                 mode === "SELECTION"
                     ? <>
@@ -75,18 +97,35 @@ const SearchPage = () => {
                                 isMulti = {true}
                                 onChange = {handleChange}
                                 onCreateOption = {handleNewOption}
+                                placeholder={<PlaceholderText>Select topics, or search and create your own</PlaceholderText>}
+                                styles={{
+                                    control: (baseStyles, state) => ({
+                                    ...baseStyles,
+                                    borderColor: state.isFocused ? 'black' : 'black',
+                                    }),
+                                
+                                }}
+                                theme={(theme) => ({
+                                    ...theme,
+                                    borderRadius: 0,
+                                    colors: {
+                                    ...theme.colors,
+                                    primary25: 'var(--colour-background-grey)',
+                                    primary: 'none',
+                                    },
+                                })}
                             />
                         </div>
 
                         {
                             selection.length > 0
-                                ? <SearchButton
-                                    onClick={handleSubmission}>
-                                    Search videos
-                                </SearchButton>
-                                : <NoSearchButton>
-                                    Please make selection
-                                </NoSearchButton>
+                                ?   <div style={{padding: "20px"}}>
+                                    <SearchButton
+                                        onClick={handleSubmission}>
+                                        Search videos
+                                    </SearchButton>
+                                    </div>
+                                : <div></div>
                         }
                     </>
                     : <ResultsPage
@@ -97,8 +136,14 @@ const SearchPage = () => {
                         searchResults = { searchResults }
                     />
             }
-            {noResults && mode === "RESULTS" && <Loading style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</Loading>}
+            <div style={{marginTop: "50px"}}>
+            {noResults && mode === "RESULTS" && 
+                <Loading>
+                    Searching Youtube for relevant videos. Extracting transcripts and summarising with GPT-3. <br></br> 
+                    Your videos will be ready in a few minutes!
+                </Loading>}
             {noResults && mode === "RESULTS" && <div><Spinner/></div>}
+            </div>
             </Container>
         </div>
     )
@@ -114,11 +159,13 @@ const Container = styled.div`
 
 const Loading = styled.div`
     padding-bottom: 15px;
+    text-align: center; 
+    color: black;
+    font-weight: 300;
 `;
 
 const Title = styled.div`
     padding-bottom: 10px;
-    border-bottom: 2px solid black;
     font-size: 50px;
     font-weight: 600;
     font-family: 'Rubik', sans-serif;
@@ -126,16 +173,15 @@ const Title = styled.div`
 `;
 
 const SearchButton = styled.div`
-    width: 50%;
+    width: 20%;
     margin: 50px auto;
     font-size: 20px;
     text-align: center;
-    background-color: #f0f0f1;
-    color: black;
+    background-color: var(--colour-pink-accent);
+    color: white;
     border-style: none;
     border-radius: 5px;
     padding: 10px;
-    font-size: 20px;
     font-weight: regular;
     font-family: 'Rubik', sans-serif;
     &:hover {
@@ -144,17 +190,51 @@ const SearchButton = styled.div`
     }
 `;
 
-const NoSearchButton = styled.div`
-    width: 50%;
-    margin: 50px auto;
+const PlaceholderText = styled.div`
+    font-size: 15px;
+    font-weight: 300;
+    font-family: 'Rubik', sans-serif
+`;
+
+const NewSearchButton = styled.button`
     font-size: 20px;
     text-align: center;
-    background-color: #f0f0f1;
+    width: max-content;
+    padding: 10px;
+    margin: 60px 20px 20px 30px;
+    background-color: var(--colour-background-grey);
     color: black;
     border-style: none;
     border-radius: 5px;
-    padding: 10px;
+    font-size: 17px;
     font-weight: regular;
     font-family: 'Rubik', sans-serif;
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+    }
 `;
+
+const RefreshButton = styled.div`
+    margin: 60px 20px 20px 10px;
+    font-size: 20px;
+    background-color: var(--colour-background-grey) ;
+    align-items: center;
+    vertical-align: middle;
+
+    color: black;
+    border-style: none;
+    border-radius: 5px;
+    padding: 10px 10px 5px 10px;
+    font-size: 20px;
+    &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+    }
+`;
+
+const RefreshIcon = styled.img`
+    width:35px;
+`;
+
 

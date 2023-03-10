@@ -20,8 +20,8 @@ const FeedPage = () => {
         let response = await post("/user_request", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
         else {
-            while (response.results.length === 0 && mode !== "Recommended" && token) {
-                await delay(7000);
+            while (response.results.length < 3 && mode !== "Recommended" && token) {
+                await delay(5000);
                 response = await post("/user_request", payload) as any;
                 console.log("Resent request")
             }
@@ -38,15 +38,14 @@ const FeedPage = () => {
     return (
         <div>
             <NavBar />
-            <div>
-                <Title>Your Feed</Title>
-            </div>
+            <Container>
+            <Title>Your Feed</Title>
+
             <div
                 style={{
                     display: "flex",
                     alignItems: "center",
                     width: "max-content",
-                    marginLeft: "20%",
                 }}>
                 {modes.map((m, i) => (
                     <>
@@ -64,6 +63,7 @@ const FeedPage = () => {
                     <div><RefreshIcon src={refresh} /></div>
                 </RefreshButton>
             </div>
+            </Container>
             {noResults && mode === "Recommended" && <div style={{ textAlign: "center", color: "grey" }}>Please watch at least one video to receive recommendations</div>}
             {noResults && mode !== "Recommended" && <Loading style={{ textAlign: "center", color: "grey" }}>Generating videos, please wait a few minutes</Loading>}
             {noResults && mode !== "Recommended" && <div><Spinner/></div>}
@@ -76,12 +76,17 @@ const FeedPage = () => {
 
 export default FeedPage;
 
+const Container = styled.div`
+    width: 80%;
+    margin: 50px auto;
+    border-bottom: 2px solid black;
+`;
+
 const Title = styled.div`
     padding-bottom: 10px;
     font-size: 50px;
     font-weight: 600;
     font-family: 'Rubik', sans-serif;
-    margin-left: 20%;
     margin-top: 50px;
 `;
 
@@ -93,10 +98,10 @@ const FeedSelector = styled.div<{ selected: boolean }>`
     font-size: 30px;
     font-weight: 600;
     font-family: 'Rubik', sans-serif;
-    color: ${props => (props.selected ? "#e52b87" : "black")};
+    color: ${props => (props.selected ? "var(--colour-pink-accent)" : "black")};
     margin: 20px 0 20px 0;
     &:hover {
-        background-color: ${props => (props.selected ? "none" : "#f0f0f1")};;
+        background-color: ${props => (props.selected ? "none" : "var(--colour-background-grey)")};;
         cursor: ${props => (props.selected ? "default" : "pointer")};
     }
 `;
