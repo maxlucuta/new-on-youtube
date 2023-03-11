@@ -1,3 +1,4 @@
+import gc
 from os import environ
 from functools import wraps
 from multiprocessing import current_process
@@ -82,6 +83,7 @@ class Subscriber:
             insert_video(data)
 
         print(f"{topic} processed!", flush=True)
+        gc.collect()
         message.ack()
 
     def process_tasks(self):
@@ -96,9 +98,11 @@ class Subscriber:
         with self.subscriber:
             try:
                 streaming_pull_future.result()
-            except Exception:
+            except TimeoutError:
                 streaming_pull_future.cancel()
                 streaming_pull_future.result()
+            except Exception:
+                pass
 
 
 def run_background_task():
