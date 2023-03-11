@@ -53,24 +53,18 @@ class MetaDataScraper(YouTubeScraper):
             return ""
 
     @staticmethod
-    def get_views(url: str, proxy: dict[str, str] = None) -> str:
+    def get_views(url: str) -> str:
         """Retrieves number of views for a video.
 
         Args:
             url (str): full url of video
-            proxy dict[str, str]: http proxy in requests format
 
         Returns:
             str: number of views for the video, may be raw hmtl
         """
 
-        try:
-            response = requests.get(
-                url, headers={'User-Agent': ''}, timeout=50,  proxies=proxy)
-            views = response.text[:response.text.find(' views"')]
-            return views[views.rfind('"') + 1:]
-        except Exception:
-            return ""
+        videoInfo = Video.getInfo(url)
+        return videoInfo['viewCount']['text']
 
     @staticmethod
     def get_upload_date(url: str) -> str:
