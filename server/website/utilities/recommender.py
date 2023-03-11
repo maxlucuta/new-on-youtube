@@ -87,7 +87,7 @@ class Recommender:
         self._reverse_mapper()
         self._calc_sparse_matrix()
         self._calc_sigmoid_scores()
-        print("Recommender model trained")
+        print("Recommender model trained", flush=True)
 
     def _reverse_mapper(self):
         """
