@@ -99,4 +99,6 @@ const Description = styled.div`
     width: 85%;
     font-size: 20px;
     font-weight: 300;
+    text-align: justify;
+    text-justify: inter-word;
 `;
