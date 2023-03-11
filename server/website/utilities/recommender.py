@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import sigmoid_kernel
+from .database import query_all_videos
 import website
 
 
@@ -22,24 +23,6 @@ class Recommender:
                                    token_pattern=u'(?ui)\\b\\w*[a-z]+\\w*\\b',
                                    ngram_range=(1, 1),
                                    stop_words="english")
-
-    def _query_all_videos(self):
-        """
-        This function performs a query on the DB and returns a list of
-        dictionaries (video_title, video_id, summary, video_tags from
-        summaries.video_summaries)
-
-        Returns:
-            [dict]
-
-        """
-        query = website.session.execute(
-            """select video_title, video_id, summary, video_tags from
-             summaries.video_summaries""").all()
-        if not query:
-            raise QueryFailedException(
-                "Could not retrieve all videos from database.")
-        return query
 
     def _clean_data(self, dicts):
         """
@@ -96,7 +79,10 @@ class Recommender:
             None
         """
 
-        raw_videos = self._query_all_videos()
+        raw_videos = query_all_videos()
+        if not raw_videos:
+            raise QueryFailedException(
+                "Could not retrieve all videos from database.")
         self._clean_data(raw_videos)
         self._reverse_mapper()
         self._calc_sparse_matrix()

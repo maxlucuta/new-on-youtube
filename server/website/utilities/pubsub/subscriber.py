@@ -5,7 +5,7 @@ from google.cloud.pubsub_v1.subscriber.exceptions import AcknowledgeError
 from ..youtube_scraper_lib.youtube import (
     get_most_popular_video_transcripts_by_topic
 )
-from ..database import insert_video
+from ..database import insert_video, create_session
 from .logs.message_logger import Logger
 
 SUBSCRIBER_PATH = "projects/new-on-youtube-375417/subscriptions/gpt-tasks-sub"
@@ -97,10 +97,13 @@ class Subscriber:
             except TimeoutError:
                 streaming_pull_future.cancel()
                 streaming_pull_future.result()
+            except (ValueError, AcknowledgeError):
+                pass
 
 
 def run_background_task():
     """API for daemon thread background processing."""
 
+    create_session()
     subscriber = Subscriber()
     subscriber.process_tasks()
