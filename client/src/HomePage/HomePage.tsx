@@ -125,7 +125,7 @@ const Text = styled.div`
 
 const Panel = styled.div`
     width: 400px;
-    height: max-content;
+    height: 250px;
     text-align: justify;
     text-justify: inter-word;
     margin: 20px 40px 20px 0;
