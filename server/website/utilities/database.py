@@ -51,7 +51,7 @@ def establish_connection():
 
 
 def create_session():
-    """Initialiases the global MULTIPROCESSOR_SESSION object, used
+    """Initialiases the global MULTIPROCESS_SESSION object, used
        by child processes to access the cassandra cluster, without
        needing to create mutliple instances.
     """
@@ -251,7 +251,7 @@ def add_watched_video(username, video_id):
         print("DriverException: " + str(exception))
         return False
     print(f"Updated most recent watched videos for {username}: "
-          f"{watched_videos.split(':')}")
+          f"{watched_videos.split(':')}", flush=True)
     website.recommender.train_model()
     return True
 

@@ -87,7 +87,7 @@ class Recommender:
         self._reverse_mapper()
         self._calc_sparse_matrix()
         self._calc_sigmoid_scores()
-        print("Recommender model trained")
+        print("Recommender model trained", flush=True)
 
     def _reverse_mapper(self):
         """
@@ -157,11 +157,11 @@ class Recommender:
         results = []
         three_watched = query[0]['three_watched']
         if not three_watched or three_watched == "::":
-            print("No watched videos to use in recommender")
+            print("No watched videos to use in recommender", flush=True)
             return []
         watched_videos = three_watched.split(":")
         watched_videos = [x for x in watched_videos if x]
-        print(f"Video IDs used in recommender: {watched_videos}")
+        print(f"Video IDs used in recommender: {watched_videos}", flush=True)
 
         if len(watched_videos) == 3:
             amount_weighting = [0.6, 0.25, 0.15]

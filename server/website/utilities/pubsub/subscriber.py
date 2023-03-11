@@ -1,5 +1,7 @@
+import gc
 from os import environ
 from functools import wraps
+from multiprocessing import current_process
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.exceptions import AcknowledgeError
 from ..youtube_scraper_lib.youtube import (
@@ -63,7 +65,8 @@ class Subscriber:
 
         topic = message.attributes.get('search_term')
         amount = int(message.attributes.get('amount'))
-        print(f"{topic} recieved!", flush=True)
+        print(f"{topic} recieved by " +
+              current_process().name + "!", flush=True)
         log = topic + "," + str(amount)
 
         if self.logger.get(log):
@@ -78,8 +81,9 @@ class Subscriber:
         for data in processed_task:
             print('subscriber running insert into db', flush=True)
             insert_video(data)
-
+        
         print(f"{topic} processed!", flush=True)
+        gc.collect()
         message.ack()
 
     def process_tasks(self):
@@ -97,7 +101,7 @@ class Subscriber:
             except TimeoutError:
                 streaming_pull_future.cancel()
                 streaming_pull_future.result()
-            except (ValueError, AcknowledgeError):
+            except Exception:
                 pass
 
 
