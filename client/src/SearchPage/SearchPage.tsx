@@ -31,11 +31,13 @@ const SearchPage = () => {
         if (response.status_code != 200) console.log("Request Error!", response)
         else {
             updateMode("RESULTS")
-            while (response.results.length < 3) {
+            while (response.results.length === 0) {
                 await delay(5000);
                 response = (await axios.post(SERVER_URL + "/request", payload)).data;
                 console.log("Resent request")
             }
+            console.log("At least one result returned, waiting for all inserts to finish")
+            await delay(5000);
             updateSearchResults(response.results);
         }
     };
@@ -66,9 +68,9 @@ const SearchPage = () => {
             <div style={{ display: "flex", borderBottom: mode === "SELECTION" ? "none" : "2px solid black"}}>
                 <Title>Find Videos</Title>
                 {
-                    mode === "SELECTION" 
-                        ? <div></div> 
-                    
+                    mode === "SELECTION"
+                        ? <div></div>
+
                         : <div style={{ display: "flex"}}>
                         <NewSearchButton
                             onClick={() => {
@@ -83,7 +85,7 @@ const SearchPage = () => {
                         </RefreshButton>
                         </div>
                 }
-                
+
             </div>
             {
                 mode === "SELECTION"
@@ -103,7 +105,7 @@ const SearchPage = () => {
                                     ...baseStyles,
                                     borderColor: state.isFocused ? 'black' : 'black',
                                     }),
-                                
+
                                 }}
                                 theme={(theme) => ({
                                     ...theme,
@@ -137,9 +139,9 @@ const SearchPage = () => {
                     />
             }
             <div style={{marginTop: "50px"}}>
-            {noResults && mode === "RESULTS" && 
+            {noResults && mode === "RESULTS" &&
                 <Loading>
-                    Searching Youtube for relevant videos. Extracting transcripts and summarising with GPT-3. <br></br> 
+                    Searching Youtube for relevant videos. Extracting transcripts and summarising with GPT-3. <br></br>
                     Your videos will be ready in a few minutes!
                 </Loading>}
             {noResults && mode === "RESULTS" && <div><Spinner/></div>}
@@ -159,7 +161,7 @@ const Container = styled.div`
 
 const Loading = styled.div`
     padding-bottom: 15px;
-    text-align: center; 
+    text-align: center;
     color: black;
     font-weight: 300;
 `;
