@@ -62,9 +62,11 @@ class MetaDataScraper(YouTubeScraper):
         Returns:
             str: number of views for the video, may be raw hmtl
         """
-
-        videoInfo = Video.getInfo(url)
-        return videoInfo['viewCount']['text']
+        try:
+            videoInfo = Video.getInfo(url)
+            return videoInfo['viewCount']['text']
+        except (TypeError, ValueError):
+            return None
 
     @staticmethod
     def get_upload_date(url: str) -> str:
