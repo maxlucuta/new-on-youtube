@@ -104,7 +104,15 @@ const SearchPage = () => {
                                     control: (baseStyles, state) => ({
                                     ...baseStyles,
                                     borderColor: state.isFocused ? 'black' : 'black',
+                                    height: '50px',
                                     }),
+                                    multiValue: (base) => ({
+                                        ...base,
+                                        padding: `5px`,
+                                        margin: `5px`,
+                                        fontSize: `16px`
+                                      }),
+                            
 
                                 }}
                                 theme={(theme) => ({
@@ -193,7 +201,7 @@ const SearchButton = styled.div`
 `;
 
 const PlaceholderText = styled.div`
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 300;
     font-family: 'Rubik', sans-serif
 `;
