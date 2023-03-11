@@ -481,10 +481,7 @@ def query_all_videos():
 
     cql = """select video_title, video_id, summary, video_tags from
              summaries.video_summaries"""
-    if is_background_process():
-        query = MULTIPROCESS_SESSION.execute(cql).all()
-    else:
-        query = website.session.execute(cql).all()
+    query = website.session.execute(cql).all()
     return query
 
 
