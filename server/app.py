@@ -15,11 +15,12 @@ def create_processes():
 
     batch_1 = Process(
         name="batch_1", target=execute_background_tasks, args=("batch_1",))
-    batch_2 = Process(
-        name="batch_2", target=execute_background_tasks, args=("batch_2",))
-    batch_1.daemon = batch_2.daemon = True
+    # batch_2 = Process(
+    #    name="batch_2", target=execute_background_tasks, args=("batch_2",))
+    batch_1.daemon = True
+    # batch_2.daemon = True
     batch_1.start()
-    batch_2.start()
+    # batch_2.start()
 
 
 if __name__ == "__main__":
