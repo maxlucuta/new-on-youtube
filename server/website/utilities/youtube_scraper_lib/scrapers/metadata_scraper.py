@@ -171,7 +171,7 @@ class MetaDataScraper(YouTubeScraper):
                     "channel_name": result['channel']['name'],
                     "video_name": result['title'],
                     "published_at": result['publishedTime'],
-                    "views": self.get_views(result['link'], self.proxy),
+                    "views": result['viewCount']['text'],
                     "likes": self.get_likes(result['link'], self.proxy),
                     "video_tags": self.get_keywords(result['link']),
                     "duration": result['duration'],

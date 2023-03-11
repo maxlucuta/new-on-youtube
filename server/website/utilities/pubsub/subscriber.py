@@ -96,11 +96,9 @@ class Subscriber:
         with self.subscriber:
             try:
                 streaming_pull_future.result()
-            except TimeoutError:
+            except Exception:
                 streaming_pull_future.cancel()
                 streaming_pull_future.result()
-            except (ValueError, AcknowledgeError):
-                pass
 
 
 def run_background_task():
