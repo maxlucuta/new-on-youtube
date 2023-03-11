@@ -24,7 +24,7 @@ def create_processes():
 
 if __name__ == "__main__":
     app = create_app()
-    create_processes()
     app.run(debug=True)
 else:
     gunicorn_app = create_app()
+    create_processes()
