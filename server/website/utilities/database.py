@@ -320,9 +320,9 @@ def get_unique_topics():
         print("Database Error:", exception)
         return []
 
-    return list(set(map(lambda r:
+    return sorted(list(set(map(lambda r:
                         convert_topic_for_readability(r["keyword"]),
-                        response)))
+                        response))))
 
 
 def get_recommended_videos(username, amount):
