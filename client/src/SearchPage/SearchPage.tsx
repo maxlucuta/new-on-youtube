@@ -27,17 +27,19 @@ const SearchPage = () => {
 
     const handleSubmission = async () => {
         const payload = { topics: selection, amount: 20 };
+        const selectedTopics = selection;
         let response = (await axios.post(SERVER_URL + "/request", payload)).data;
         if (response.status_code != 200) console.log("Request Error!", response)
-        else {
-            updateMode("RESULTS")
+        updateMode("RESULTS")
+        if (response.results.length === 0) {
+            alert("Generating videos for '" + selectedTopics.join(', ') + "'. We will notify you when they are ready.")
             while (response.results.length === 0) {
                 await delay(5000);
                 response = (await axios.post(SERVER_URL + "/request", payload)).data;
                 console.log("Resent request")
             }
-            console.log("At least one result returned, waiting for all inserts to finish")
-            await delay(5000);
+            alert("Videos for '" + selectedTopics.join(', ') + "' are ready for your next search.")
+        } else {
             updateSearchResults(response.results);
         }
     };
@@ -112,7 +114,7 @@ const SearchPage = () => {
                                         margin: `5px`,
                                         fontSize: `16px`
                                       }),
-                            
+
 
                                 }}
                                 theme={(theme) => ({
@@ -150,7 +152,7 @@ const SearchPage = () => {
             {noResults && mode === "RESULTS" &&
                 <Loading>
                     Searching Youtube for relevant videos. Extracting transcripts and summarising with GPT-3. <br></br>
-                    Your videos will be ready in a few minutes!
+                    We will let you know when your videos are ready!
                 </Loading>}
             {noResults && mode === "RESULTS" && <div><Spinner/></div>}
             </div>
