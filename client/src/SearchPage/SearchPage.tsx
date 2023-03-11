@@ -10,6 +10,8 @@ import Creatable from 'react-select/creatable'
 import { MAX_TOPICS, delay } from "../functions";
 import Spinner from "../spinner";
 import refresh from "../assets/refreshSlim.png";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 type SelectOption = {
     label: string;
@@ -22,6 +24,7 @@ const SearchPage = () => {
     const [availableTopics, updateAvailableTopics] = useState([] as string[])
     const [mode, updateMode] = useState("SELECTION" as "SELECTION" | "RESULTS")
     const { SERVER_URL } = useContext(RootContext);
+    const CustomAlert = withReactContent(Swal)
 
     const noResults = searchResults.length === 0;
 
@@ -31,7 +34,11 @@ const SearchPage = () => {
         let response = (await axios.post(SERVER_URL + "/request", payload)).data;
         if (response.status_code != 200) console.log("Request Error!", response)
         if (response.results.length === 0) {
-            alert("Generating videos for '" + selectedTopics.join(', ') + "'. We will notify you when they are ready.")
+            CustomAlert.fire({
+                icon: "success",
+                title: <AlertMessage>Generating videos and summarising transcripts for {selectedTopics.join(', ')}. We will notify you when they are ready.</AlertMessage>,
+                timer: 5000
+                });
             updateSelection([]);
             while (response.results.length === 0) {
                 await delay(5000);
@@ -39,7 +46,10 @@ const SearchPage = () => {
                 console.log("Resent request")
             }
             getAvailableTopics();
-            alert("Videos for '" + selectedTopics.join(', ') + "' are ready for your next search.")
+            CustomAlert.fire({
+                icon: "info",
+                title: <AlertMessage>Videos for {selectedTopics.join(', ')} are ready for your next search.</AlertMessage>,
+                });
         } else {
             updateMode("RESULTS")
             updateSearchResults(response.results);
@@ -54,13 +64,20 @@ const SearchPage = () => {
 
     useEffect(() => { getAvailableTopics(); }, [])
 
+
     const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        if (selection.length > MAX_TOPICS) alert("Maximum of 20 topics allowed.");
+        if (newValue.length > MAX_TOPICS) CustomAlert.fire({
+            icon: "error",
+            title: <AlertMessage>Sorry, you can only search for {MAX_TOPICS} topics at a time</AlertMessage>,
+            });
         else updateSelection(newValue.map(nv => nv.value));
     }
 
     const handleNewOption = (newOption: string) => {
-        if (selection.length > MAX_TOPICS - 1) alert("Maximum of 20 topics allowed.");
+        if (selection.length > MAX_TOPICS - 1) CustomAlert.fire({
+            icon: "error",
+            title: <AlertMessage>Sorry, you can only search for {MAX_TOPICS} topics at a time</AlertMessage>,
+            });
         else updateSelection(s => s.concat([newOption]));
     }
 
@@ -108,7 +125,6 @@ const SearchPage = () => {
                                     control: (baseStyles, state) => ({
                                     ...baseStyles,
                                     borderColor: state.isFocused ? 'black' : 'black',
-                                    height: '50px',
                                     }),
                                     multiValue: (base) => ({
                                         ...base,
@@ -251,4 +267,9 @@ const RefreshIcon = styled.img`
     width:35px;
 `;
 
+const AlertMessage = styled.div`
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Rubik', sans-serif
+`;
 
