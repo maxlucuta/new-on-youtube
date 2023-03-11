@@ -1,13 +1,11 @@
-import gc
 from os import environ
 from functools import wraps
-from multiprocessing import current_process
 from google.cloud import pubsub_v1
 from google.cloud.pubsub_v1.subscriber.exceptions import AcknowledgeError
 from ..youtube_scraper_lib.youtube import (
     get_most_popular_video_transcripts_by_topic
 )
-from ..database import insert_video, create_session
+from ..database import insert_video
 from .logs.message_logger import Logger
 
 SUBSCRIBER_PATH = "projects/new-on-youtube-375417/subscriptions/gpt-tasks-sub"
@@ -65,8 +63,7 @@ class Subscriber:
 
         topic = message.attributes.get('search_term')
         amount = int(message.attributes.get('amount'))
-        print(f"{topic} recieved by " +
-              current_process().name + "!", flush=True)
+        print(f"{topic} recieved!", flush=True)
         log = topic + "," + str(amount)
 
         if self.logger.get(log):
@@ -83,7 +80,6 @@ class Subscriber:
             insert_video(data)
 
         print(f"{topic} processed!", flush=True)
-        gc.collect()
         message.ack()
 
     def process_tasks(self):
@@ -108,6 +104,5 @@ class Subscriber:
 def run_background_task():
     """API for daemon thread background processing."""
 
-    create_session()
     subscriber = Subscriber()
     subscriber.process_tasks()

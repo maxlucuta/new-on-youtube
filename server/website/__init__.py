@@ -5,37 +5,27 @@ from website.views import views_blueprint
 from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
 from website.utilities.database import establish_connection
+from website.utilities.pubsub.subscriber import run_background_task
 from website.utilities.pubsub.publisher import Publisher
+from threading import Thread
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from cassandra.query import dict_factory
 from website.utilities.recommender import Recommender
-from multiprocessing import Process
-from website.utilities.pubsub.subscriber import run_background_task
 
 
-def execute_background_tasks(name):
-    """Runs subscriber batch processing task for child processes."""
+def create_thread_pool(threads):
+    """Creates a number of daemon threads for background processing."""
 
-    print(f"Running background process {name}!", flush=True)
-    run_background_task()
-
-
-def create_processes(processes):
-    """ Creates two daemon processes for background batch processing."""
-
-    for i in range(1, processes+1):
-        name = "batch_" + str(i)
-        process = Process(
-            name=name, target=execute_background_tasks, args=(name,))
-        process.daemon = True
-        process.start()
+    for i in range(1, threads+1):
+        name = "background" + str(i)
+        Thread(name=name, target=run_background_task, daemon=True).start()
 
 
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         app = Flask(__name__, static_folder='../static', static_url_path='/')
-        create_processes(2)
+        create_thread_pool(2)
     else:
         app = Flask(__name__, static_folder='../../client/build')
 
