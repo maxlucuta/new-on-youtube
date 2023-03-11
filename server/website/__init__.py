@@ -21,23 +21,21 @@ def execute_background_tasks(name):
     run_background_task()
 
 
-def create_processes():
+def create_processes(processes):
     """ Creates two daemon processes for background batch processing."""
 
-    batch_1 = Process(
-        name="batch_1", target=execute_background_tasks, args=("batch_1",))
-    batch_2 = Process(
-        name="batch_2", target=execute_background_tasks, args=("batch_2",))
-    batch_1.daemon = True
-    batch_2.daemon = True
-    batch_1.start()
-    batch_2.start()
+    for i in range(1, processes+1):
+        name = "batch_" + str(i)
+        process = Process(
+            name=name, target=execute_background_tasks, args=(name,))
+        process.daemon = True
+        process.start()
 
 
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         app = Flask(__name__, static_folder='../static', static_url_path='/')
-        create_processes()
+        create_processes(2)
     else:
         app = Flask(__name__, static_folder='../../client/build')
 
