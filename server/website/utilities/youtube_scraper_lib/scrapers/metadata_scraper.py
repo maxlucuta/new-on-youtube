@@ -62,9 +62,11 @@ class MetaDataScraper(YouTubeScraper):
         Returns:
             str: number of views for the video, may be raw hmtl
         """
-
-        videoInfo = Video.getInfo(url)
-        return videoInfo['viewCount']['text']
+        try:
+            videoInfo = Video.getInfo(url)
+            return videoInfo['viewCount']['text']
+        except (TypeError, ValueError):
+            return None
 
     @staticmethod
     def get_upload_date(url: str) -> str:
@@ -169,12 +171,14 @@ class MetaDataScraper(YouTubeScraper):
                     "likes": self.get_likes(result['link'], self.proxy),
                     "video_tags": self.get_keywords(result['link']),
                     "duration": result['duration'],
-                    "visible": self._video_is_public(result['link'])
+                    "visible": self._video_is_public(result['link'],
+                                                     self.proxy)
                     }
 
         return metadata
 
-    def _video_is_public(self, url: str) -> bool:
+    @staticmethod
+    def _video_is_public(url: str, proxies: dict = None) -> bool:
         """Checks if a video is public or private.
 
         Args:
@@ -186,7 +190,7 @@ class MetaDataScraper(YouTubeScraper):
         """
 
         try:
-            response = requests.get(url, timeout=50, proxies=self.proxy)
+            response = requests.get(url, timeout=50, proxies=proxies)
             if "Private video" in response.text:
                 return False
             return True

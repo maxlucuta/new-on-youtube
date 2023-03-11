@@ -5,6 +5,7 @@ it is the front-end developers responsibility to ensure
 that the request contains both topic = x and amount = y,
 otherwise an error code will be returned.
 """
+import time
 from flask import Blueprint, request, abort
 from flask_jwt_extended import jwt_required
 from .utilities.database import query_users
@@ -19,6 +20,8 @@ from .utilities.database import insert_video
 from .utilities.database import query_random_videos
 from .utilities.database import get_unique_topics
 from .utilities.youtube_scraper_lib.youtube import get_updated_metadata_by_id
+from .utilities.youtube_scraper_lib.scrapers.metadata_scraper \
+    import MetaDataScraper
 from threading import Thread
 
 request_blueprint = Blueprint("request_blueprint", __name__)
@@ -290,8 +293,7 @@ def initiate_database_update_job():
 
     videos = request.args.get("videos")
     if videos.isdigit():
-        thread = Thread(target=run_update_job(int(videos)))
-        thread.start()
+        Thread(target=run_update_job, args=(int(videos),)).start()
     return {'status_code': 200, 'description': 'Ok.'}
 
 
@@ -305,6 +307,11 @@ def run_update_job(videos: int):
 
     to_update = query_random_videos(videos)
     for response in to_update:
+        url = "https://www.youtube.com/watch?v=" + response['video_id']
+        if not MetaDataScraper._video_is_public(url) \
+                or len(response['summary']) < 300:
+            delete_database_entry(response)
+            continue
         get_newest_data = get_updated_metadata_by_id(response['video_id'])
         if not get_newest_data:
             continue
@@ -319,3 +326,4 @@ def run_update_job(videos: int):
         response.update(get_newest_data)
         response['video_name'] = video_name
         insert_video(response)
+        time.sleep(1)
