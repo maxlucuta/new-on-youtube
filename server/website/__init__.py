@@ -10,11 +10,34 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from cassandra.query import dict_factory
 from website.utilities.recommender import Recommender
+from multiprocessing import Process
+from website.utilities.pubsub.subscriber import run_background_task
+
+
+def execute_background_tasks(name):
+    """Runs subscriber batch processing task for child processes."""
+
+    print(f"Running background process {name}!")
+    run_background_task()
+
+
+def create_processes():
+    """ Creates two daemon processes for background batch processing."""
+
+    batch_1 = Process(
+        name="batch_1", target=execute_background_tasks, args=("batch_1",))
+    batch_2 = Process(
+        name="batch_2", target=execute_background_tasks, args=("batch_2",))
+    batch_1.daemon = True
+    batch_2.daemon = True
+    batch_1.start()
+    batch_2.start()
 
 
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         app = Flask(__name__, static_folder='../static', static_url_path='/')
+        create_processes()
     else:
         app = Flask(__name__, static_folder='../../client/build')
 
