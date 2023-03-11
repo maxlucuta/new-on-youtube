@@ -454,7 +454,6 @@ def insert_video(video_dict):
     try:
         if is_background_process():
             MULTIPROCESS_SESSION.execute(cql, params)
-            print(MULTIPROCESS_SESSION)
         else:
             website.session.execute(cql, params)
         print("Insertion successful --------- ", flush=True)
