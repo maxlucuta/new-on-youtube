@@ -81,7 +81,7 @@ class Subscriber:
         for data in processed_task:
             print('subscriber running insert into db', flush=True)
             insert_video(data)
-        
+
         print(f"{topic} processed!", flush=True)
         gc.collect()
         message.ack()

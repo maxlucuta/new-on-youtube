@@ -321,8 +321,8 @@ def get_unique_topics():
         return []
 
     return sorted(list(set(map(lambda r:
-                        convert_topic_for_readability(r["keyword"]),
-                        response))))
+                               convert_topic_for_readability(r["keyword"]),
+                               response))))
 
 
 def get_recommended_videos(username, amount):
