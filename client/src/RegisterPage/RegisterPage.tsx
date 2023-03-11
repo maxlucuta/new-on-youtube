@@ -7,6 +7,8 @@ import { usePost, MAX_TOPICS } from "../functions";
 import NavBar from "../NavBar/Navbar";
 import logo from "../assets/logoColour.png";
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 type SelectOption = {
     label: string;
@@ -26,6 +28,7 @@ const RegisterPage = () => {
     const { token, setToken } = useContext(RootContext);
     const navigate = useNavigate();
     const post = usePost();
+    const CustomAlert = withReactContent(Swal)
 
     const handleEmailChange = (e: any) => {
         updateUsername(e.target.value);
@@ -66,7 +69,11 @@ const RegisterPage = () => {
     }, []);
 
     const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        if (newValue.length > MAX_TOPICS) alert("Maximum of 20 topics allowed.");
+        if (newValue.length > MAX_TOPICS) CustomAlert.fire({
+            icon: "error",
+            title: <AlertTitle>Sorry, you can't add more than {MAX_TOPICS} topics</AlertTitle>,
+            text: "But don't worry - you can add more after registration!"
+            });
         else updateSelectedTopics(newValue.map(nv => nv.value));
     }
 
@@ -81,7 +88,11 @@ const RegisterPage = () => {
         console.log(message)
         if (message === "invalid fields") alert("Please enter a username, password, and matching password confirmation");
         if (message === "username already in use") updateUserAlreadyExists(true);
-        if (message === "no topics selected") alert("Please select at least one topic");
+        if (message === "no topics selected") CustomAlert.fire({
+            icon: "error",
+            title: <AlertTitle>Please select at least one topic</AlertTitle>,
+            text: "So that we can add some videos to your feed"
+            });
         if (message === "successfully added and logged in") {
             setToken(res.token);
         }
@@ -206,6 +217,14 @@ const MessageText = styled.p`
     font-weight: 300;
     font-family: 'Rubik', sans-serif;
 `;
+
+const AlertTitle = styled.div`
+text-align: center;
+font-size: 20px;
+font-weight: 500;
+font-family: 'Rubik', sans-serif;
+`;
+
 
 const PageFrame = styled.div`
     display: flex;
