@@ -27,7 +27,7 @@ def create_processes(processes):
     for i in range(1, processes+1):
         name = "batch_" + str(i)
         process = Process(
-            name=name, target=execute_background_tasks, args=("name",))
+            name=name, target=execute_background_tasks, args=(name,))
         process.daemon = True
         process.start()
 
