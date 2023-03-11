@@ -17,7 +17,7 @@ from website.utilities.pubsub.subscriber import run_background_task
 def execute_background_tasks(name):
     """Runs subscriber batch processing task for child processes."""
 
-    print(f"Running background process {name}!")
+    print(f"Running background process {name}!", flush=True)
     run_background_task()
 
 
