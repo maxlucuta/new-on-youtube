@@ -46,6 +46,7 @@ class Publisher:
         log = topic + ',' + amount
         if self.logger.get(log):
             return
-        self.logger(log)
+        if int(amount) >= 5:
+            self.logger(log)
         attributes = {'search_term': topic, 'amount': amount}
         self.publisher.publish(self.topic, data, **attributes)

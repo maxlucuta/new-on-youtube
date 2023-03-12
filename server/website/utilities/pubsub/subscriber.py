@@ -69,7 +69,7 @@ class Subscriber:
         if self.logger.get(log):
             message.ack()
             return
-        else:
+        if amount >= 5:
             self.logger(log)
 
         processed_task = get_most_popular_video_transcripts_by_topic(
@@ -87,7 +87,7 @@ class Subscriber:
         current thread is terminated.
         """
 
-        flow_control = pubsub_v1.types.FlowControl(max_messages=3)
+        flow_control = pubsub_v1.types.FlowControl(max_messages=5)
         streaming_pull_future = self.subscriber.subscribe(
             self.topic,
             callback=self.callback, flow_control=flow_control)
