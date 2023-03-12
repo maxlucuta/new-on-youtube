@@ -412,6 +412,9 @@ def insert_video(video_dict):
     summary = clean_summary(video_dict["summary"])
     vid_tags = ','.join(video_dict["video_tags"])
 
+    if db_contains_video(keyword, video_id):
+        return True
+
     params = [keyword, views, likes, video_name, channel_name, video_id,
               published_at, summary, vid_tags]
 
