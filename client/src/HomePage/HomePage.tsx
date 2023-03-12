@@ -100,8 +100,6 @@ const HeroBox = styled.div`
     margin-bottom: 10px;
 `;
 
-    
-
 const Title = styled.div`
     padding-bottom: 10px;
     font-size: 50px;
@@ -161,7 +159,7 @@ const Start = styled.button`
     background-color: none;
     color: black;
     border-color: #e52b87;
-    border-radius: 5px;
+    border-radius: 3px;
     padding: 10px;
     transition: 0.5s;
     &:hover {
