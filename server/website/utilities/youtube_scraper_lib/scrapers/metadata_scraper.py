@@ -101,6 +101,26 @@ class MetaDataScraper(YouTubeScraper):
         except (TypeError, ValueError):
             return None
 
+    @staticmethod
+    def _video_is_public(url: str, proxies: dict = None) -> bool:
+        """Checks if a video is public or private.
+
+        Args:
+            url (str): url of the video
+
+        Returns:
+            bool: True if the video is public, false if
+            it is private
+        """
+
+        try:
+            response = requests.get(url, timeout=50, proxies=proxies)
+            if "Private video" in response.text:
+                return False
+            return True
+        except Exception:
+            return False
+
     def rotate_proxy(self, proxy: dict[str, str]):
         """Rotates current proxy in case of IP block.
 
@@ -176,23 +196,3 @@ class MetaDataScraper(YouTubeScraper):
                     }
 
         return metadata
-
-    @staticmethod
-    def _video_is_public(url: str, proxies: dict = None) -> bool:
-        """Checks if a video is public or private.
-
-        Args:
-            url (str): url of the video
-
-        Returns:
-            bool: True if the video is public, false if
-            it is private
-        """
-
-        try:
-            response = requests.get(url, timeout=50, proxies=proxies)
-            if "Private video" in response.text:
-                return False
-            return True
-        except Exception:
-            return False
