@@ -38,7 +38,6 @@ class MetaDataCleaner(DataCleaner):
         except (TypeError, ValueError):
             return None
 
-
     def format_date(self, date: str) -> str:
         """Transforms a string representation if a date in the form:
            'x year/month/day ago' into 'yy-mm-dd'.
