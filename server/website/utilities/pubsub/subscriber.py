@@ -87,18 +87,16 @@ class Subscriber:
         current thread is terminated.
         """
 
-        flow_control = pubsub_v1.types.FlowControl(max_messages=5)
+        flow_control = pubsub_v1.types.FlowControl(max_messages=3)
         streaming_pull_future = self.subscriber.subscribe(
             self.topic,
             callback=self.callback, flow_control=flow_control)
         with self.subscriber:
             try:
                 streaming_pull_future.result()
-            except TimeoutError:
+            except Exception:
                 streaming_pull_future.cancel()
                 streaming_pull_future.result()
-            except Exception:
-                pass
 
 
 def run_background_task():
