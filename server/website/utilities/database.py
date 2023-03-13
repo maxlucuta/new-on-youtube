@@ -14,7 +14,6 @@ from cassandra.protocol import SyntaxException
 from cassandra.auth import PlainTextAuthProvider
 import website
 from .users import User
-from .pubsub.publisher import Publisher
 
 
 def establish_connection():
@@ -227,7 +226,8 @@ def add_watched_video(username, video_id):
         print("DriverException: " + str(exception))
         return False
     print(f"Updated most recent watched videos for {username}: "
-          f"{watched_videos.split(':')}")
+          f"{watched_videos.split(':')}", flush=True)
+    website.recommender.train_model()
     return True
 
 
@@ -245,18 +245,16 @@ def add_videos_to_queue(topics):
         void
     """
     topics = convert_topic_for_generalisation(topics)
-    publisher = Publisher()
     for topic in topics:
         cql = "SELECT * FROM summaries.video_summaries WHERE keyword = %s"
         response = website.session.execute(cql, (topic,)).all()
         if len(response) < 5:
-            publisher.create_task(topic, str(5))
+            website.publisher.create_task(topic, str(5))
 
 
 def add_more_videos_to_queue(topic, number):
     topic = convert_topic_for_generalisation([topic])[0]
-    publisher = Publisher()
-    publisher.create_task(topic, str(number))
+    website.publisher.create_task(topic, str(number))
 
 
 def db_contains_video(keyword, video_id):
@@ -294,9 +292,9 @@ def get_unique_topics():
         print("Database Error:", exception)
         return []
 
-    return list(set(map(lambda r:
-                        convert_topic_for_readability(r["keyword"]),
-                        response)))
+    return sorted(list(set(map(lambda r:
+                               convert_topic_for_readability(r["keyword"]),
+                               response))))
 
 
 def get_recommended_videos(username, amount):
@@ -414,6 +412,9 @@ def insert_video(video_dict):
     summary = clean_summary(video_dict["summary"])
     vid_tags = ','.join(video_dict["video_tags"])
 
+    if db_contains_video(keyword, video_id):
+        return True
+
     params = [keyword, views, likes, video_name, channel_name, video_id,
               published_at, summary, vid_tags]
 
@@ -436,9 +437,24 @@ def insert_video(video_dict):
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n", flush=True)
         return False
-
-    website.recommender.train_model()
     return True
+
+
+def query_all_videos():
+    """
+    This function performs a query on the DB and returns a list of
+    dictionaries (video_title, video_id, summary, video_tags from
+    summaries.video_summaries)
+
+    Returns:
+        [dict]
+
+    """
+
+    cql = """select video_title, video_id, summary, video_tags from
+             summaries.video_summaries"""
+    query = website.session.execute(cql).all()
+    return query
 
 
 def convert_topic_for_generalisation(topics):

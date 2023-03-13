@@ -45,8 +45,8 @@ class Publisher:
         data = data.encode("utf-8")
         log = topic + ',' + amount
         if self.logger.get(log):
-            print("Duplicate message found!", flush=True)
             return
-        self.logger(log)
+        if int(amount) >= 5:
+            self.logger(log)
         attributes = {'search_term': topic, 'amount': amount}
         self.publisher.publish(self.topic, data, **attributes)

@@ -53,24 +53,20 @@ class MetaDataScraper(YouTubeScraper):
             return ""
 
     @staticmethod
-    def get_views(url: str, proxy: dict[str, str] = None) -> str:
+    def get_views(url: str) -> str:
         """Retrieves number of views for a video.
 
         Args:
             url (str): full url of video
-            proxy dict[str, str]: http proxy in requests format
 
         Returns:
             str: number of views for the video, may be raw hmtl
         """
-
         try:
-            response = requests.get(
-                url, headers={'User-Agent': ''}, timeout=50,  proxies=proxy)
-            views = response.text[:response.text.find(' views"')]
-            return views[views.rfind('"') + 1:]
-        except Exception:
-            return ""
+            videoInfo = Video.getInfo(url)
+            return videoInfo['viewCount']['text']
+        except (TypeError, ValueError):
+            return None
 
     @staticmethod
     def get_upload_date(url: str) -> str:
@@ -104,6 +100,26 @@ class MetaDataScraper(YouTubeScraper):
             return Video.get(url)["keywords"]
         except (TypeError, ValueError):
             return None
+
+    @staticmethod
+    def _video_is_public(url: str, proxies: dict = None) -> bool:
+        """Checks if a video is public or private.
+
+        Args:
+            url (str): url of the video
+
+        Returns:
+            bool: True if the video is public, false if
+            it is private
+        """
+
+        try:
+            response = requests.get(url, timeout=50, proxies=proxies)
+            if "Private video" in response.text:
+                return False
+            return True
+        except Exception:
+            return False
 
     def rotate_proxy(self, proxy: dict[str, str]):
         """Rotates current proxy in case of IP block.
@@ -171,30 +187,12 @@ class MetaDataScraper(YouTubeScraper):
                     "channel_name": result['channel']['name'],
                     "video_name": result['title'],
                     "published_at": result['publishedTime'],
-                    "views": self.get_views(result['link'], self.proxy),
+                    "views": result['viewCount']['text'],
                     "likes": self.get_likes(result['link'], self.proxy),
                     "video_tags": self.get_keywords(result['link']),
                     "duration": result['duration'],
-                    "visible": self._video_is_public(result['link'])
+                    "visible": self._video_is_public(result['link'],
+                                                     self.proxy)
                     }
 
         return metadata
-
-    def _video_is_public(self, url: str) -> bool:
-        """Checks if a video is public or private.
-
-        Args:
-            url (str): url of the video
-
-        Returns:
-            bool: True if the video is public, false if
-            it is private
-        """
-
-        try:
-            response = requests.get(url, timeout=50, proxies=self.proxy)
-            if "Private video" in response.text:
-                return False
-            return True
-        except Exception:
-            return False

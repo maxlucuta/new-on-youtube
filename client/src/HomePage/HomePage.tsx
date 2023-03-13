@@ -7,13 +7,10 @@ import choiceIcon from "../assets/choiceClear.png";
 import recommendIcon from "../assets/recommend.png";
 import feedIcon from "../assets/filmReel.png";
 import NavBar from "../NavBar/Navbar";
-import { Link, Navigate } from "react-router-dom";
-import { detectMobile } from "../functions";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
     const { token } = useContext(RootContext);
-
-    //if (detectMobile()) return <Navigate replace to="/UnsupportedDevice" />;
 
     return (
         <div>
@@ -100,8 +97,6 @@ const HeroBox = styled.div`
     margin-bottom: 10px;
 `;
 
-    
-
 const Title = styled.div`
     padding-bottom: 10px;
     font-size: 50px;
@@ -125,7 +120,7 @@ const Text = styled.div`
 
 const Panel = styled.div`
     width: 400px;
-    height: max-content;
+    height: 250px;
     text-align: justify;
     text-justify: inter-word;
     margin: 20px 40px 20px 0;
@@ -161,7 +156,7 @@ const Start = styled.button`
     background-color: none;
     color: black;
     border-color: #e52b87;
-    border-radius: 5px;
+    border-radius: 3px;
     padding: 10px;
     transition: 0.5s;
     &:hover {

@@ -5,7 +5,7 @@ import Feed from "../Feed/Feed";
 import { tokenToEmail, usePost, delay } from "../functions";
 import { Summary } from "../types";
 import { RootContext } from "../context";
-import refresh from "../assets/refresh.png";
+import refresh from "../assets/shuffleBlack.png";
 import Spinner from "../spinner";
 
 const FeedPage = () => {

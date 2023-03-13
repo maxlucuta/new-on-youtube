@@ -237,7 +237,7 @@ def get_updated_metadata_by_id(video_id: str) -> dict[str, str]:
     proxy = proxy_service.get()
     print(f"Running update service on proxy: {proxy}", flush=True)
     url = "https://www.youtube.com/watch?v=" + video_id
-    views = MetaDataScraper.get_views(url, proxy)
+    views = MetaDataScraper.get_views(url)
     likes = MetaDataScraper.get_likes(url, proxy)
     date = MetaDataScraper.get_upload_date(url)
     data = {'views': views, 'likes': likes, 'published_at': date}

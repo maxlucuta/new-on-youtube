@@ -6,6 +6,7 @@ from website.request_handler import request_blueprint
 from website.auth import auth_blueprint
 from website.utilities.database import establish_connection
 from website.utilities.pubsub.subscriber import run_background_task
+from website.utilities.pubsub.publisher import Publisher
 from threading import Thread
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
@@ -13,12 +14,18 @@ from cassandra.query import dict_factory
 from website.utilities.recommender import Recommender
 
 
+def create_thread_pool(threads):
+    """Creates a number of daemon threads for background processing."""
+
+    for i in range(1, threads+1):
+        name = "background" + str(i)
+        Thread(name=name, target=run_background_task, daemon=True).start()
+
+
 def create_app():
     if os.environ.get('IN_DOCKER_CONTAINER', False):
         app = Flask(__name__, static_folder='../static', static_url_path='/')
-        Thread(name="background",
-               target=run_background_task,
-               daemon=True).start()
+        create_thread_pool(1)
     else:
         app = Flask(__name__, static_folder='../../client/build')
 
@@ -38,6 +45,9 @@ def create_app():
     def not_found_handler(e):
         return send_from_directory(app.static_folder, 'index.html'), 404
     app.register_error_handler(404, not_found_handler)
+
+    global publisher
+    publisher = Publisher()
 
     global session
     session = establish_connection()

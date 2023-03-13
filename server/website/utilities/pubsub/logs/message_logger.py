@@ -3,8 +3,7 @@ PATH = "./website/utilities/pubsub/logs/"
 
 class Logger:
     """Logging class to allow for 0 to 1 messaging with
-       Google PubSub.
-    """
+       Google PubSub."""
 
     def __init__(self, log: str):
         """Constructs a Logger object.

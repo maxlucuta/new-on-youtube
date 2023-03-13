@@ -15,7 +15,7 @@ def test_background_thread():
             background_thread_present = False
 
             for thread in threading.enumerate():
-                if thread.name == "background":
+                if thread.name == "background1":
                     background_thread_present = True
 
             assert (background_thread_present)

@@ -67,10 +67,9 @@ class Subscriber:
         log = topic + "," + str(amount)
 
         if self.logger.get(log):
-            print("Duplicate message found!", flush=True)
             message.ack()
             return
-        else:
+        if amount >= 5:
             self.logger(log)
 
         processed_task = get_most_popular_video_transcripts_by_topic(
@@ -88,14 +87,14 @@ class Subscriber:
         current thread is terminated.
         """
 
-        flow_control = pubsub_v1.types.FlowControl(max_messages=1)
+        flow_control = pubsub_v1.types.FlowControl(max_messages=3)
         streaming_pull_future = self.subscriber.subscribe(
             self.topic,
             callback=self.callback, flow_control=flow_control)
         with self.subscriber:
             try:
                 streaming_pull_future.result()
-            except TimeoutError:
+            except Exception:
                 streaming_pull_future.cancel()
                 streaming_pull_future.result()
 

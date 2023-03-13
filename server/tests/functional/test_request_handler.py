@@ -142,7 +142,7 @@ def test_valid_request_returns_requested_number_of_videos(test_client):
     Raises:
         Assertion error.
     """
-    test_query = json.dumps({'topics': ['joe rogan'], 'amount': '5'})
+    test_query = json.dumps({'topics': ['joe rogan'], 'amount': '4'})
     response = test_client.post("/request", data=test_query, headers=headers)
     response = json.loads(response.data)
 
@@ -168,7 +168,7 @@ def test_valid_request_returns_requested_number_of_videos(test_client):
         assert video_id
         assert keyword
 
-    assert len(summaries) == 5
+    assert len(summaries) == 4
     return
 
 
