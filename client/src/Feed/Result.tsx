@@ -10,8 +10,8 @@ type ResultProps = {
 
 const Result = (props: ResultProps) => {
 
-    const THREE_DAYS = 3*24*3600*1000;
-    const isRecent = Date.now() - Date.parse(props.summary.published_at) < THREE_DAYS;
+    const SEVEN_DAYS = 7*24*3600*1000;
+    const isRecent = Date.now() - Date.parse(props.summary.published_at) < SEVEN_DAYS;
 
     const { token } = useContext(RootContext);
     const post = usePost();
