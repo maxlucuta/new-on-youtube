@@ -3,6 +3,8 @@ import { MultiValue, ActionMeta } from "react-select";
 import Select from "react-select";
 import styled from "styled-components";
 import { MAX_TOPICS } from "../functions";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 type SearchPageBarProps = {
     selection: string[];
@@ -15,11 +17,16 @@ type SelectOption = {
     value: string;
 }
 
+const CustomAlert = withReactContent(Swal);
+
 const SearchPageBar = (props: SearchPageBarProps) => {
 
 
     const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        if (props.selection.length > MAX_TOPICS) alert("Maximum of 20 topics allowed.");
+        if (newValue.length > MAX_TOPICS) CustomAlert.fire({
+            icon: "error",
+            title: <AlertMessage>Sorry, you can only search for {MAX_TOPICS} topics at a time</AlertMessage>,
+            });
         else props.updateSelection(newValue.map(nv => nv.value));
     }
 
@@ -38,6 +45,12 @@ const SearchPageBar = (props: SearchPageBarProps) => {
                 ...baseStyles,
                 borderColor: 'black',
                 }),
+                multiValue: (base) => ({
+                    ...base,
+                    padding: `5px`,
+                    margin: `5px`,
+                    fontSize: `16px`
+                  }),
             
             }}
             theme={(theme) => ({
@@ -59,5 +72,12 @@ export default SearchPageBar
 const PlaceholderText = styled.div`
     font-size: 15px;
     font-weight: 300;
+    font-family: 'Rubik', sans-serif
+`;
+
+
+const AlertMessage = styled.div`
+    font-size: 16px;
+    font-weight: 400;
     font-family: 'Rubik', sans-serif
 `;
