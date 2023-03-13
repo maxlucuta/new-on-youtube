@@ -252,7 +252,10 @@ def add_watched_video(username, video_id):
         return False
     print(f"Updated most recent watched videos for {username}: "
           f"{watched_videos.split(':')}", flush=True)
-    website.recommender.train_model()
+    try:
+        website.recommender.train_model()
+    except KeyError:
+        print(f"Video {video_id} could not be found in trained model, aborted")
     return True
 
 
