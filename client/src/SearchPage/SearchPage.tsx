@@ -37,8 +37,11 @@ const SearchPage = () => {
         if (response.results.length === 0) {
             CustomAlert.fire({
                 icon: "success",
-                title: <AlertMessage>Generating videos and summarising transcripts for {selectedTopics.join(', ')}. We will let you know when they're ready.</AlertMessage>,
-                timer: 7000
+                title: <AlertMessage>
+                            Generating videos for <b>{selectedTopics.join(', ')}</b>. We will let you know when they're ready with another popup.
+                            <br></br><br></br>Carry on browsing and once the videos are ready you will be able to search for them here.
+                        </AlertMessage>,
+                timer: 10000
                 });
             updateSelection([]);
             while (response.results.length === 0) {
@@ -49,7 +52,10 @@ const SearchPage = () => {
             getAvailableTopics();
             CustomAlert.fire({
                 icon: "info",
-                title: <AlertMessage>Videos for {selectedTopics.join(', ')} are ready for your next search.</AlertMessage>,
+                title: <AlertMessage>
+                            Videos for <b>{selectedTopics.join(', ')}</b> are ready.<br></br><br></br>
+                            You can now enter this topic on the <b>Search Page</b> or when selecting topics for your <b>User Feed</b>. 
+                        </AlertMessage>,
                 });
         } else {
             updateMode("RESULTS")
