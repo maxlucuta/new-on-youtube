@@ -13,25 +13,28 @@ const FeedPage = () => {
     const modes = ["Recent", "Popular", "Liked", "Recommended", "Random"] as ["Recent", "Popular", "Liked", "Recommended", "Random"];
     const [mode, updateMode] = useState("Recent" as String);
     const [searchResults, updateResults] = useState([] as Summary[]);
+    const [repeatRequestCount, updateRepeatRequestCount] = useState(0);
     const post = usePost();
 
     const handleRequest = async (sort_by_mode: String | ((prevState: String) => String)) => {
         const payload = { username: tokenToEmail(token), amount: 20, sort_by: sort_by_mode };
         let response = await post("/user_request", payload) as any;
         if (response.status_code != 200) console.log("Request Error!", response)
-        else {
-            while (response.results.length < 3 && sort_by_mode !== "Recommended" && token) {
-                await delay(5000);
-                response = await post("/user_request", payload) as any;
-                console.log("Resent request")
-            }
-            updateResults(response.results);
-        }
+        else updateResults(response.results);
     };
 
     useEffect(() => {
         handleRequest(mode);
     }, []);
+
+    useEffect(() => {
+        // continually query database while more videos being discovered
+        if (token && repeatRequestCount < 100 && searchResults.length < 3) {
+            console.log("request being made");
+            handleRequest(mode);
+            setTimeout(() => updateRepeatRequestCount(c => c + 1), 5000);
+        }
+    }, [repeatRequestCount])
 
     const noResults = searchResults.length === 0;
 

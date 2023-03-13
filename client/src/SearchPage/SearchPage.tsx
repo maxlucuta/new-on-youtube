@@ -10,18 +10,16 @@ import Creatable from 'react-select/creatable'
 import { MAX_TOPICS, delay } from "../functions";
 import Spinner from "../spinner";
 import refresh from "../assets/refreshSlim.png";
+import SearchPageBar from "./SearchPageBar";
+import DefaultSearchPageBar from "./DefaultSearchPageBar";
 
-type SelectOption = {
-    label: string;
-    value: string;
-}
 
 const SearchPage = () => {
     const [selection, updateSelection] = useState([] as string[]);
     const [searchResults, updateSearchResults] = useState([] as Summary[]);
     const [availableTopics, updateAvailableTopics] = useState([] as string[])
     const [mode, updateMode] = useState("SELECTION" as "SELECTION" | "RESULTS")
-    const { SERVER_URL } = useContext(RootContext);
+    const { SERVER_URL, token } = useContext(RootContext);
 
     const noResults = searchResults.length === 0;
 
@@ -46,17 +44,7 @@ const SearchPage = () => {
         else updateAvailableTopics(response.topics);
     }
 
-    useEffect(() => { getAvailableTopics(); }, [])
-
-    const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        if (selection.length > MAX_TOPICS) alert("Maximum of 20 topics allowed.");
-        else updateSelection(newValue.map(nv => nv.value));
-    }
-
-    const handleNewOption = (newOption: string) => {
-        if (selection.length > MAX_TOPICS - 1) alert("Maximum of 20 topics allowed.");
-        else updateSelection(s => s.concat([newOption]));
-    }
+    useEffect(() => { getAvailableTopics(); }, []);
 
     return (
 
@@ -89,32 +77,19 @@ const SearchPage = () => {
                 mode === "SELECTION"
                     ? <>
                         <div style = {{ marginTop: "20px" }}>
-                            <Creatable
-                                value = {selection.map(t => { return {value: t, label: t} })}
-                                options = {availableTopics.map(t => { return {value: t, label: t} })}
-                                isClearable=  {true}
-                                isSearchable = {true}
-                                isMulti = {true}
-                                onChange = {handleChange}
-                                onCreateOption = {handleNewOption}
-                                placeholder={<PlaceholderText>Select topics, or search and create your own</PlaceholderText>}
-                                styles={{
-                                    control: (baseStyles, state) => ({
-                                    ...baseStyles,
-                                    borderColor: state.isFocused ? 'black' : 'black',
-                                    }),
-                                
-                                }}
-                                theme={(theme) => ({
-                                    ...theme,
-                                    borderRadius: 0,
-                                    colors: {
-                                    ...theme.colors,
-                                    primary25: 'var(--colour-background-grey)',
-                                    primary: 'none',
-                                    },
-                                })}
-                            />
+                            {
+                                token
+                                    ? <SearchPageBar
+                                        selection={selection} 
+                                        updateSelection={updateSelection} 
+                                        availableTopics={availableTopics}
+                                    />
+                                    : <DefaultSearchPageBar 
+                                        selection={selection} 
+                                        updateSelection={updateSelection} 
+                                        availableTopics={availableTopics}
+                                    />
+                            }
                         </div>
 
                         {
