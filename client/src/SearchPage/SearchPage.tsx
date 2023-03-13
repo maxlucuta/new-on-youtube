@@ -38,7 +38,7 @@ const SearchPage = () => {
             CustomAlert.fire({
                 icon: "success",
                 title: <AlertMessage>Generating videos and summarising transcripts for {selectedTopics.join(', ')}. We will let you know when they're ready.</AlertMessage>,
-                timer: 5000
+                timer: 7000
                 });
             updateSelection([]);
             while (response.results.length === 0) {

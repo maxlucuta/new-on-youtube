@@ -5,11 +5,15 @@ import { RootContext } from "../context";
 import { tokenToEmail, usePost, MAX_TOPICS } from "../functions";
 import { ActionMeta, MultiValue } from "react-select";
 import Creatable from 'react-select/creatable'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 type SelectOption = {
     label: string;
     value: string;
 }
+
+const CustomAlert = withReactContent(Swal);
 
 const TopicSelection = () => {
     const { token } = useContext(RootContext);
@@ -42,7 +46,11 @@ const TopicSelection = () => {
 
     const updateUserTopicsDatabase = async (topics: string[]) => {
         if (topics.length === 0) {
-            return alert("Please select at least one topic");
+            return CustomAlert.fire({
+                icon: "error",
+                title: <AlertTitle>Please select at least one topic</AlertTitle>,
+                text: "So that we have some videos for your feed"
+                });
         }
         const payload = { username: tokenToEmail(token), topics };
         updateAwaitingUserTopics(true);
@@ -54,12 +62,18 @@ const TopicSelection = () => {
     }
 
     const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        if (newValue.length > MAX_TOPICS) alert("Maximum of 20 topics allowed.");
+        if (newValue.length > MAX_TOPICS) CustomAlert.fire({
+            icon: "error",
+            title: <AlertTitle>Sorry, you can't add more than {MAX_TOPICS} topics</AlertTitle>,
+            });
         else updateUserTopicsDatabase(newValue.map(nv => nv.value));
     }
 
     const handleNewOption = (newOption: string) => {
-        if (userTopics.length > MAX_TOPICS - 1) alert("Maximum of 20 topics allowed.");
+        if (userTopics.length > MAX_TOPICS - 1) CustomAlert.fire({
+            icon: "error",
+            title: <AlertTitle>Sorry, you can't add more than {MAX_TOPICS} topics</AlertTitle>,
+            });
         else updateUserTopicsDatabase(userTopics.concat([newOption]));
     }
 
@@ -129,4 +143,11 @@ const Title = styled.div`
     font-weight: 600;
     font-family: 'Rubik', sans-serif;
     margin-top: 50px;
+`;
+
+const AlertTitle = styled.div`
+text-align: center;
+font-size: 20px;
+font-weight: 500;
+font-family: 'Rubik', sans-serif;
 `;

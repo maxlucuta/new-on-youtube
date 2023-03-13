@@ -28,7 +28,7 @@ const RegisterPage = () => {
     const { token, setToken } = useContext(RootContext);
     const navigate = useNavigate();
     const post = usePost();
-    const CustomAlert = withReactContent(Swal)
+    const CustomAlert = withReactContent(Swal);
 
     const handleEmailChange = (e: any) => {
         updateUsername(e.target.value);
@@ -72,7 +72,6 @@ const RegisterPage = () => {
         if (newValue.length > MAX_TOPICS) CustomAlert.fire({
             icon: "error",
             title: <AlertTitle>Sorry, you can't add more than {MAX_TOPICS} topics</AlertTitle>,
-            text: "But don't worry - you can add more after registration!"
             });
         else updateSelectedTopics(newValue.map(nv => nv.value));
     }
