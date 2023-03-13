@@ -11,3 +11,4 @@ clinique,5
 footbal,5
 f,5
 1,5
+cfr_cluj,5

@@ -5,8 +5,6 @@ import { Summary } from "../types";
 import axios from "axios";
 import { RootContext } from "../context";
 import ResultsPage from "./ResultsPage";
-import { ActionMeta, MultiValue } from 'react-select'
-import Creatable from 'react-select/creatable'
 import { MAX_TOPICS, delay } from "../functions";
 import Spinner from "../spinner";
 import refresh from "../assets/shuffleWhite.png";
@@ -19,8 +17,7 @@ import DefaultSearchPageBar from "./DefaultSearchPageBar";
 const SearchPage = () => {
     const [selection, updateSelection] = useState([] as string[]);
     const [searchResults, updateSearchResults] = useState([] as Summary[]);
-    const [availableTopics, updateAvailableTopics] = useState([] as string[])
-    const [selectedValues, updateSelectedValues] = useState(0)
+    const [availableTopics, updateAvailableTopics] = useState([] as string[]);
     const [mode, updateMode] = useState("SELECTION" as "SELECTION" | "RESULTS")
     const { SERVER_URL, token } = useContext(RootContext);
     const CustomAlert = withReactContent(Swal)
@@ -68,23 +65,6 @@ const SearchPage = () => {
     }
 
     useEffect(() => { getAvailableTopics(); }, [])
-
-
-    const handleChange = (newValue: MultiValue<SelectOption>, actionMeta: ActionMeta<SelectOption>) => {
-        if (newValue.length > MAX_TOPICS) CustomAlert.fire({
-            icon: "error",
-            title: <AlertMessage>Sorry, you can only search for {MAX_TOPICS} topics at a time</AlertMessage>,
-            });
-        else updateSelection(newValue.map(nv => nv.value));
-    }
-
-    const handleNewOption = (newOption: string) => {
-        if (selection.length > MAX_TOPICS - 1) CustomAlert.fire({
-            icon: "error",
-            title: <AlertMessage>Sorry, you can only search for {MAX_TOPICS} topics at a time</AlertMessage>,
-            });
-        else updateSelection(s => s.concat([newOption]));
-    }
 
     return (
 
