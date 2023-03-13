@@ -1,6 +1,6 @@
 # New On YouTube App
 
-## Project brief
+## Project brief 
 The goal of this project is to streamline video search for users. The project will implement a recommendation engine that allows users to register their interests, and receive a curated list of recommended YouTube videos accompanied by summaries of their contents which are generated from the video transcript by ChatGPT-3. From a technical standpoint, the interface should be simple to use and appealing, and generating recommendations should be reasonably quick. Each user should receive new curated lists based on previous activity, ensuring that the recommendation system improves itself in suggesting videos that are more closely aligned with the users interest.
 
 ## Project structure
