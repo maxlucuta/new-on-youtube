@@ -6,6 +6,8 @@ import { usePost } from "../functions";
 import NavBar from "../NavBar/Navbar";
 import logo from "../assets/logoColour.png";
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
 
 const SignInPage = () => {
     const [username, updateUsername] = useState("");
@@ -15,6 +17,7 @@ const SignInPage = () => {
     const { setToken, token } = useContext(RootContext);
     const navigate = useNavigate();
     const post = usePost();
+    const CustomAlert = withReactContent(Swal);
 
     const handleEmailChange = (e: any) => {
         updateUsername(e.target.value);
@@ -29,7 +32,10 @@ const SignInPage = () => {
         const res = (await post("/login", payload)) as any;
         const message = res.message;
         console.log(message);
-        if (message === "invalid fields") alert("Please enter a username and password");
+        if (message === "invalid fields") CustomAlert.fire({
+            icon: "error",
+            title: <AlertMessage>Please enter a username and password</AlertMessage>,
+            });
         else if (message === "username not found") {
             updateInvalidPassword(false);
             updateUserDoesNotExist(true);
@@ -152,4 +158,10 @@ const FormInput = styled.input`
 const LogoImage = styled.img`
     width: 75px;
     margin-top: 50px;
+`;
+
+const AlertMessage = styled.div`
+    font-size: 16px;
+    font-weight: 400;
+    font-family: 'Rubik', sans-serif
 `;
