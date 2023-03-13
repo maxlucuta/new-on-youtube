@@ -132,16 +132,26 @@ const SearchPage = () => {
                     />
             }
             { selection.length == 0 ?
-            <div style={{
-                marginTop: "30px",
-                color: "grey",
-                fontWeight: "300",
-                textAlign: "center"}}
-                >Use the menu above to select or search for topics. You can search for up to 20 topics at once.<br></br>
-                If your topic isn't in our database yet, you can click <em>Create "Your Topic"</em>.<br></br><br></br>
-                For new topics we need to search YouTube, extract the transcript, and summarise it with GPT-3. So there will be a short delay.<br></br>
-                <br></br>A notification will let you know when your topic has been sent for processing, and another will let you know once the videos are ready!
-            </div>
+            token ?
+                <div style={{
+                    marginTop: "30px",
+                    color: "grey",
+                    fontWeight: "300",
+                    textAlign: "center"}}
+                    >Use the menu above to select or search for topics. You can search for multiple topics at once - up to {MAX_TOPICS} at a time.<br></br><br></br>
+                    If your topic isn't in our database yet, you can click <em>Create "Your Topic"</em>.<br></br>
+                    For new topics we need to search YouTube, extract the transcript, and summarise it with GPT-3. So there will be a short delay.<br></br>
+                    <br></br>A notification will let you know when your topic has been sent for processing, and another will let you know once the videos are ready!
+                </div>
+                :
+                <div style={{
+                    marginTop: "30px",
+                    color: "grey",
+                    fontWeight: "300",
+                    textAlign: "center"}}
+                    >Use the menu above to select or search for topics. You can search for multiple topics at once - up to {MAX_TOPICS} at a time.
+                </div>
+
             : <div></div>
             }
 

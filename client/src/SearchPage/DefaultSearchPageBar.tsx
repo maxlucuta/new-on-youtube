@@ -31,7 +31,8 @@ const SearchPageBar = (props: SearchPageBarProps) => {
             isSearchable = {true}
             isMulti = {true}
             onChange = {handleChange}
-            placeholder={<PlaceholderText>Select topics</PlaceholderText>}
+            placeholder = {<PlaceholderText>Select topics</PlaceholderText>}
+            noOptionsMessage={() => 'That topic is not yet in our database. Please create a New On YouTube account to search for custom topics.'}
             styles={{
                 control: (baseStyles, state) => ({
                 ...baseStyles,
