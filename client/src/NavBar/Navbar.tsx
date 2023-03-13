@@ -36,7 +36,7 @@ const NavBar = () => {
                             </Link>
                         )}
                         {token && (
-                            <Link to={token ? "/TopicSelection" : "/"}>
+                            <Link to={token ? "/TopicSelection" : "/"}> 
                                 <NavBarItem>Topics</NavBarItem>
                             </Link>
                         )}
@@ -110,19 +110,20 @@ const NavBarItem = styled.p`
 
 const SignInOutButton = styled.button`
     display: flex;
-    flex-direction: flex-end;
-    padding: 10px;
+    flex-direction: row-reverse;
+    padding: 5px 8px 6px 8px;
     font-size: 16px;
     font-weight: 400;
-    font-family: 'Rubik', sans-serif;
-    width: max-content;
-    border-color: var(--colour-pink-accent);
-    border-radius: 5px;
+    background-color: none;
+    color: black;
+    border-color: #e52b87;
+    border-radius: 2px;
+    
     transition: 0.5s;
     &:hover {
-        background-color: var(--colour-pink-accent);
         color: white;
-        cursor: pointer;    
+        background-color: var(--colour-pink-accent);
+        cursor: pointer;
     }
 `;
 

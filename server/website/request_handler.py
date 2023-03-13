@@ -5,6 +5,7 @@ it is the front-end developers responsibility to ensure
 that the request contains both topic = x and amount = y,
 otherwise an error code will be returned.
 """
+import time
 from flask import Blueprint, request, abort
 from flask_jwt_extended import jwt_required
 from .utilities.database import query_users
@@ -290,8 +291,7 @@ def initiate_database_update_job():
 
     videos = request.args.get("videos")
     if videos.isdigit():
-        thread = Thread(target=run_update_job(int(videos)))
-        thread.start()
+        Thread(target=run_update_job, args=(int(videos),)).start()
     return {'status_code': 200, 'description': 'Ok.'}
 
 
@@ -319,3 +319,4 @@ def run_update_job(videos: int):
         response.update(get_newest_data)
         response['video_name'] = video_name
         insert_video(response)
+        time.sleep(1)

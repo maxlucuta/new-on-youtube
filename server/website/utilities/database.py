@@ -9,15 +9,11 @@ Date: 19. Januar 2023
 import os
 import random
 import string
-from multiprocessing import current_process
 from cassandra.cluster import Cluster, DriverException
 from cassandra.protocol import SyntaxException
 from cassandra.auth import PlainTextAuthProvider
-from cassandra.query import dict_factory
 import website
 from .users import User
-
-MULTIPROCESS_SESSION = None
 
 
 def establish_connection():
@@ -48,27 +44,6 @@ def establish_connection():
                                            "+iA+6HYd0mY5wd61D8vQv8q+_-eKGU"))
     cluster = Cluster(cloud=cloud_config, auth_provider=auth_provider)
     return cluster.connect()
-
-
-def create_session():
-    """Initialiases the global MULTIPROCESS_SESSION object, used
-       by child processes to access the cassandra cluster, without
-       needing to create mutliple instances.
-    """
-
-    global MULTIPROCESS_SESSION
-    MULTIPROCESS_SESSION = establish_connection()
-    MULTIPROCESS_SESSION.row_factory = dict_factory
-
-
-def is_background_process():
-    """Checks if current process is main or a background process
-       responsible for batch processing.
-    """
-
-    if current_process().name in ["batch_1", "batch_2"]:
-        return True
-    return False
 
 
 def query_users(username):
@@ -299,10 +274,7 @@ def db_contains_video(keyword, video_id):
     cql = """SELECT video_id FROM summaries.video_summaries
             WHERE keyword = %s"""
     keyword = convert_topic_for_generalisation([keyword])[0]
-    if is_background_process():
-        response = MULTIPROCESS_SESSION.execute(cql, (keyword,)).all()
-    else:
-        response = website.session.execute(cql, (keyword,)).all()
+    response = website.session.execute(cql, (keyword,)).all()
     for video in response:
         if video['video_id'] == video_id:
             return True
@@ -443,6 +415,9 @@ def insert_video(video_dict):
     summary = clean_summary(video_dict["summary"])
     vid_tags = ','.join(video_dict["video_tags"])
 
+    if db_contains_video(keyword, video_id):
+        return True
+
     params = [keyword, views, likes, video_name, channel_name, video_id,
               published_at, summary, vid_tags]
 
@@ -455,10 +430,7 @@ def insert_video(video_dict):
     params = tuple(params)
 
     try:
-        if is_background_process():
-            MULTIPROCESS_SESSION.execute(cql, params)
-        else:
-            website.session.execute(cql, params)
+        website.session.execute(cql, params)
         print("Insertion successful --------- ", flush=True)
         print("Keyword: " + keyword + " | Video Title: " + video_name +
               " | Channel : " + channel_name + "\n", flush=True)

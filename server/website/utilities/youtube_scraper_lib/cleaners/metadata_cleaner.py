@@ -32,9 +32,11 @@ class MetaDataCleaner(DataCleaner):
         Returns:
             int: processed representation of number
         """
-
-        cleaned = "".join([i for i in number if i.isdigit()])
-        return int(cleaned) if cleaned else 0
+        try:
+            cleaned = "".join([i for i in number if i.isdigit()])
+            return int(cleaned) if cleaned else 0
+        except (TypeError, ValueError):
+            return None
 
     def format_date(self, date: str) -> str:
         """Transforms a string representation if a date in the form:
