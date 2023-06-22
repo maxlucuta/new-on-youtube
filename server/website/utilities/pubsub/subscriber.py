@@ -75,6 +75,8 @@ class Subscriber:
         processed_task = get_most_popular_video_transcripts_by_topic(
             topic, int(amount))
 
+        print(process_task)
+
         for data in processed_task:
             print('subscriber running insert into db', flush=True)
             insert_video(data)
