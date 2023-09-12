@@ -1,3 +1,12 @@
+![Python](https://img.shields.io/badge/Python-3.8-blue?style=for-the-badge&logo=python)
+![TypeScript](https://img.shields.io/badge/TypeScript-4.5.4-blue?style=for-the-badge&logo=typescript)
+![React](https://img.shields.io/badge/React-17.0.2-blue?style=for-the-badge&logo=react)
+![Flask](https://img.shields.io/badge/Flask-2.1.0-green?style=for-the-badge&logo=flask)
+![Cassandra](https://img.shields.io/badge/Cassandra-4.0.1-orange?style=for-the-badge&logo=apache-cassandra)
+![Google Cloud](https://img.shields.io/badge/Google%20Cloud-yellow?style=for-the-badge&logo=google-cloud)
+
+
+
 # New on YouTube
 
 ## Project Brief <img src="img/logoColour.png" alt="Project Logo" width="20" align="left" hspace="0">
