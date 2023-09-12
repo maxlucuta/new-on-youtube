@@ -24,7 +24,7 @@ The backend is implemented in Python using Flask.
 ### Third-Party Technologies
 - User and video data are stored on Apache Cassandra.
 - Videos are hosted on YouTube.com.
-- Video summaries are generated via OpenAI's ChatGPT-3 API.
+- Video summaries are generated via OpenAI's GPT-3 API.
 - Video transcript retrieval and summarization tasks are stored and retrieved from Google Pub/Sub.
 
 ## Development <img src="img/logoColour.png" alt="Project Logo" width="20" align="left" hspace="0">
